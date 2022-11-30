@@ -10,18 +10,23 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       platform: {
+        allowNull: false,
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       maxPlayers: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       rankList: {
+        allowNull: false,
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
       roleList: {
+        allowNull: false,
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
       createdAt: {

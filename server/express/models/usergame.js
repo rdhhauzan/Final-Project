@@ -15,12 +15,54 @@ module.exports = (sequelize, DataTypes) => {
   }
   UserGame.init(
     {
-      GameId: DataTypes.INTEGER,
-      UserId: DataTypes.INTEGER,
-      rank: DataTypes.STRING,
-      role: DataTypes.STRING,
-      matchType: DataTypes.STRING,
-      aboutMe: DataTypes.TEXT,
+      GameId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Game" },
+          notNull: { msg: "Fill in the Game" },
+        },
+      },
+      UserId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          notNull: true,
+        },
+      },
+      rank: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          notNull: true,
+        },
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          notNull: true,
+        },
+      },
+      matchType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          notNull: true,
+        },
+      },
+      aboutMe: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          notNull: true,
+        },
+      },
     },
     {
       sequelize,

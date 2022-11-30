@@ -10,15 +10,19 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       username: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       email: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       password: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       dob: {
+        allowNull: false,
         type: Sequelize.DATE
       },
       isValid: {
@@ -31,9 +35,11 @@ module.exports = {
         type: Sequelize.TEXT
       },
       domisili: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       gender: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       isLogin: {

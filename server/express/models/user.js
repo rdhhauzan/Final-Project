@@ -12,19 +12,65 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.UserGame);
       User.hasMany(models.Post);
+      User.hasMany(models.Follow,{
+        foreignKey: "FollowerId"
+      })
+      User.hasMany(models.Follow,{
+        foreignKey: "FollowedId"
+      })
     }
   }
   User.init(
     {
       username: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
-      dob: DataTypes.DATE,
+      email: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the email" },
+          notNull: { msg: "Fill in the email" },
+          isEmail: { msg: "Type in the correct email format" },
+        },
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Password" },
+          notNull: { msg: "Fill in the Password" },
+          isLength(password) {
+            if (password.length < 5) {
+              throw new Error("Minimum characters are 5");
+            }
+          },
+        },
+      },
+      dob: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Password" },
+          notNull: { msg: "Fill in the Password" },
+          isLength(password) {
+            if (password.length < 5) {
+              throw new Error("Minimum characters are 5");
+            }
+          },
+        },
+      },
       isValid: DataTypes.BOOLEAN,
       isPremium: DataTypes.BOOLEAN,
       profPict: DataTypes.TEXT,
       domisili: DataTypes.STRING,
-      gender: DataTypes.STRING,
+      gender: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Gender" },
+          notNull: { msg: "Fill in the Gender" },
+        },
+      },
       isLogin: DataTypes.BOOLEAN,
     },
     {

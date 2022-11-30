@@ -15,11 +15,46 @@ module.exports = (sequelize, DataTypes) => {
   }
   Game.init(
     {
-      platform: DataTypes.STRING,
-      name: DataTypes.STRING,
-      maxPlayers: DataTypes.INTEGER,
-      rankList: DataTypes.STRING,
-      roleList: DataTypes.STRING,
+      platform: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Platform" },
+          notNull: { msg: "Fill in the Platform" },
+        },
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Name" },
+          notNull: { msg: "Fill in the Name" },
+        },
+      },
+      maxPlayers: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Maximum Players" },
+          notNull: { msg: "Fill in the Maximum Players" },
+        },
+      },
+      rankList: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Rank" },
+          notNull: { msg: "Fill in the Rank" },
+        },
+      },
+      roleList: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Role" },
+          notNull: { msg: "Fill in the Role" },
+        },
+      },
     },
     {
       sequelize,
