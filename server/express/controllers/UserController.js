@@ -1,6 +1,25 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
 const { User } = require("../models/index");
+
+const sharp = require("sharp");
+const cloudinary = require("cloudinary").v2;
+const { Readable } = require("stream");
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const bufferToStream = (buffer) => {
+  const readable = new Readable({
+    read() {
+      this.push(buffer);
+      this.push(null);
+    },
+  });
+  return readable;
+};
 class UserController {
   static async registerUser(req, res) {
     const { username, email, password, dob, domisili, gender } = req.body;
@@ -23,7 +42,7 @@ class UserController {
 
       let findUser = await User.findOne({ where: { email } });
 
-      if (!findUser) {
+      if (!findUser || !findUser.isValid) {
         throw { name: "INVALID_DATA" };
       }
 
@@ -58,6 +77,36 @@ class UserController {
       }
       console.log(error);
     }
+  }
+  static async editUser(req, res) {
+    const { username, email, password, dob, domisili, gender } = req.body;
+    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "profile pictures" },
+      async (error, result) => {
+        if (error) return console.error(error);
+        //   return res.json({ URL: result.secure_url});
+        try {
+          // let imgName = Date.now() + "-" + Math.floor(Math.random() * 1000);
+          let profPict = result.secure_url;
+          let { id } = req.params;
+          let payload = {
+            username,
+            email,
+            password,
+            dob,
+            domisili,
+            gender,
+            profPict,
+          };
+          await User.update(payload, { where: { id } });
+          res.status(200).json({ msg: "Profile sucessfully updated" });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    );
+    bufferToStream(data).pipe(stream);
   }
 }
 
