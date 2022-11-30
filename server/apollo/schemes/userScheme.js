@@ -5,6 +5,12 @@ const { Kind } = require("graphql/language");
 
 const typeDefs = `#graphql
 
+type File {
+  filename: String
+  mimetype: String
+  encoding: String
+}
+
 scalar Date
 
 input loginInput{
@@ -20,6 +26,16 @@ type login{
 
 type msg{
   msg: String
+}
+
+input editInput{
+  username: String
+  email: String
+  password: String
+  dob: String
+  domisili: String
+  gender: String
+  profPict
 }
 
 input registerInput{
@@ -48,17 +64,20 @@ type Users{
     password: String
     phoneNumber: String
     address: String
-  }
+}
 
 type Query {
     getUsers: [Users]
     getUserById(id: ID) : User
-  }
+    uploads: [File]
+}
 
 type Mutation {
     loginUser(login:loginInput) : login
     registerUser(register:registerInput) : msg
-  }
+    editUser(edit:editInput, id:ID) :msg
+    singleUpload(file: Upload): File
+}
 `;
 
 const resolverMap = {
@@ -83,6 +102,7 @@ const resolverMap = {
 const resolvers = {
   Date: resolverMap,
   Query: {
+    uploads: (parent, args) => {},
     getUsers: async () => {
       try {
         let { data } = await axios.get(userUrl);
@@ -102,9 +122,26 @@ const resolvers = {
     },
   },
   Mutation: {
+    singleUpload: (parent, args) => {
+      return args.file.then((file) => {
+        //Contents of Upload scalar: https://github.com/jaydenseric/graphql-upload#class-graphqlupload
+        //file.createReadStream() is a readable node stream that contains the contents of the uploaded file
+        //node stream api: https://nodejs.org/api/stream.html
+        return file;
+      });
+    },
     registerUser: async (_, args) => {
       try {
         const { data } = await axios.post(userUrl + "register", args.register);
+        return data;
+      } catch (error) {
+        throw new GraphQLError("Internal Server Error");
+      }
+    },
+    editUser: async (_, args) => {
+      try {
+        const { id } = args;
+        const { data } = await axios.put(userUrl + "edit/" + id, args.edit);
         return data;
       } catch (error) {
         throw new GraphQLError("Internal Server Error");
