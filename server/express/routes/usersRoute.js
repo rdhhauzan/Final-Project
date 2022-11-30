@@ -13,5 +13,8 @@ router.post("/login", UserController.loginUser);
 
 router.use(loginAuth)
 
+router.get("/online", UserController.getOnlineUsers)
+router.get("/", UserController.getUsers)
 router.put("/edit/:id", upload.single("image"), UserController.editUser)
+router.get("/:id", UserController.getUserDetail)
 module.exports = router;

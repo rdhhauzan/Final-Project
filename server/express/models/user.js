@@ -12,12 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.UserGame);
       User.hasMany(models.Post);
-      User.hasMany(models.Follow,{
-        foreignKey: "FollowerId"
-      })
-      User.hasMany(models.Follow,{
-        foreignKey: "FollowedId"
-      })
+      User.hasMany(models.Follow, {
+        foreignKey: "FollowerId",
+      });
+      User.hasMany(models.Follow, {
+        foreignKey: "FollowedId",
+      });
     }
   }
   User.init(
@@ -50,13 +50,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: false,
         validate: {
-          notEmpty: { msg: "Fill in the Password" },
-          notNull: { msg: "Fill in the Password" },
-          isLength(password) {
-            if (password.length < 5) {
-              throw new Error("Minimum characters are 5");
-            }
-          },
+          notEmpty: { msg: "Fill in the Date Of Birth" },
+          notNull: { msg: "Fill in the Date Of Birth" },
         },
       },
       isValid: DataTypes.BOOLEAN,
