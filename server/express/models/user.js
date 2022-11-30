@@ -12,12 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.UserGame);
       User.hasMany(models.Post);
-      User.hasMany(models.Follow,{
-        foreignKey: "FollowerId"
-      })
-      User.hasMany(models.Follow,{
-        foreignKey: "FollowedId"
-      })
+      User.hasMany(models.Follow, {
+        foreignKey: "FollowerId",
+      });
+      User.hasMany(models.Follow, {
+        foreignKey: "FollowedId",
+      });
     }
   }
   User.init(
@@ -72,6 +72,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       isLogin: DataTypes.BOOLEAN,
+      uniqueStr: DataTypes.STRING,
     },
     {
       sequelize,
