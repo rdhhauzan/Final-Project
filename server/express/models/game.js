@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Game.init(
     {
       platform: {
-        type: DataTypes.STRING,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
         validate: {
           notEmpty: { msg: "Fill in the Platform" },
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       rankList: {
-        type: DataTypes.STRING,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
         validate: {
           notEmpty: { msg: "Fill in the Rank" },
@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       roleList: {
-        type: DataTypes.STRING,
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
         validate: {
           notEmpty: { msg: "Fill in the Role" },
