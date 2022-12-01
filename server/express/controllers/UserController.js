@@ -1,6 +1,6 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
-const { User, UserGame, Post } = require("../models/index");
+const { User, UserGame, Post, Follow, Game } = require("../models/index");
 
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
@@ -152,9 +152,14 @@ class UserController {
       let user = await User.findByPk(id, {
         include: [
           { model: UserGame, required: false },
-          { model: Post, required: false },
+          { model: Post, required: false, include: Game },
+          { model: Follow, include: User },
         ],
       });
+      // let followed = await Follow.findAll({
+      //   where: { FollowerId: id },
+      //   include: { model: User, include: UserGame, required: false },
+      // });
       res.status(200).json(user);
     } catch (error) {
       console.log(error);
@@ -168,6 +173,19 @@ class UserController {
       if (!foundUser) throw { name: "INVALID_VERIF_LINK" };
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async followUser(req, res) {
+    try {
+      let { id } = req.params;
+      let follow = await Follow.create({
+        FollowerId: req.user.id,
+        FollowedId: id,
+      });
+      res.status(200).json(follow);
     } catch (error) {
       console.log(error);
     }
