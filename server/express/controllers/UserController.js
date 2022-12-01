@@ -24,7 +24,16 @@ class UserController {
   static async registerUser(req, res) {
     const { username, email, password, dob, domisili, gender } = req.body;
     try {
-      await User.create({ username, email, password, dob, domisili, gender });
+      const uniqueStr = createToken({ email: email });
+      await User.create({
+        username,
+        email,
+        password,
+        dob,
+        domisili,
+        gender,
+        uniqueStr,
+      });
 
       res.status(201).json({ msg: "Register Success!" });
     } catch (error) {
@@ -107,6 +116,18 @@ class UserController {
       }
     );
     bufferToStream(data).pipe(stream);
+  }
+
+  static async verifyAccount(req, res) {
+    try {
+      const { uniqueStr } = req.params;
+      const foundUser = User.findOne({ where: { uniqueStr } });
+      if (!foundUser) throw { name: "INVALID_VERIF_LINK" };
+      await User.update({ isValid: true }, { where: { uniqueStr } });
+      res.status(200).json({ msg: "Your email has been verified!" });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
