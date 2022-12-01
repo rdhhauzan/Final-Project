@@ -1,6 +1,6 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
-const { User } = require("../models/index");
+const { User, UserGame, Post } = require("../models/index");
 
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
@@ -116,6 +116,49 @@ class UserController {
       }
     );
     bufferToStream(data).pipe(stream);
+  }
+  static async getUsers(req, res) {
+    try {
+      let users = await User.findAll({
+        include: [
+          { model: UserGame, required: false },
+          { model: Post, required: false },
+        ],
+      });
+      res.status(200).json(users);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async getOnlineUsers(req, res) {
+    try {
+      let users = await User.findAll({
+        include: [
+          { model: UserGame, required: false },
+          { model: Post, required: false },
+        ],
+        where: { isLogin: true },
+      });
+      res.status(200).json(users);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async getUserDetail(req, res) {
+    try {
+      let { id } = req.params;
+      let user = await User.findByPk(id, {
+        include: [
+          { model: UserGame, required: false },
+          { model: Post, required: false },
+        ],
+      });
+      res.status(200).json(user);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   static async verifyAccount(req, res) {

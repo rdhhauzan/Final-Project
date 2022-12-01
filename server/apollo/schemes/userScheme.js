@@ -5,6 +5,7 @@ const { Kind } = require("graphql/language");
 
 const typeDefs = `#graphql
 
+
 scalar Date
 
 input loginInput{
@@ -20,6 +21,16 @@ type login{
 
 type msg{
   msg: String
+}
+
+input editInput{
+  username: String
+  email: String
+  password: String
+  dob: String
+  domisili: String
+  gender: String
+  profPict: String
 }
 
 input registerInput{
@@ -48,17 +59,18 @@ type Users{
     password: String
     phoneNumber: String
     address: String
-  }
+}
 
 type Query {
     getUsers: [Users]
     getUserById(id: ID) : User
-  }
+}
 
 type Mutation {
     loginUser(login:loginInput) : login
     registerUser(register:registerInput) : msg
-  }
+    editUser(edit:editInput, id:ID) :msg
+}
 `;
 
 const resolverMap = {
@@ -105,6 +117,15 @@ const resolvers = {
     registerUser: async (_, args) => {
       try {
         const { data } = await axios.post(userUrl + "register", args.register);
+        return data;
+      } catch (error) {
+        throw new GraphQLError("Internal Server Error");
+      }
+    },
+    editUser: async (_, args) => {
+      try {
+        const { id } = args;
+        const { data } = await axios.put(userUrl + "edit/" + id, args.edit);
         return data;
       } catch (error) {
         throw new GraphQLError("Internal Server Error");
