@@ -67,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       isLogin: DataTypes.BOOLEAN,
+      uniqueStr: DataTypes.STRING,
     },
     {
       sequelize,
