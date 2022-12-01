@@ -1,6 +1,6 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
-const { User, UserGame, Post } = require("../models/index");
+const { User, UserGame, Post, Follow, Game } = require("../models/index");
 
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
@@ -152,9 +152,18 @@ class UserController {
       let user = await User.findByPk(id, {
         include: [
           { model: UserGame, required: false },
-          { model: Post, required: false },
+          { model: Post, required: false, include: Game },
+          {
+            model: Follow,
+            include: { model: User, include: UserGame, required: false },
+            required: false,
+          },
         ],
       });
+      // let followed = await Follow.findAll({
+      //   where: { FollowerId: id },
+      //   include: { model: User, include: UserGame, required: false },
+      // });
       res.status(200).json(user);
     } catch (error) {
       console.log(error);
@@ -171,6 +180,47 @@ class UserController {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  static async followUser(req, res) {
+    try {
+      let { id } = req.params;
+      let follow = await Follow.create({
+        FollowerId: req.user.id,
+        FollowedId: id,
+      });
+      res.status(200).json(follow);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async addPost(req, res) {
+    const { title, content, GameId } = req.body;
+    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "posts" },
+      async (error, result) => {
+        if (error)  throw {name: "GAADA_"}
+        //   return res.json({ URL: result.secure_url});
+        try {
+          // let imgName = Date.now() + "-" + Math.floor(Math.random() * 1000);
+          let imgUrl = result.secure_url;
+          let payload = {
+            title,
+            content,
+            GameId,
+            imgUrl,
+            UserId: req.user.id
+          };
+          await Post.create(payload);
+          res.status(200).json({ msg: "Post sucessfully updated" });
+        } catch (error) {
+          console.log(error,"<<<<<<<<<<<<<<<<<");
+        }
+      }
+    );
+    bufferToStream(data).pipe(stream);
   }
 }
 

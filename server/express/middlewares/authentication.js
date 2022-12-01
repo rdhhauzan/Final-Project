@@ -4,7 +4,6 @@ const { User } = require('../models/index');
 const loginAuth = async (req, res, next) => {
     try {
         let { access_token } = req.headers
-        console.log(req.headers);
         if (!access_token) {
             throw {name : "INVALID_ACCESS"}
         }
