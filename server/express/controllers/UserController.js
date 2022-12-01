@@ -153,7 +153,11 @@ class UserController {
         include: [
           { model: UserGame, required: false },
           { model: Post, required: false, include: Game },
-          { model: Follow, include: User },
+          {
+            model: Follow,
+            include: { model: User, include: UserGame, required: false },
+            required: false,
+          },
         ],
       });
       // let followed = await Follow.findAll({
@@ -189,6 +193,34 @@ class UserController {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  static async addPost(req, res) {
+    const { title, content, GameId } = req.body;
+    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "posts" },
+      async (error, result) => {
+        if (error)  throw {name: "GAADA_"}
+        //   return res.json({ URL: result.secure_url});
+        try {
+          // let imgName = Date.now() + "-" + Math.floor(Math.random() * 1000);
+          let imgUrl = result.secure_url;
+          let payload = {
+            title,
+            content,
+            GameId,
+            imgUrl,
+            UserId: req.user.id
+          };
+          await Post.create(payload);
+          res.status(200).json({ msg: "Post sucessfully updated" });
+        } catch (error) {
+          console.log(error,"<<<<<<<<<<<<<<<<<");
+        }
+      }
+    );
+    bufferToStream(data).pipe(stream);
   }
 }
 
