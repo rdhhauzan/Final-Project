@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db-start":"npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
+    "db-start": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
     "package": "npm i pg express sequelize bcryptjs jsonwebtoken cors cloudinary dotenv multer sharp && npm i -D nodemon sequelize-cli jest supertest"
   },
   "repository": {
@@ -21,11 +21,15 @@
   "homepage": "https://github.com/ivanarifin/TEAM-UP#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.32.0",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.5-lts.1",
     "pg": "^8.8.0",
-    "sequelize": "^6.25.8"
+    "sequelize": "^6.26.0",
+    "sharp": "^0.31.2"
   },
   "devDependencies": {
     "jest": "^29.3.1",
