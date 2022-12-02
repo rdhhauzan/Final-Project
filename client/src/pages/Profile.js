@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Profile() {
+	const navigation = useNavigate();
+
 	return (
-		<div className="flex xl:flex-row 2xs:flex-col  text-slate-200 w-full min-h-screen font-chakra">
+		<div className="flex xl:flex-row 2xs:flex-col text-slate-200 w-full min-h-screen font-chakra">
 			<div className="flex xl:flex-row 2xs:flex-col gap-10 w-screen h-content 2xs:py-5 px-5">
 				<div className="flex flex-col w-full basis-1/4">
 					<div className="flex mt-10 justify-center">
@@ -15,7 +19,9 @@ export default function Profile() {
 						</p>
 					</div>
 					<div className="flex mt-3 justify-center">
-						<button className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]">
+						<button
+							className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+							onClick={() => navigation("/profile/edit")}>
 							{" "}
 							Edit Profile
 						</button>
