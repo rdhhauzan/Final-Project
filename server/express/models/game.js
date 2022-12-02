@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Game.init(
     {
       platform: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
         allowNull: false,
         validate: {
           notEmpty: { msg: "Fill in the Platform" },
