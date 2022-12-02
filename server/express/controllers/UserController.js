@@ -84,10 +84,8 @@ class UserController {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "profile pictures" },
       async (error, result) => {
-        if (error) return console.error(error);
-        //   return res.json({ URL: result.secure_url});
+        if (error) throw { name: "INVALID_ACCESS" };
         try {
-          // let imgName = Date.now() + "-" + Math.floor(Math.random() * 1000);
           let profPict = result.secure_url;
           let { id } = req.params;
           let payload = {
@@ -180,6 +178,9 @@ class UserController {
   static async followUser(req, res, next) {
     try {
       let { id } = req.params;
+      if (id == req.user.id) {
+        throw { name: "FOLLOW_ERROR" };
+      }
       let follow = await Follow.create({
         FollowerId: req.user.id,
         FollowedId: id,
@@ -196,10 +197,8 @@ class UserController {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "posts" },
       async (error, result) => {
-        if (error) throw { name: "GAADA_" };
-        //   return res.json({ URL: result.secure_url});
+        if (error) throw { name: "INVALID_ACCESS" };
         try {
-          // let imgName = Date.now() + "-" + Math.floor(Math.random() * 1000);
           let imgUrl = result.secure_url;
           let payload = {
             title,
@@ -219,6 +218,13 @@ class UserController {
   }
   static async logoutUser(req, res, next) {
     try {
+      let user = await User.findByPk(req.user.id);
+      if (!user) {
+        throw { name: "INVALID_ACCESS" };
+      }
+      if (!user.isLogin) {
+        throw { name: "INVALID_ACCESS" };
+      }
       await User.update({ isLogin: false }, { where: { id: req.user.id } });
       res.status(200).json({ msg: "You have been logged out" });
     } catch (error) {

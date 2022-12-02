@@ -25,6 +25,12 @@ const errorHandler = (err, req, res, next) => {
       });
       break;
 
+    case "FOLLOW_ERROR":
+      res.status(400).json({
+        msg: "You can't follow yourself!",
+      });
+      break;
+
     case "NOT_FOUND":
       res.status(404).json({
         msg: "Data Not Found",

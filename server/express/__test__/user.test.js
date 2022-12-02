@@ -2,6 +2,9 @@ const app = require("../app");
 const request = require("supertest");
 const { User } = require("../models");
 const { createToken } = require("../helpers/jwt");
+const fs = require("fs");
+
+const testImage = "./assets/test.jpg";
 
 let uniqueStr1 = "user.test@mail.com";
 let validToken;
@@ -10,13 +13,8 @@ const user1 = {
   username: "User Test",
   password: "usertest",
   dob: "01/01/2022",
-  // isValid: false,
-  // isPremium: false,
-  // profPict:
-  //   "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
   domisili: "Address",
   gender: "male",
-  // isLogin: false,
   uniqueStr: createToken(uniqueStr1),
 };
 const user2 = {
@@ -24,44 +22,13 @@ const user2 = {
   username: "User Test",
   password: "usertest",
   dob: "01/01/2022",
-  // isValid: false,
-  // isPremium: false,
-  // profPict:
-  //   "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
   domisili: "Address",
   gender: "male",
-  // isLogin: false,
-  uniqueStr: createToken(uniqueStr1),
-};
-const user3 = {
-  email: "user.test3@mail.com",
-  username: "User Test",
-  password: "usertest",
-  dob: "01/01/2022",
-  // isValid: false,
-  // isPremium: false,
-  // profPict:
-  //   "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
-  domisili: "Address",
-  gender: "male",
-  // isLogin: false,
   uniqueStr: createToken(uniqueStr1),
 };
 
 beforeAll((done) => {
   User.create(user2)
-    .then((result) => {
-      validToken = createToken({
-        id: result.id,
-      });
-    })
-    .then(() => {
-      done();
-    })
-    .catch((err) => {
-      done(err);
-    });
-  User.create(user3)
     .then((result) => {
       validToken = createToken({
         id: result.id,
@@ -262,7 +229,7 @@ test("200 Success get online Users", (done) => {
 
 test("200 Success follow Users", (done) => {
   request(app)
-    .post("/users/follow/1")
+    .post("/users/follow/2")
     .set("access_token", validToken)
     .then((response) => {
       const { body, status } = response;
@@ -271,6 +238,22 @@ test("200 Success follow Users", (done) => {
       expect(body).toHaveProperty("id", expect.any(Number));
       expect(body).toHaveProperty("FollowerId", expect.any(Number));
       expect(body).toHaveProperty("FollowedId", expect.any(Number));
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+test("400 Failed follow Users", (done) => {
+  request(app)
+    .post("/users/follow/1")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(400);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "You can't follow yourself!");
       done();
     })
     .catch((err) => {
@@ -288,6 +271,36 @@ test("200 Success get User detail", (done) => {
       expect(status).toBe(200);
       expect(body).toHaveProperty("id", expect.any(Number));
       expect(body).toHaveProperty("email", expect.any(String));
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("200 Success update profile", () => {
+  request(app)
+    .put("/users/edit/1")
+    .set("Authorization", "bearer " + validToken)
+    .attach("image", testImage);
+});
+
+test("200 Success create post", () => {
+  request(app)
+    .post("/users/post")
+    .set("Authorization", "bearer " + validToken)
+    .attach("image", testImage);
+});
+
+test("200 Success logout User", (done) => {
+  request(app)
+    .get(`/users/logout`)
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      expect(body).toHaveProperty("msg", "You have been logged out");
       done();
     })
     .catch((err) => {
