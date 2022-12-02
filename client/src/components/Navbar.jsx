@@ -2,6 +2,8 @@ import { useState } from "react";
 import { close, menu } from "../assets";
 // import bocchi from "../assets/bocchi.jpg";
 import teamupnologo from "../assets/teamupnologo.png";
+import { Link } from "react-router-dom";
+
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
 
@@ -12,12 +14,12 @@ const Navbar = () => {
         <li
           className={`font-poppins font-normal cursor-pointer text-[16px] mr-10 text-white `}
         >
-          <a href={"#home"}>Login</a>
+          <Link to="/login">Login</Link>
         </li>
         <li
           className={`font-poppins font-normal cursor-pointer text-[16px] mr-0 text-white `}
         >
-          <a href={"#home"}>Register</a>
+          <Link to="/register">Register</Link>
         </li>
       </ul>
       <div className="sm:hidden flex flex-1 justify-end items-center">
@@ -37,12 +39,12 @@ const Navbar = () => {
             <li
               className={`font-poppins font-normal cursor-pointer text-[16px] mb-4 text-white `}
             >
-              <a href={"#home"}>Login</a>
+              <Link to="/login">Login</Link>
             </li>
             <li
               className={`font-poppins font-normal cursor-pointer text-[16px] mr-0 text-white `}
             >
-              <a href={"#home"}>Register</a>
+              <Link to="/register">Register</Link>
             </li>
           </ul>
         </div>
