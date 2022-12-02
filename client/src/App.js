@@ -1,6 +1,14 @@
-import LandingPage from "./pages/LandingPage.jsx";
-const App = () => {
-  return <LandingPage />;
-};
+// import logo from "./TeamUP-logo.png";
+import "./App.css";
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+
+function App() {
+	return (
+		<div className="App">
+			<RouterProvider router={router}></RouterProvider>
+		</div>
+	);
+}
 
 export default App;
