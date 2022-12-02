@@ -1,6 +1,6 @@
 const { comparePassword } = require("../helpers/bcrypt");
-const { createToken } = require("../helpers/jwt");
-const { User, UserGame, Post } = require("../models/index");
+const { createToken, verifyToken } = require("../helpers/jwt");
+const { User, UserGame, Post, Follow, Game } = require("../models/index");
 
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
@@ -21,18 +21,29 @@ const bufferToStream = (buffer) => {
   return readable;
 };
 class UserController {
-  static async registerUser(req, res) {
+  static async registerUser(req, res, next) {
     const { username, email, password, dob, domisili, gender } = req.body;
     try {
-      await User.create({ username, email, password, dob, domisili, gender });
-
-      res.status(201).json({ msg: "Register Success!" });
+      const uniqueStr = createToken({ email });
+      let registered = await User.create({
+        username,
+        email,
+        password,
+        dob,
+        domisili,
+        gender,
+        uniqueStr,
+        isValid: false,
+        isPremium: false,
+        isLogin: false,
+      });
+      res.status(201).json(registered);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async loginUser(req, res) {
+  static async loginUser(req, res, next) {
     try {
       let { email, password } = req.body;
 
@@ -54,10 +65,8 @@ class UserController {
 
       let payload = {
         id: findUser.id,
-        email: findUser.email,
-        username: findUser.username,
       };
-
+      await User.update({ isLogin: true }, { where: { id: findUser.id } });
       const access_token = createToken(payload);
       res.status(200).json({
         access_token: access_token,
@@ -66,28 +75,17 @@ class UserController {
         username: findUser.username,
       });
     } catch (error) {
-      if (error.name == "LOGIN_ERROR") {
-        res.status(403).json({
-          msg: "Please Fill All Fields!",
-        });
-      } else if (error.name == "INVALID_DATA") {
-        res.status(403).json({
-          msg: "Invalid Username / Password",
-        });
-      }
-      console.log(error);
+      next(error);
     }
   }
-  static async editUser(req, res) {
+  static async editUser(req, res, next) {
     const { username, email, password, dob, domisili, gender } = req.body;
     const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
     const stream = cloudinary.uploader.upload_stream(
       { folder: "profile pictures" },
       async (error, result) => {
-        if (error) return console.error(error);
-        //   return res.json({ URL: result.secure_url});
+        if (error) throw { name: "INVALID_ACCESS" };
         try {
-          // let imgName = Date.now() + "-" + Math.floor(Math.random() * 1000);
           let profPict = result.secure_url;
           let { id } = req.params;
           let payload = {
@@ -102,13 +100,13 @@ class UserController {
           await User.update(payload, { where: { id } });
           res.status(200).json({ msg: "Profile sucessfully updated" });
         } catch (error) {
-          console.log(error);
+          next(error);
         }
       }
     );
     bufferToStream(data).pipe(stream);
   }
-  static async getUsers(req, res) {
+  static async getUsers(req, res, next) {
     try {
       let users = await User.findAll({
         include: [
@@ -118,11 +116,11 @@ class UserController {
       });
       res.status(200).json(users);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async getOnlineUsers(req, res) {
+  static async getOnlineUsers(req, res, next) {
     try {
       let users = await User.findAll({
         include: [
@@ -133,22 +131,104 @@ class UserController {
       });
       res.status(200).json(users);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async getUserDetail(req, res) {
+  static async getUserDetail(req, res, next) {
     try {
       let { id } = req.params;
       let user = await User.findByPk(id, {
         include: [
           { model: UserGame, required: false },
-          { model: Post, required: false },
+          { model: Post, required: false, include: Game },
+          {
+            model: Follow,
+            include: { model: User, include: UserGame, required: false },
+            required: false,
+          },
         ],
       });
+      if (!user) {
+        throw { name: "NOT_FOUND" };
+      }
+      // let followed = await Follow.findAll({
+      //   where: { FollowerId: id },
+      //   include: { model: User, include: UserGame, required: false },
+      // });
       res.status(200).json(user);
     } catch (error) {
-      console.log(error);
+      next(error);
+    }
+  }
+
+  static async verifyAccount(req, res, next) {
+    try {
+      const { uniqueStr } = req.params;
+      let payload = verifyToken(uniqueStr);
+      const foundUser = User.findOne({ where: { email: payload } });
+      if (!foundUser) throw { name: "INVALID_VERIF_LINK" };
+      await User.update({ isValid: true }, { where: { uniqueStr } });
+      res.status(200).json({ msg: "Your email has been verified!" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async followUser(req, res, next) {
+    try {
+      let { id } = req.params;
+      if (id == req.user.id) {
+        throw { name: "FOLLOW_ERROR" };
+      }
+      let follow = await Follow.create({
+        FollowerId: req.user.id,
+        FollowedId: id,
+      });
+      res.status(200).json(follow);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async addPost(req, res, next) {
+    const { title, content, GameId } = req.body;
+    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "posts" },
+      async (error, result) => {
+        if (error) throw { name: "INVALID_ACCESS" };
+        try {
+          let imgUrl = result.secure_url;
+          let payload = {
+            title,
+            content,
+            GameId,
+            imgUrl,
+            UserId: req.user.id,
+          };
+          await Post.create(payload);
+          res.status(200).json({ msg: "Post sucessfully updated" });
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
+    bufferToStream(data).pipe(stream);
+  }
+  static async logoutUser(req, res, next) {
+    try {
+      let user = await User.findByPk(req.user.id);
+      if (!user) {
+        throw { name: "INVALID_ACCESS" };
+      }
+      if (!user.isLogin) {
+        throw { name: "INVALID_ACCESS" };
+      }
+      await User.update({ isLogin: false }, { where: { id: req.user.id } });
+      res.status(200).json({ msg: "You have been logged out" });
+    } catch (error) {
+      next(error);
     }
   }
 }

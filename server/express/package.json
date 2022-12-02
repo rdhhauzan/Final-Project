@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "db-start":"npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all"
+    "test": "npx jest --verbose --forceExit --runInBand --setTimeOut=1000 --coverage",
+    "db-start": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
+    "db-test": "npx sequelize-cli --env=test db:drop && npx sequelize-cli --env=test db:create && npx sequelize-cli --env=test db:migrate",
+    "package": "npm i pg express sequelize bcryptjs jsonwebtoken cors cloudinary dotenv multer sharp && npm i -D nodemon sequelize-cli jest supertest"
   },
   "repository": {
     "type": "git",
@@ -27,7 +29,7 @@
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.8.0",
-    "sequelize": "^6.25.8",
+    "sequelize": "^6.26.0",
     "sharp": "^0.31.2"
   },
   "devDependencies": {

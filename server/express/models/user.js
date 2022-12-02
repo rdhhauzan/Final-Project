@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       username: DataTypes.STRING,
       email: {
         type: DataTypes.STRING,
-        unique: true,
+        unique: { msg: "This email has already been used" },
         allowNull: false,
         validate: {
           notEmpty: { msg: "Fill in the email" },
@@ -67,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       isLogin: DataTypes.BOOLEAN,
+      uniqueStr: DataTypes.STRING,
     },
     {
       sequelize,
@@ -77,10 +78,8 @@ module.exports = (sequelize, DataTypes) => {
   User.beforeCreate((instance) => {
     instance.profPict =
       "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg";
-    instance.isValid = false;
-    instance.isPremium = false;
-    instance.isLogin = false;
     instance.password = hashPassword(instance.password);
   });
+
   return User;
 };
