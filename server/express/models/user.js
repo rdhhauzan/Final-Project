@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       username: DataTypes.STRING,
       email: {
         type: DataTypes.STRING,
-        unique: {msg: "This email has already been used"},
+        unique: { msg: "This email has already been used" },
         allowNull: false,
         validate: {
           notEmpty: { msg: "Fill in the email" },
@@ -83,5 +83,6 @@ module.exports = (sequelize, DataTypes) => {
     instance.isLogin = false;
     instance.password = hashPassword(instance.password);
   });
+
   return User;
 };

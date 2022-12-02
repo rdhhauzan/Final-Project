@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const loginAuth = require("../middlewares/authentication");
 const usersRoute = require("./usersRoute");
-
+const gamesRoute = require("./gamesRoute");
+const userGamesRoute = require("./userGamesRoute");
 router.use("/users", usersRoute);
+router.use("/games", gamesRoute);
+router.use(loginAuth);
+router.use("/usergames", userGamesRoute);
 module.exports = router;

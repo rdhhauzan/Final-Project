@@ -66,7 +66,7 @@ class UserController {
         email: findUser.email,
         username: findUser.username,
       };
-
+      await User.update({ isLogin: true }, { where: { id: findUser.id } });
       const access_token = createToken(payload);
       res.status(200).json({
         access_token: access_token,
@@ -201,7 +201,7 @@ class UserController {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "posts" },
       async (error, result) => {
-        if (error)  throw {name: "GAADA_"}
+        if (error) throw { name: "GAADA_" };
         //   return res.json({ URL: result.secure_url});
         try {
           // let imgName = Date.now() + "-" + Math.floor(Math.random() * 1000);
@@ -211,12 +211,12 @@ class UserController {
             content,
             GameId,
             imgUrl,
-            UserId: req.user.id
+            UserId: req.user.id,
           };
           await Post.create(payload);
           res.status(200).json({ msg: "Post sucessfully updated" });
         } catch (error) {
-          console.log(error,"<<<<<<<<<<<<<<<<<");
+          console.log(error, "<<<<<<<<<<<<<<<<<");
         }
       }
     );

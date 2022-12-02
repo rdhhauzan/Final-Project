@@ -29,7 +29,7 @@ module.exports = {
       },
       rank: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       role: {
         allowNull: false,
