@@ -1,5 +1,5 @@
 const { comparePassword } = require("../helpers/bcrypt");
-const { createToken } = require("../helpers/jwt");
+const { createToken, verifyToken } = require("../helpers/jwt");
 const { User, UserGame, Post, Follow, Game } = require("../models/index");
 
 const sharp = require("sharp");
@@ -21,11 +21,11 @@ const bufferToStream = (buffer) => {
   return readable;
 };
 class UserController {
-  static async registerUser(req, res) {
+  static async registerUser(req, res, next) {
     const { username, email, password, dob, domisili, gender } = req.body;
     try {
-      const uniqueStr = createToken({ email: email });
-      await User.create({
+      const uniqueStr = createToken({ email });
+      let registered = await User.create({
         username,
         email,
         password,
@@ -33,15 +33,17 @@ class UserController {
         domisili,
         gender,
         uniqueStr,
+        isValid: false,
+        isPremium: false,
+        isLogin: false,
       });
-
-      res.status(201).json({ msg: "Register Success!" });
+      res.status(201).json(registered);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async loginUser(req, res) {
+  static async loginUser(req, res, next) {
     try {
       let { email, password } = req.body;
 
@@ -63,8 +65,6 @@ class UserController {
 
       let payload = {
         id: findUser.id,
-        email: findUser.email,
-        username: findUser.username,
       };
       await User.update({ isLogin: true }, { where: { id: findUser.id } });
       const access_token = createToken(payload);
@@ -75,19 +75,10 @@ class UserController {
         username: findUser.username,
       });
     } catch (error) {
-      if (error.name == "LOGIN_ERROR") {
-        res.status(403).json({
-          msg: "Please Fill All Fields!",
-        });
-      } else if (error.name == "INVALID_DATA") {
-        res.status(403).json({
-          msg: "Invalid Username / Password",
-        });
-      }
-      console.log(error);
+      next(error);
     }
   }
-  static async editUser(req, res) {
+  static async editUser(req, res, next) {
     const { username, email, password, dob, domisili, gender } = req.body;
     const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
     const stream = cloudinary.uploader.upload_stream(
@@ -111,13 +102,13 @@ class UserController {
           await User.update(payload, { where: { id } });
           res.status(200).json({ msg: "Profile sucessfully updated" });
         } catch (error) {
-          console.log(error);
+          next(error);
         }
       }
     );
     bufferToStream(data).pipe(stream);
   }
-  static async getUsers(req, res) {
+  static async getUsers(req, res, next) {
     try {
       let users = await User.findAll({
         include: [
@@ -127,11 +118,11 @@ class UserController {
       });
       res.status(200).json(users);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async getOnlineUsers(req, res) {
+  static async getOnlineUsers(req, res, next) {
     try {
       let users = await User.findAll({
         include: [
@@ -142,11 +133,11 @@ class UserController {
       });
       res.status(200).json(users);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async getUserDetail(req, res) {
+  static async getUserDetail(req, res, next) {
     try {
       let { id } = req.params;
       let user = await User.findByPk(id, {
@@ -160,29 +151,33 @@ class UserController {
           },
         ],
       });
+      if (!user) {
+        throw { name: "NOT_FOUND" };
+      }
       // let followed = await Follow.findAll({
       //   where: { FollowerId: id },
       //   include: { model: User, include: UserGame, required: false },
       // });
       res.status(200).json(user);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async verifyAccount(req, res) {
+  static async verifyAccount(req, res, next) {
     try {
       const { uniqueStr } = req.params;
-      const foundUser = User.findOne({ where: { uniqueStr } });
+      let payload = verifyToken(uniqueStr);
+      const foundUser = User.findOne({ where: { email: payload } });
       if (!foundUser) throw { name: "INVALID_VERIF_LINK" };
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async followUser(req, res) {
+  static async followUser(req, res, next) {
     try {
       let { id } = req.params;
       let follow = await Follow.create({
@@ -191,11 +186,11 @@ class UserController {
       });
       res.status(200).json(follow);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
-  static async addPost(req, res) {
+  static async addPost(req, res, next) {
     const { title, content, GameId } = req.body;
     const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
     const stream = cloudinary.uploader.upload_stream(
@@ -216,11 +211,19 @@ class UserController {
           await Post.create(payload);
           res.status(200).json({ msg: "Post sucessfully updated" });
         } catch (error) {
-          console.log(error, "<<<<<<<<<<<<<<<<<");
+          next(error);
         }
       }
     );
     bufferToStream(data).pipe(stream);
+  }
+  static async logoutUser(req, res, next) {
+    try {
+      await User.update({ isLogin: false }, { where: { id: req.user.id } });
+      res.status(200).json({ msg: "You have been logged out" });
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
