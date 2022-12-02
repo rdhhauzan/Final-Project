@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       username: DataTypes.STRING,
       email: {
         type: DataTypes.STRING,
-        unique: true,
+        unique: { msg: "This email has already been used" },
         allowNull: false,
         validate: {
           notEmpty: { msg: "Fill in the email" },
@@ -50,13 +50,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: false,
         validate: {
-          notEmpty: { msg: "Fill in the Password" },
-          notNull: { msg: "Fill in the Password" },
-          isLength(password) {
-            if (password.length < 5) {
-              throw new Error("Minimum characters are 5");
-            }
-          },
+          notEmpty: { msg: "Fill in the Date Of Birth" },
+          notNull: { msg: "Fill in the Date Of Birth" },
         },
       },
       isValid: DataTypes.BOOLEAN,
@@ -88,5 +83,6 @@ module.exports = (sequelize, DataTypes) => {
     instance.isLogin = false;
     instance.password = hashPassword(instance.password);
   });
+
   return User;
 };

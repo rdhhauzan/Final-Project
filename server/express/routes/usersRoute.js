@@ -9,8 +9,14 @@ const upload = multer({ storage });
 
 router.post("/register", UserController.registerUser);
 router.post("/login", UserController.loginUser);
+router.get("/verify/:uniqueStr", UserController.verifyAccount);
 
 router.use(loginAuth);
 
+router.get("/", UserController.getUsers);
+router.post("/post", upload.single("image"), UserController.addPost);
+router.get("/online", UserController.getOnlineUsers);
 router.put("/edit/:id", upload.single("image"), UserController.editUser);
+router.post("/follow/:id", UserController.followUser);
+router.get("/:id", UserController.getUserDetail);
 module.exports = router;
