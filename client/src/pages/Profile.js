@@ -25,7 +25,7 @@ export default function Profile() {
 					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
 							<h2 className="card-title">@adminjisoo</h2>
-							<p>Carry para beban di ranked @beban1 @beban2</p>
+							<p>Carry para beban di ranked, berat punggung @beban1 @beban2</p>
 							<figure className="pt-5">
 								<img
 									src="https://placeimg.com/400/225/arch"
