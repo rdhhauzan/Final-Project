@@ -7,6 +7,7 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+
 router.post("/register", UserController.registerUser);
 router.post("/login", UserController.loginUser);
 router.get("/verify/:uniqueStr", UserController.verifyAccount);

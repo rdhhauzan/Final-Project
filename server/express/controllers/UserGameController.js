@@ -2,44 +2,56 @@ const { Op } = require("sequelize");
 const { Game, UserGame, User, sequelize } = require("../models/index");
 
 class UserGameController {
-  static async getAllUserGames(req, res) {
-    const { id } = req.headers;
-    const userGames = await UserGame.findAll({
-      where: { UserId: id },
-      include: { all: true },
-    });
-    res.status(200).json(userGames);
+  static async getAllUserGames(req, res, next) {
+    try {
+      const { id } = req.user;
+      const userGames = await UserGame.findAll({
+        where: { UserId: id },
+        include: { all: true },
+      });
+      res.status(200).json(userGames);
+    } catch (error) {
+      next(error);
+    }
   }
-  static async getUserGame(req, res) {
+  static async getUserGame(req, res, next) {
     try {
       const { id } = req.params;
       const userGame = await UserGame.findOne({
         where: { id },
         include: { all: true },
       });
-      if (!userGame) throw { msg: "USERGAME_NOT_FOUND" };
+      if (!userGame) throw { name: "NOT_FOUND" };
       res.status(200).json(userGame);
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
-  static async createUserGame(req, res) {
+  static async createUserGame(req, res, next) {
     try {
       const UserId = req.user.id;
       const GameId = req.params.id;
+      let game = await Game.findByPk(GameId);
+      if (!game) {
+        throw { name: "NOT_FOUND" };
+      }
       const { rank, role, matchType, aboutMe } = req.body;
       await UserGame.create({ GameId, UserId, rank, role, matchType, aboutMe });
       res
         .status(201)
         .json({ msg: "Your game info has been successfully created!" });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
-  static async editUserGame(req, res) {
+  static async editUserGame(req, res, next) {
     try {
       const { id } = req.params;
       const { rank, role, matchType, aboutMe } = req.body;
+      let usergame = await User.findByPk(id);
+      if (!usergame) {
+        throw { name: "NOT_FOUND" };
+      }
       await UserGame.update(
         { rank, role, matchType, aboutMe },
         {
@@ -50,7 +62,7 @@ class UserGameController {
       );
       res.status(200).json({ msg: "Your game info has been updated!" });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 
@@ -62,6 +74,11 @@ class UserGameController {
         where: { UserId, GameId },
         include: User,
       });
+      console.log(UserId);
+      console.log(userGame);
+      if (!userGame) {
+        throw { name: "NOT_FOUND" };
+      }
       let whereInput = {
         GameId,
         UserId: { [Op.not]: UserId },
@@ -78,12 +95,12 @@ class UserGameController {
         order: sequelize.random(),
         limit: 4,
       });
-      if (similarUsers.length < 1) throw { msg: "MATCHMAKING_ERROR" };
+      if (similarUsers.length < 1) throw { name: "MATCHMAKING ERROR" };
       res
         .status(200)
         .json({ msg: "MATCH FOUND!", match: [...similarUsers, userGame] });
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 }

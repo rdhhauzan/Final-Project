@@ -5,8 +5,8 @@ const usersRoute = require("./usersRoute");
 const gamesRoute = require("./gamesRoute");
 const userGamesRoute = require("./userGamesRoute");
 const errorHandler = require("../middlewares/errorHandler");
-router.use("/users", usersRoute);
 router.use("/games", gamesRoute);
+router.use("/users", usersRoute);
 router.use(loginAuth);
 router.use("/usergames", userGamesRoute);
 
