@@ -108,6 +108,7 @@ class UserController {
         id: findUser.id,
         email: findUser.email,
         username: findUser.username,
+        uuid: findUser.uuid,
       });
     } catch (error) {
       next(error);
