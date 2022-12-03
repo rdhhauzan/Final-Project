@@ -1,7 +1,7 @@
 import styles from "../style";
 import {
 	Navbar,
-	Title,
+	TemplateLanding,
 	TitleThird,
 	TitleFourth,
 	TitleFifth,
@@ -19,7 +19,7 @@ const LandingPage = () => {
 
 			<div className={`bg-primary ${styles.flexStart}`}>
 				<div className={`${styles.boxWidth}`}>
-					<Title />
+					<TemplateLanding />
 				</div>
 			</div>
 			<div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>

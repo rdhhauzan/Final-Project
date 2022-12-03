@@ -1,11 +1,29 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Profile() {
 	const navigation = useNavigate();
 
 	return (
-		<div className="flex xl:flex-row 2xs:flex-col text-slate-200 w-full min-h-screen font-chakra">
-			<div className="flex xl:flex-row 2xs:flex-col gap-10 w-screen h-content 2xs:py-5 px-5">
+		<div className="flex xl:flex-row 2xs:flex-col text-slate-200 xl:w-full xl:min-h-screen font-poppins">
+			<Link
+				to="/home"
+				className="flex flex-row gap-2 fixed p-5 text-xl hover:underline">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					className="flex justify-center self-center w-7 h-7">
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+					/>
+				</svg>
+				<p className="mb-1">Home</p>
+			</Link>
+			<div className="flex xl:flex-row 2xs:flex-col xl:gap-10 w-screen h-content 2xs:py-5 xl:px-5 2xs:px-2">
 				<div className="flex flex-col w-full basis-1/4">
 					<div className="flex mt-10 justify-center">
 						<img
