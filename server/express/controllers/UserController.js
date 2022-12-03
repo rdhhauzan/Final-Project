@@ -1,7 +1,7 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken, verifyToken } = require("../helpers/jwt");
 const { User, UserGame, Post, Follow, Game } = require("../models/index");
-
+const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
 const { Readable } = require("stream");
@@ -22,6 +22,7 @@ const bufferToStream = (buffer) => {
 };
 class UserController {
   static async registerUser(req, res, next) {
+    let uuid = uuidv4();
     const { username, email, password, dob, domisili, gender } = req.body;
     try {
       const uniqueStr = createToken({ email });
