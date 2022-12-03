@@ -1,6 +1,7 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken, verifyToken } = require("../helpers/jwt");
 const { User, UserGame, Post, Follow, Game } = require("../models/index");
+const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
@@ -34,12 +35,45 @@ class UserController {
         domisili,
         gender,
         uniqueStr,
+        uuid,
         isValid: false,
         isPremium: false,
         isLogin: false,
       });
+      // ! Cometchat Create User
+      const options = {
+        method: "POST",
+        url: "https://2269480a5983d987.api-us.cometchat.io/v3/users",
+        headers: {
+          apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: {
+          metadata: {
+            "@private": {
+              email: "user@email.com",
+              contactNumber: "0123456789",
+            },
+          },
+          uid: uuid,
+          name: username,
+          avatar:
+            "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
+        },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
       res.status(201).json(registered);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
