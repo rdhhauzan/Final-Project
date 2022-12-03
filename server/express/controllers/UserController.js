@@ -1,4 +1,5 @@
 const { comparePassword } = require("../helpers/bcrypt");
+const { OAuth2Client } = require("google-auth-library");
 const { createToken, verifyToken } = require("../helpers/jwt");
 const {
   User,
@@ -304,6 +305,45 @@ class UserController {
       next(error);
     }
   }
+
+  // static async google(req, res, next) {
+  //   try {
+  //     let { id_token } = req.headers;
+  //     const client = new OAuth2Client(process.env.GOOGLE_ID);
+  //     const ticket = await client.verifyIdToken({
+  //       idToken: id_token,
+  //       audience: process.env.GOOGLE_ID,
+  //     });
+  //     const payload = ticket.getPayload();
+  //     const userid = payload["sub"];
+  //     const [user, created] = await User.findOrCreate({
+  //       where: {
+  //         email: payload.email,
+  //       },
+  //       defaults: {
+  //         username: payload.given_name,
+  //         email: payload.email,
+  //         password: "123456",
+  //         phoneNumber: "021",
+  //         address: "googlecom",
+  //         isValid: true,
+  //         isPremium: false,
+  //         isLogin: true,
+  //       },
+  //       hooks: false,
+  //     });
+  //     const access_token = createToken({ id: user.id });
+  //     res.status(200).json({
+  //       access_token,
+  //       id: user.id,
+  //       email: user.email,
+  //       username: user.username,
+  //       role: user.role,
+  //     });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 }
 
 module.exports = UserController;
