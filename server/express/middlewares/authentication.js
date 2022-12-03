@@ -20,9 +20,6 @@ const loginAuth = async (req, res, next) => {
 
     req.user = {
       id: validateToken.id,
-      role: validateToken.role,
-      username: validateToken.username,
-      email: validateToken.email,
     };
     next();
   } catch (error) {

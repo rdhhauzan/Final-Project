@@ -1,10 +1,22 @@
 const app = require("../app");
 const request = require("supertest");
-const { User } = require("../models");
+const { User, Game } = require("../models");
 const { createToken } = require("../helpers/jwt");
-const fs = require("fs");
 
 const testImage = "./assets/test.jpg";
+const post = {
+  title: "test",
+  content: "content",
+  GameId: 1,
+};
+
+let Game1 = {
+  name: "Mobile Legends",
+  platform: ["Mobile"],
+  maxPlayers: 5,
+  rankList: [1, 2, 3, 4, 5, 6, 7, 8],
+  roleList: ["Jungler", "Roamer", "Exp Lane", "Mid Lane", "Gold Lane"],
+};
 
 let uniqueStr1 = "user.test@mail.com";
 let validToken;
@@ -28,18 +40,19 @@ const user2 = {
 };
 
 beforeAll((done) => {
-  User.create(user2)
-    .then((result) => {
-      validToken = createToken({
-        id: result.id,
-      });
-    })
-    .then(() => {
-      done();
-    })
-    .catch((err) => {
-      done(err);
+  User.create(user2).then((result) => {
+    validToken = createToken({
+      id: result.id,
     });
+    return Game.create(Game1)
+      .then((result) => {})
+      .then(() => {
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
 });
 
 afterAll((done) => {
@@ -143,15 +156,30 @@ describe("Test Login users", () => {
   });
 });
 
-test("401 - Wrong Password", async () => {
+test("400 - Wrong Password", async () => {
   let response = await request(app)
     .post("/users/login")
-    .send({ email: "tes1222t@mail.com", password: "test1223" });
+    .send({ email: "user.test2@mail.com", password: "test1223" });
   expect(response.statusCode).toBe(400);
   expect(response.body.msg).toBe("Invalid email / Password");
 });
 
-test("401 - Email Not Found", async () => {
+test("400 - Email can't be null", async () => {
+  let response = await request(app)
+    .post("/users/login")
+    .send({ email: "", password: "test1223" });
+  expect(response.statusCode).toBe(400);
+  expect(response.body.msg).toBe("Please Fill All Fields!");
+});
+test("400 - Password can't be null", async () => {
+  let response = await request(app)
+    .post("/users/login")
+    .send({ email: "user.test2@mail.com", password: "" });
+  expect(response.statusCode).toBe(400);
+  expect(response.body.msg).toBe("Please Fill All Fields!");
+});
+
+test("400 - Email Not Found", async () => {
   let response = await request(app)
     .post("/users/login")
     .send({ email: "tes12ss22t@mail.com", password: "test1223" });
@@ -281,14 +309,7 @@ test("200 Success get User detail", (done) => {
 test("200 Success update profile", () => {
   request(app)
     .put("/users/edit/1")
-    .set("Authorization", "bearer " + validToken)
-    .attach("image", testImage);
-});
-
-test("200 Success create post", () => {
-  request(app)
-    .post("/users/post")
-    .set("Authorization", "bearer " + validToken)
+    .set("access_token" + validToken)
     .attach("image", testImage);
 });
 

@@ -192,6 +192,7 @@ class UserController {
   }
 
   static async addPost(req, res, next) {
+    console.log(req.body);
     const { title, content, GameId } = req.body;
     const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
     const stream = cloudinary.uploader.upload_stream(
@@ -210,6 +211,7 @@ class UserController {
           await Post.create(payload);
           res.status(200).json({ msg: "Post sucessfully updated" });
         } catch (error) {
+          console.log(error);
           next(error);
         }
       }
