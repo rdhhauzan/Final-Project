@@ -1,7 +1,15 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken, verifyToken } = require("../helpers/jwt");
-const { User, UserGame, Post, Follow, Game } = require("../models/index");
-
+const {
+  User,
+  UserGame,
+  Post,
+  Follow,
+  Game,
+  sequelize,
+} = require("../models/index");
+const axios = require("axios");
+const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
 const cloudinary = require("cloudinary").v2;
 const { Readable } = require("stream");
@@ -22,6 +30,7 @@ const bufferToStream = (buffer) => {
 };
 class UserController {
   static async registerUser(req, res, next) {
+    let uuid = uuidv4();
     const { username, email, password, dob, domisili, gender } = req.body;
     try {
       const uniqueStr = createToken({ email });
@@ -33,12 +42,45 @@ class UserController {
         domisili,
         gender,
         uniqueStr,
+        uuid,
         isValid: false,
         isPremium: false,
         isLogin: false,
       });
+      // ! Cometchat Create User
+      const options = {
+        method: "POST",
+        url: "https://2269480a5983d987.api-us.cometchat.io/v3/users",
+        headers: {
+          apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: {
+          metadata: {
+            "@private": {
+              email: "user@email.com",
+              contactNumber: "0123456789",
+            },
+          },
+          uid: uuid,
+          name: username,
+          avatar:
+            "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
+        },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
       res.status(201).json(registered);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -73,6 +115,7 @@ class UserController {
         id: findUser.id,
         email: findUser.email,
         username: findUser.username,
+        uuid: findUser.uuid,
       });
     } catch (error) {
       next(error);
@@ -81,30 +124,34 @@ class UserController {
   static async editUser(req, res, next) {
     const { username, email, password, dob, domisili, gender } = req.body;
     const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "profile pictures" },
-      async (error, result) => {
-        if (error) throw { name: "INVALID_ACCESS" };
-        try {
-          let profPict = result.secure_url;
-          let { id } = req.params;
-          let payload = {
-            username,
-            email,
-            password,
-            dob,
-            domisili,
-            gender,
-            profPict,
-          };
-          await User.update(payload, { where: { id } });
-          res.status(200).json({ msg: "Profile sucessfully updated" });
-        } catch (error) {
-          next(error);
+    try {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "profile pictures" },
+        async (error, result) => {
+          if (error) throw { name: "INVALID_ACCESS" };
+          try {
+            let profPict = result.secure_url;
+            let { id } = req.params;
+            let payload = {
+              username,
+              email,
+              password,
+              dob,
+              domisili,
+              gender,
+              profPict,
+            };
+            await User.update(payload, { where: { id } });
+            res.status(200).json({ msg: "Profile sucessfully updated" });
+          } catch (error) {
+            next(error);
+          }
         }
-      }
-    );
-    bufferToStream(data).pipe(stream);
+      );
+      bufferToStream(data).pipe(stream);
+    } catch (error) {
+      next(error);
+    }
   }
   static async getUsers(req, res, next) {
     try {
@@ -192,31 +239,55 @@ class UserController {
   }
 
   static async addPost(req, res, next) {
-    console.log(req.body);
-    const { title, content, GameId } = req.body;
+    const t = await sequelize.transaction();
+    let { title, content, GameId } = req.body;
     const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "posts" },
-      async (error, result) => {
-        if (error) throw { name: "INVALID_ACCESS" };
-        try {
-          let imgUrl = result.secure_url;
-          let payload = {
-            title,
-            content,
-            GameId,
-            imgUrl,
-            UserId: req.user.id,
-          };
-          await Post.create(payload);
-          res.status(200).json({ msg: "Post sucessfully updated" });
-        } catch (error) {
-          console.log(error);
-          next(error);
-        }
-      }
-    );
-    bufferToStream(data).pipe(stream);
+    try {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "posts" },
+        async (error, result) => {
+          if (error) throw { name: "INVALID_ACCESS" };
+          try {
+            const axios = require("axios");
+
+            const options = {
+              method: "GET",
+              url: "https://community-purgomalum.p.rapidapi.com/json",
+              params: {
+                text: content,
+                add: "anjing,ngentot,bangsat,bajingan,babi,fuck,kontol,tolol,memek,goblok",
+              },
+              headers: {
+                "X-RapidAPI-Key": process.env.PURGOMALUM_API,
+                "X-RapidAPI-Host": "community-purgomalum.p.rapidapi.com",
+              },
+            };
+            let { data } = await axios.request(options, { transaction: t });
+
+            content = data.result;
+            let imgUrl = result.secure_url;
+            let payload = {
+              title,
+              content,
+              GameId,
+              imgUrl,
+              UserId: req.user.id,
+            };
+            await Post.create(payload, { transaction: t });
+            await t.commit();
+            res.status(200).json({ msg: "Post sucessfully updated" });
+          } catch (error) {
+            await t.rollback();
+            next(error);
+          }
+        },
+        { transaction: t }
+      );
+      bufferToStream(data).pipe(stream);
+    } catch (error) {
+      await t.rollback();
+      next(error);
+    }
   }
   static async logoutUser(req, res, next) {
     try {
