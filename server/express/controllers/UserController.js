@@ -73,15 +73,12 @@ class UserController {
 
       axios
         .request(options)
-        .then(function (response) {
-          console.log(response.data);
-        })
+        .then(function (response) {})
         .catch(function (error) {
           console.error(error);
         });
       res.status(201).json(registered);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -190,22 +187,23 @@ class UserController {
         include: [
           { model: UserGame, required: false },
           { model: Post, required: false, include: Game },
-          {
-            model: Follow,
-            include: { model: User, include: UserGame, required: false },
-            required: false,
-          },
+          // {
+          //   model: Follow,
+          //   include: { model: User, include: UserGame, required: false },
+          //   required: false,
+          // },
         ],
       });
       if (!user) {
         throw { name: "NOT_FOUND" };
       }
-      // let followed = await Follow.findAll({
-      //   where: { FollowerId: id },
-      //   include: { model: User, include: UserGame, required: false },
-      // });
-      res.status(200).json(user);
+      let followed = await Follow.findAll({
+        where: { FollowerId: id },
+        include: { model: User, include: UserGame, required: false },
+      });
+      res.status(200).json({user, followed});
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -306,44 +304,77 @@ class UserController {
     }
   }
 
-  // static async google(req, res, next) {
-  //   try {
-  //     let { id_token } = req.headers;
-  //     const client = new OAuth2Client(process.env.GOOGLE_ID);
-  //     const ticket = await client.verifyIdToken({
-  //       idToken: id_token,
-  //       audience: process.env.GOOGLE_ID,
-  //     });
-  //     const payload = ticket.getPayload();
-  //     const userid = payload["sub"];
-  //     const [user, created] = await User.findOrCreate({
-  //       where: {
-  //         email: payload.email,
-  //       },
-  //       defaults: {
-  //         username: payload.given_name,
-  //         email: payload.email,
-  //         password: "123456",
-  //         phoneNumber: "021",
-  //         address: "googlecom",
-  //         isValid: true,
-  //         isPremium: false,
-  //         isLogin: true,
-  //       },
-  //       hooks: false,
-  //     });
-  //     const access_token = createToken({ id: user.id });
-  //     res.status(200).json({
-  //       access_token,
-  //       id: user.id,
-  //       email: user.email,
-  //       username: user.username,
-  //       role: user.role,
-  //     });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  static async google(req, res, next) {
+    try {
+      let uuid = uuidv4();
+      let { id_token } = req.headers;
+      const client = new OAuth2Client(process.env.GOOGLE_ID);
+      const ticket = await client.verifyIdToken({
+        idToken: id_token,
+        audience: process.env.GOOGLE_ID,
+      });
+      const payload = ticket.getPayload();
+      const userid = payload["sub"];
+      const [user, created] = await User.findOrCreate({
+        where: {
+          email: payload.email,
+        },
+        defaults: {
+          username: payload.given_name,
+          email: payload.email,
+          password: "123456",
+          dob: "01/01/2002",
+          domisili: "INDONESIA",
+          gender: "MALE",
+          uniqueStr: "unique",
+          uuid,
+          isValid: true,
+          isPremium: false,
+          isLogin: false,
+        },
+        hooks: false,
+      });
+      // ! Cometchat Create User
+      const options = {
+        method: "POST",
+        url: "https://2269480a5983d987.api-us.cometchat.io/v3/users",
+        headers: {
+          apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: {
+          metadata: {
+            "@private": {
+              email: "user@email.com",
+              contactNumber: "0123456789",
+            },
+          },
+          uid: uuid,
+          name: payload.given_name,
+          avatar:
+            "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
+        },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {})
+        .catch(function (error) {
+          console.error(error);
+        });
+      const access_token = createToken({ id: user.id });
+      res.status(200).json({
+        access_token,
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        uuid: user.uuid,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = UserController;

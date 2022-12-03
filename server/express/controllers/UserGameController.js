@@ -74,10 +74,8 @@ class UserGameController {
         where: { UserId, GameId },
         include: User,
       });
-      console.log(UserId);
-      console.log(userGame);
       if (!userGame) {
-        throw { name: "NOT_FOUND" };
+        throw { name: "MATCHMAKING ERROR" };
       }
       let whereInput = {
         GameId,
