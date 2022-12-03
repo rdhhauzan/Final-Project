@@ -100,6 +100,7 @@ class UserController {
 
       let payload = {
         id: findUser.id,
+        uuid: findUser.uuid,
       };
       await User.update({ isLogin: true }, { where: { id: findUser.id } });
       const access_token = createToken(payload);
