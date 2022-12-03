@@ -43,6 +43,12 @@ const errorHandler = (err, req, res, next) => {
       });
       break;
 
+    case "MATCHMAKING ERROR":
+      res.status(404).json({
+        msg: "No players found! please try again later!",
+      });
+      break;
+
     default:
       res.status(500).json({
         msg: "Internal Server Error",
