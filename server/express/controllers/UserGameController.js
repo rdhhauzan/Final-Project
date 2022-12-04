@@ -36,7 +36,14 @@ class UserGameController {
         throw { name: "NOT_FOUND" };
       }
       const { rank, role, matchType, aboutMe } = req.body;
-      await UserGame.create({ GameId, UserId, rank, role, matchType, aboutMe });
+      await UserGame.create({
+        GameId,
+        UserId,
+        rank: game.rankList[rank],
+        role,
+        matchType,
+        aboutMe,
+      });
       res
         .status(201)
         .json({ msg: "Your game info has been successfully created!" });
@@ -49,11 +56,17 @@ class UserGameController {
       const { id } = req.params;
       const { rank, role, matchType, aboutMe } = req.body;
       let usergame = await User.findByPk(id);
+      let game = await Game.findByPk(GameId);
       if (!usergame) {
         throw { name: "NOT_FOUND" };
       }
       await UserGame.update(
-        { rank, role, matchType, aboutMe },
+        {
+          rank: game.rankList[rank],
+          role,
+          matchType,
+          aboutMe,
+        },
         {
           where: {
             id,
