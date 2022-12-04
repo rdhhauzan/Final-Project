@@ -202,7 +202,7 @@ class UserController {
         where: { FollowerId: id },
         include: { model: User, include: UserGame, required: false },
       });
-      res.status(200).json({user, followed});
+      res.status(200).json({ user, followed });
     } catch (error) {
       console.log(error);
       next(error);
@@ -225,6 +225,8 @@ class UserController {
   static async followUser(req, res, next) {
     try {
       let { id } = req.params;
+      const findTarget = await User.findOne({ where: { id: id } });
+      console.log(findTarget.uuid, "<<<<<<<<<<<");
       if (id == req.user.id) {
         throw { name: "FOLLOW_ERROR" };
       }
@@ -232,8 +234,30 @@ class UserController {
         FollowerId: req.user.id,
         FollowedId: id,
       });
+      const axios = require("axios");
+
+      const options = {
+        method: "POST",
+        url: `https://2269480a5983d987.api-us.cometchat.io/v3/users/${req.user.uuid}/friends`,
+        headers: {
+          apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: { accepted: [`${findTarget.uuid}`] },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
       res.status(200).json(follow);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
