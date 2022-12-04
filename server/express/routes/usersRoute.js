@@ -10,6 +10,7 @@ const upload = multer({ storage });
 
 router.post("/register", UserController.registerUser);
 router.post("/login", UserController.loginUser);
+router.post("/google", UserController.google);
 router.get("/verify/:uniqueStr", UserController.verifyAccount);
 
 router.use(loginAuth);

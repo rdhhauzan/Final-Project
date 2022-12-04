@@ -36,7 +36,14 @@ class UserGameController {
         throw { name: "NOT_FOUND" };
       }
       const { rank, role, matchType, aboutMe } = req.body;
-      await UserGame.create({ GameId, UserId, rank, role, matchType, aboutMe });
+      await UserGame.create({
+        GameId,
+        UserId,
+        rank: game.rankList[rank],
+        role,
+        matchType,
+        aboutMe,
+      });
       res
         .status(201)
         .json({ msg: "Your game info has been successfully created!" });
@@ -49,6 +56,7 @@ class UserGameController {
       const { id } = req.params;
       const { rank, role, matchType, aboutMe } = req.body;
       let usergame = await User.findByPk(id);
+
       if (!usergame) {
         throw { name: "NOT_FOUND" };
       }
@@ -74,10 +82,8 @@ class UserGameController {
         where: { UserId, GameId },
         include: User,
       });
-      console.log(UserId);
-      console.log(userGame);
       if (!userGame) {
-        throw { name: "NOT_FOUND" };
+        throw { name: "MATCHMAKING ERROR" };
       }
       let whereInput = {
         GameId,
