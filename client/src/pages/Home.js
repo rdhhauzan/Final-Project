@@ -4,8 +4,8 @@ export default function Home() {
 	const navigation = useNavigate();
 
 	return (
-		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] text-slate-200 w-full min-h-screen font-chakra">
-			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 px-12   ">
+		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen font-chakra">
+			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
 					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">

@@ -46,7 +46,7 @@ const usergames2 = {
 };
 const usergames3 = {
   GameId: 1,
-  UserId: 1,
+  UserId: 2,
   rank: 1,
   role: "test3",
   matchType: "test3",
@@ -238,7 +238,7 @@ test("200 success matchmake", (done) => {
 
 test("404 failed matchmake", (done) => {
   request(app)
-    .get("/usergames/match/1")
+    .get("/usergames/match/100")
     .set("access_token", validToken)
     .then((response) => {
       const { body, status } = response;
