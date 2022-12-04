@@ -67,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       isLogin: DataTypes.BOOLEAN,
+      uuid: DataTypes.STRING,
       uniqueStr: DataTypes.STRING,
     },
     {
@@ -78,9 +79,6 @@ module.exports = (sequelize, DataTypes) => {
   User.beforeCreate((instance) => {
     instance.profPict =
       "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg";
-    instance.isValid = false;
-    instance.isPremium = false;
-    instance.isLogin = false;
     instance.password = hashPassword(instance.password);
   });
 
