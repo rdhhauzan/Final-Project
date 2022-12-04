@@ -2,41 +2,38 @@ import axios from "axios";
 const URL = "http://localhost:3000";
 
 export function setGames(payload) {
-	return {
-		type: "games/setGames",
-		payload,
-	};
+  return {
+    type: "games/setGames",
+    payload,
+  };
 }
 
 export function setRegisterForm(payload) {
-	return {
-		type: "registerForm/setRegisterForm",
-		payload,
-	};
+  return {
+    type: "registerForm/setRegisterForm",
+    payload,
+  };
 }
 
 export function fetchGames() {
-	return (dispatch) => {
-		axios
-			.get(`${URL}/games`)
-			.then(({ data }) => {
-				dispatch(setGames(data));
-			})
-			.catch((err) => console.log(err));
-	};
+  return (dispatch) => {
+    axios
+      .get(`${URL}/games`)
+      .then(({ data }) => {
+        dispatch(setGames(data));
+      })
+      .catch((err) => console.log(err));
+  };
 }
 
 export function register(payload) {
-	return (dispatch) => {
-		axios(`${URL}/users/register`, {
-			method: "POST",
-			headers: {
-				access_token: localStorage.getItem("access_token"),
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(payload),
-		})
-			.then(({ data }) => dispatch(setRegisterForm(data)))
-			.catch((err) => console.log(err));
-	};
+  console.log(payload);
+  return async (dispatch) => {
+    try {
+      let { data } = await axios.post(`${URL}/users/register`, payload);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 }
