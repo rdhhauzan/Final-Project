@@ -677,6 +677,20 @@ class UserController {
       next(error);
     }
   }
+
+  static async premium(req, res, next) {
+    try {
+      let { id } = req.user;
+      let user = await User.findByPk(id);
+      if (!user) {
+        throw { name: "NOT_FOUND" };
+      }
+      await User.update({ isPremium: true }, { where: { id } });
+      res.status(200).json({ msg: "Your account is now premium" });
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = UserController;

@@ -23,7 +23,7 @@ module.exports = {
       },
       rankList: {
         allowNull: false,
-        type: Sequelize.ARRAY(Sequelize.INTEGER),
+        type: Sequelize.ARRAY(Sequelize.STRING),
       },
       roleList: {
         allowNull: false,
