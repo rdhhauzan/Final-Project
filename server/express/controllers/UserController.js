@@ -1,6 +1,7 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { OAuth2Client } = require("google-auth-library");
 const { createToken, verifyToken } = require("../helpers/jwt");
+const midtransClient = require("midtrans-client");
 const {
   User,
   UserGame,
@@ -383,6 +384,7 @@ class UserController {
       let payload = {
         id: findUser.id,
         uuid: findUser.uuid,
+        email: findUser.email,
       };
       await User.update({ isLogin: true }, { where: { id: findUser.id } });
       const access_token = createToken(payload);
@@ -678,6 +680,78 @@ class UserController {
     }
   }
 
+  static async userPayment(req, res, next) {
+    try {
+      // Create Snap API instance
+      let snap = new midtransClient.Snap({
+        // Set to true if you want Production Environment (accept real transaction).
+        isProduction: false,
+        serverKey: "SB-Mid-server-nU1WKAwolq2Zzv-eKVov7L65",
+      });
+
+      let parameter = {
+        transaction_details: {
+          order_id: "YOUR-ORDERID-" + Math.floor(Math.random() * 500000),
+          gross_amount: 20000,
+        },
+        credit_card: {
+          secure: true,
+        },
+        customer_details: {
+          email: req.user.email,
+        },
+      };
+
+      snap.createTransaction(parameter).then((transaction) => {
+        // transaction token
+        let transactionToken = transaction.token;
+        let transactionUrl = transaction.redirect_url;
+        // console.log("transactionToken:", transactionToken);
+        res.status(200).json({
+          transactionToken: transactionToken,
+          redirect_url: transactionUrl,
+        });
+      });
+      // res.redirect(200, transactionUrl);
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  // static userPayment(req, res, next) {
+  //   let randomized = Math.floor(Math.random() * 10000);
+
+  //   let data = JSON.stringify({
+  //     transaction_details: {
+  //       order_id: "ORDER-" + randomized ,
+  //       gross_amount: 10000,
+  //     },
+  //     credit_card: {
+  //       secure: true,
+  //     },
+  //   });
+
+  //   let config = {
+  //     method: "post",
+  //     url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //       Authorization:
+  //         "Basic U0ItTWlkLXNlcnZlci1UcUxfdGZCUWJ4QkdhOWNFME8wWElxM1E6",
+  //     },
+  //     data: data,
+  //   };
+
+  //   axios(config)
+  //     .then(function (response) {
+  //       res.status(201).json(response.data);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }
+
   static async premium(req, res, next) {
     try {
       let { id } = req.user;
@@ -688,7 +762,7 @@ class UserController {
       await User.update({ isPremium: true }, { where: { id } });
       res.status(200).json({ msg: "Your account is now premium" });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }
