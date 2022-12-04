@@ -7,7 +7,6 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-
 router.post("/register", UserController.registerUser);
 router.post("/login", UserController.loginUser);
 router.post("/google", UserController.google);
@@ -17,8 +16,10 @@ router.use(loginAuth);
 
 router.get("/", UserController.getUsers);
 router.post("/post", upload.single("image"), UserController.addPost);
-router.get("/logout", UserController.logoutUser)
+router.get("/logout", UserController.logoutUser);
 router.get("/online", UserController.getOnlineUsers);
+router.post("/payment", UserController.userPayment);
+router.get("/premium", UserController.premium);
 router.put("/edit/:id", upload.single("image"), UserController.editUser);
 router.post("/follow/:id", UserController.followUser);
 router.get("/:id", UserController.getUserDetail);

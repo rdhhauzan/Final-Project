@@ -1,12 +1,5 @@
 import styles from "../style";
-import {
-	Navbar,
-	TemplateLanding,
-	TitleThird,
-	TitleFourth,
-	TitleFifth,
-	Footer,
-} from "../components";
+import { Navbar, TemplateLanding, GamesCard, Footer } from "../components";
 
 const LandingPage = () => {
 	return (
@@ -24,13 +17,10 @@ const LandingPage = () => {
 			</div>
 			<div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>
 				<div className={`${styles.boxWidth} `}>
-					<TitleThird />
-					<TitleFourth />
-					<TitleFifth />
-					{/* KALO DIPERLUKAN */}
-					<Footer />
+					<GamesCard />
 				</div>
 			</div>
+			<Footer />
 		</div>
 	);
 };

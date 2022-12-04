@@ -7,7 +7,7 @@ export default function Home() {
 		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen font-chakra">
 			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
-					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
+					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
 							<h2 className="card-title">@adminjisoo</h2>
 							<p>Carry para beban di ranked @beban1 @beban2</p>
@@ -20,7 +20,7 @@ export default function Home() {
 							</figure>
 						</div>
 					</div>
-					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
+					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
 							<h2 className="card-title">@beban1</h2>
 							<p>Ranked bersama @adminjisoo & @beban2!</p>
@@ -35,8 +35,8 @@ export default function Home() {
 					</div>
 				</div>
 				<div className="flex flex-col w-full xl:mt-0 2xs:mt-4 basis-4/12">
-					<div className="card w-full bg-[#2A302F] rounded-sm flex"></div>
-					<div className="card w-full bg-[#2A302F] rounded-sm flex">
+					<div className="card w-full bg-[#303030] rounded-sm flex"></div>
+					<div className="card w-full bg-[#303030] rounded-sm flex">
 						<div className="card-title items-start bg-[#D7385E]">
 							<div>
 								<figure className="flex">
