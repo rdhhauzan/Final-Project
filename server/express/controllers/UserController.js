@@ -378,6 +378,7 @@ class UserController {
 
       let validateUser = comparePassword(password, findUser.password);
 
+
       if (!validateUser) {
         throw { name: "INVALID_DATA" };
       }
@@ -776,6 +777,7 @@ class UserController {
       next(error);
     }
   }
+
 }
 
 module.exports = UserController;

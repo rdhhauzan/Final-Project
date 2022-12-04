@@ -1,5 +1,7 @@
 const initialState = {
 	games: [],
+	users: [],
+	userDetail: {},
 };
 
 export function rootReducer(state = initialState, action) {
@@ -9,7 +11,16 @@ export function rootReducer(state = initialState, action) {
 				...state,
 				games: action.payload,
 			};
-
+		case "users/setUsers":
+			return {
+				...state,
+				users: action.payload,
+			};
+		case "userDetail/setUserDetail":
+			return {
+				...state,
+				userDetail: action.payload,
+			};
 		default:
 			return state;
 	}
