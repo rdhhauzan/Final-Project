@@ -46,7 +46,7 @@ export default function Profile() {
 					</div>
 				</div>
 				<div className="flex flex-col w-full basis-1/2 gap-3">
-					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
+					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
 							<h2 className="card-title">@adminjisoo</h2>
 							<p>Carry para beban di ranked, berat punggung @beban1 @beban2</p>
@@ -59,7 +59,7 @@ export default function Profile() {
 							</figure>
 						</div>
 					</div>
-					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
+					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
 							<h2 className="card-title">@adminjisoo</h2>
 							<p>Main apa hari ini ges?</p>
@@ -74,12 +74,12 @@ export default function Profile() {
 					</div>
 				</div>
 				<div className="flex flex-col w-full basis-1/4 gap-3">
-					<div className="card w-full bg-[#2A302F] rounded flex justify-center">
+					<div className="card w-full bg-[#303030] rounded flex justify-center">
 						<div className="card-body items-center text-center">
 							<h2 className="card-title">Mobile Legends</h2>
 						</div>
 					</div>
-					<div className="card w-full bg-[#2A302F] rounded flex justify-center">
+					<div className="card w-full bg-[#303030] rounded flex justify-center">
 						<figure className="px-10 pt-10">
 							<img
 								src="https://placeimg.com/400/225/arch"
