@@ -382,71 +382,69 @@ class UserController {
 				throw { name: "INVALID_DATA" };
 			}
 
-
-      let payload = {
-        id: findUser.id,
-        uuid: findUser.uuid,
-        email: findUser.email,
-      };
-      await User.update({ isLogin: true }, { where: { id: findUser.id } });
-      const access_token = createToken(payload);
-      res.status(200).json({
-        access_token: access_token,
-        id: findUser.id,
-        email: findUser.email,
-        username: findUser.username,
-        uuid: findUser.uuid,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-  static async editUser(req, res, next) {
-    const { username, email, password, dob, domisili, gender } = req.body;
-    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
-    try {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: "profile pictures" },
-        async (error, result) => {
-          if (error) throw { name: "INVALID_ACCESS" };
-          try {
-            let profPict = result.secure_url;
-            let { id } = req.params;
-            let payload = {
-              username,
-              email,
-              password,
-              dob,
-              domisili,
-              gender,
-              profPict,
-            };
-            await User.update(payload, { where: { id } });
-            res.status(200).json({ msg: "Profile sucessfully updated" });
-          } catch (error) {
-            next(error);
-          }
-        }
-      );
-      bufferToStream(data).pipe(stream);
-    } catch (error) {
-      next(error);
-    }
-  }
-  static async getUsers(req, res, next) {
-    try {
-      let users = await User.findAll({
-        include: [
-          { model: UserGame, required: false },
-          { model: Post, required: false },
-        ],
-      });
-      res.status(200).json(users);
-    } catch (error) {
-      next(error);
-    }
-  }
-
+			let payload = {
+				id: findUser.id,
+				uuid: findUser.uuid,
+				email: findUser.email,
+			};
+			await User.update({ isLogin: true }, { where: { id: findUser.id } });
+			const access_token = createToken(payload);
+			res.status(200).json({
+				access_token: access_token,
+				id: findUser.id,
+				email: findUser.email,
+				username: findUser.username,
+				uuid: findUser.uuid,
+			});
+		} catch (error) {
+			next(error);
+		}
+	}
+	static async editUser(req, res, next) {
+		const { username, email, password, dob, domisili, gender } = req.body;
+		const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+		try {
+			const stream = cloudinary.uploader.upload_stream(
+				{ folder: "profile pictures" },
+				async (error, result) => {
+					if (error) throw { name: "INVALID_ACCESS" };
+					try {
+						let profPict = result.secure_url;
+						let { id } = req.params;
+						let payload = {
+							username,
+							email,
+							password,
+							dob,
+							domisili,
+							gender,
+							profPict,
+						};
+						await User.update(payload, { where: { id } });
+						res.status(200).json({ msg: "Profile sucessfully updated" });
+					} catch (error) {
+						next(error);
+					}
+				}
+			);
+			bufferToStream(data).pipe(stream);
+		} catch (error) {
+			next(error);
+		}
+	}
+	static async getUsers(req, res, next) {
+		try {
+			let users = await User.findAll({
+				include: [
+					{ model: UserGame, required: false },
+					{ model: Post, required: false },
+				],
+			});
+			res.status(200).json(users);
+		} catch (error) {
+			next(error);
+		}
+	}
 
 	static async getOnlineUsers(req, res, next) {
 		try {
@@ -664,114 +662,110 @@ class UserController {
 				},
 			};
 
+			axios
+				.request(options)
+				.then(function (response) {})
+				.catch(function (error) {
+					console.error(error);
+				});
+			const access_token = createToken({ id: user.id });
+			res.status(200).json({
+				access_token,
+				id: user.id,
+				email: user.email,
+				username: user.username,
+				uuid: user.uuid,
+			});
+		} catch (error) {
+			next(error);
+		}
+	}
 
-		
-      axios
-        .request(options)
-        .then(function (response) {})
-        .catch(function (error) {
-          console.error(error);
-        });
-      const access_token = createToken({ id: user.id });
-      res.status(200).json({
-        access_token,
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        uuid: user.uuid,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
+	static async userPayment(req, res, next) {
+		try {
+			// Create Snap API instance
+			let snap = new midtransClient.Snap({
+				// Set to true if you want Production Environment (accept real transaction).
+				isProduction: false,
+				serverKey: "SB-Mid-server-nU1WKAwolq2Zzv-eKVov7L65",
+			});
 
-  static async userPayment(req, res, next) {
-    try {
-      // Create Snap API instance
-      let snap = new midtransClient.Snap({
-        // Set to true if you want Production Environment (accept real transaction).
-        isProduction: false,
-        serverKey: "SB-Mid-server-nU1WKAwolq2Zzv-eKVov7L65",
-      });
+			let parameter = {
+				transaction_details: {
+					order_id: "YOUR-ORDERID-" + Math.floor(Math.random() * 500000),
+					gross_amount: 20000,
+				},
+				credit_card: {
+					secure: true,
+				},
+				customer_details: {
+					email: req.user.email,
+				},
+			};
 
-      let parameter = {
-        transaction_details: {
-          order_id: "YOUR-ORDERID-" + Math.floor(Math.random() * 500000),
-          gross_amount: 20000,
-        },
-        credit_card: {
-          secure: true,
-        },
-        customer_details: {
-          email: req.user.email,
-        },
-      };
+			snap.createTransaction(parameter).then((transaction) => {
+				// transaction token
+				let transactionToken = transaction.token;
+				let transactionUrl = transaction.redirect_url;
+				// console.log("transactionToken:", transactionToken);
+				res.status(200).json({
+					transactionToken: transactionToken,
+					redirect_url: transactionUrl,
+				});
+			});
+			// res.redirect(200, transactionUrl);
+		} catch (error) {
+			next(error);
+		}
+	}
 
-      snap.createTransaction(parameter).then((transaction) => {
-        // transaction token
-        let transactionToken = transaction.token;
-        let transactionUrl = transaction.redirect_url;
-        // console.log("transactionToken:", transactionToken);
-        res.status(200).json({
-          transactionToken: transactionToken,
-          redirect_url: transactionUrl,
-        });
-      });
-      // res.redirect(200, transactionUrl);
-    } catch (error) {
-      next(error)
-    }
-  }
+	// static userPayment(req, res, next) {
+	//   let randomized = Math.floor(Math.random() * 10000);
 
-  // static userPayment(req, res, next) {
-  //   let randomized = Math.floor(Math.random() * 10000);
+	//   let data = JSON.stringify({
+	//     transaction_details: {
+	//       order_id: "ORDER-" + randomized ,
+	//       gross_amount: 10000,
+	//     },
+	//     credit_card: {
+	//       secure: true,
+	//     },
+	//   });
 
-  //   let data = JSON.stringify({
-  //     transaction_details: {
-  //       order_id: "ORDER-" + randomized ,
-  //       gross_amount: 10000,
-  //     },
-  //     credit_card: {
-  //       secure: true,
-  //     },
-  //   });
+	//   let config = {
+	//     method: "post",
+	//     url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
+	//     headers: {
+	//       Accept: "application/json",
+	//       "Content-Type": "application/json",
+	//       Authorization:
+	//         "Basic U0ItTWlkLXNlcnZlci1UcUxfdGZCUWJ4QkdhOWNFME8wWElxM1E6",
+	//     },
+	//     data: data,
+	//   };
 
-  //   let config = {
-  //     method: "post",
-  //     url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //       Authorization:
-  //         "Basic U0ItTWlkLXNlcnZlci1UcUxfdGZCUWJ4QkdhOWNFME8wWElxM1E6",
-  //     },
-  //     data: data,
-  //   };
+	//   axios(config)
+	//     .then(function (response) {
+	//       res.status(201).json(response.data);
+	//     })
+	//     .catch(function (error) {
+	//       console.log(error);
+	//     });
+	// }
 
-  //   axios(config)
-  //     .then(function (response) {
-  //       res.status(201).json(response.data);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
-
-  static async premium(req, res, next) {
-    try {
-      let { id } = req.user;
-      let user = await User.findByPk(id);
-      if (!user) {
-        throw { name: "NOT_FOUND" };
-      }
-      await User.update({ isPremium: true }, { where: { id } });
-      res.status(200).json({ msg: "Your account is now premium" });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-
+	static async premium(req, res, next) {
+		try {
+			let { id } = req.user;
+			let user = await User.findByPk(id);
+			if (!user) {
+				throw { name: "NOT_FOUND" };
+			}
+			await User.update({ isPremium: true }, { where: { id } });
+			res.status(200).json({ msg: "Your account is now premium" });
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 module.exports = UserController;
