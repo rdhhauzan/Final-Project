@@ -55,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "Fill in the Role" },
         },
       },
+      imgUrl: DataTypes.TEXT,
     },
     {
       sequelize,
