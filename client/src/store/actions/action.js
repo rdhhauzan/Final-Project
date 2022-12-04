@@ -8,6 +8,13 @@ export function setGames(payload) {
 	};
 }
 
+export function setRegisterForm(payload) {
+	return {
+		type: "registerForm/setRegisterForm",
+		payload,
+	};
+}
+
 export function fetchGames() {
 	return (dispatch) => {
 		axios
@@ -20,9 +27,13 @@ export function fetchGames() {
 }
 
 export function register(payload) {
-	return (dispatch) => {
-		axios(`${URL}/users/register`, {
-			method: "POST",
-		}).catch((err) => console.log(err));
+	console.log(payload);
+	return async (dispatch) => {
+		try {
+			let { data } = await axios.post(`${URL}/users/register`, payload);
+			console.log(data);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 }
