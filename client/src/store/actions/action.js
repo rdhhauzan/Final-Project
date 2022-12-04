@@ -8,13 +8,6 @@ export function setGames(payload) {
 	};
 }
 
-export function setRegisterForm(payload) {
-	return {
-		type: "registerForm/setRegisterForm",
-		payload,
-	};
-}
-
 export function fetchGames() {
 	return (dispatch) => {
 		axios
@@ -30,13 +23,6 @@ export function register(payload) {
 	return (dispatch) => {
 		axios(`${URL}/users/register`, {
 			method: "POST",
-			headers: {
-				access_token: localStorage.getItem("access_token"),
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(payload),
-		})
-			.then(({ data }) => dispatch(setRegisterForm(data)))
-			.catch((err) => console.log(err));
+		}).catch((err) => console.log(err));
 	};
 }
