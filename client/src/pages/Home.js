@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
 	fetchPosts,
@@ -11,12 +11,48 @@ export default function Home() {
 	const dispatch = useDispatch();
 	const navigation = useNavigate();
 	const id = localStorage.getItem("id");
-	const { posts, userDetail, onlineUsers } = useSelector((state) => state);
+	const { userDetail, posts, onlineUsers } = useSelector((state) => state);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		dispatch(fetchPosts());
-		dispatch(fetchOnlineUsers());
 		dispatch(fetchUserById(id));
+		dispatch(fetchOnlineUsers());
+		setLoading(true);
+		if (localStorage.getItem("access_token")) {
+			window.CometChatWidget.init({
+				appID: "2269480a5983d987",
+				appRegion: "us",
+				authKey: "a0b27f305eaed800bd7330c21a90db380a970e4e",
+			}).then(
+				(response) => {
+					console.log("Initialization completed successfully");
+					//You can now call login function.
+					window.CometChatWidget.login({
+						uid: localStorage.getItem("uuid"),
+					}).then(
+						(response) => {
+							window.CometChatWidget.launch({
+								widgetID: "bf899074-3999-4b4f-b173-1a680d708768",
+								docked: "true",
+								alignment: "right", //left or right
+								roundedCorners: "true",
+								height: "450px",
+								width: "400px",
+							});
+						},
+						(error) => {
+							console.log("User login failed with error:", error);
+							//Check the reason for error and take appropriate action.
+						}
+					);
+				},
+				(error) => {
+					console.log("Initialization failed with error:", error);
+					//Check the reason for error and take appropriate action.
+				}
+			);
+		}
 		// eslint-disable-next-line
 	}, []);
 
@@ -26,9 +62,7 @@ export default function Home() {
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
 					{posts.map((post) => {
 						return (
-							<div
-								className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center"
-								key={post.id}>
+							<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 								<div className="card-body text-start">
 									<h2 className="card-title">@{post.User.username}</h2>
 									<p>{post.content}</p>
@@ -75,6 +109,7 @@ export default function Home() {
 										<img
 											src={onlineUser.profPict}
 											className="self-center h-10 w-10"
+											alt="profile pict"
 										/>
 										<p className="self-center">{onlineUser.username}</p>
 									</div>

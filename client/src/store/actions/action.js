@@ -1,4 +1,5 @@
 import axios from "axios";
+
 const URL = "http://localhost:3000";
 
 export function setGames(payload) {
@@ -51,6 +52,7 @@ export function register(payload) {
 	return async () => {
 		try {
 			let { data } = await axios.post(`${URL}/users/register`, payload);
+			// console.log(data);
 		} catch (err) {
 			console.log(err);
 		}
@@ -60,11 +62,13 @@ export function register(payload) {
 export function login(payload) {
 	return async () => {
 		try {
+			const authKey = "a0b27f305eaed800bd7330c21a90db380a970e4e";
 			let { data } = await axios.post(`${URL}/users/login`, payload);
 			localStorage.setItem("access_token", data.access_token);
 			localStorage.setItem("id", data.id);
 			localStorage.setItem("uuid", data.uuid);
 			localStorage.setItem("email", data.email);
+			// console.log(data);
 		} catch (err) {
 			console.log(err);
 		}
@@ -79,8 +83,24 @@ export function fetchPosts() {
 					access_token: localStorage.getItem("access_token"),
 				},
 			});
-
 			dispatch(setPosts(data));
+		} catch (err) {
+			console.log(err);
+		}
+	};
+}
+
+export function fetchOnlineUsers() {
+	return async (dispatch) => {
+		try {
+			let { data } = await axios.get(`${URL}/users/online`, {
+				headers: {
+					access_token: localStorage.getItem("access_token"),
+				},
+			});
+
+			dispatch(setOnlineUsers(data));
+			// console.log(data);
 		} catch (err) {
 			console.log(err);
 		}
@@ -103,22 +123,6 @@ export function fetchUsers() {
 	};
 }
 
-export function fetchOnlineUsers() {
-	return async (dispatch) => {
-		try {
-			let { data } = await axios.get(`${URL}/users/online`, {
-				headers: {
-					access_token: localStorage.getItem("access_token"),
-				},
-			});
-
-			dispatch(setOnlineUsers(data));
-		} catch (err) {
-			console.log(err);
-		}
-	};
-}
-
 export function fetchUserById(id) {
 	return async (dispatch) => {
 		try {
@@ -127,7 +131,6 @@ export function fetchUserById(id) {
 					access_token: localStorage.getItem("access_token"),
 				},
 			});
-
 			dispatch(setUserDetail(data));
 		} catch (err) {
 			console.log(err);

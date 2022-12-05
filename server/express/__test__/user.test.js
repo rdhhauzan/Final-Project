@@ -1,6 +1,6 @@
 const app = require("../app");
 const request = require("supertest");
-const { User, Game } = require("../models");
+const { User, Game, Post } = require("../models");
 const { createToken } = require("../helpers/jwt");
 
 const testImage = "./assets/test.jpg";
@@ -8,6 +8,13 @@ const post = {
   title: "test",
   content: "content",
   GameId: 1,
+};
+const post2 = {
+  title: "test2",
+  content: "content",
+  GameId: 1,
+  imgUrl: "test.com",
+  UserId: 1,
 };
 
 let Game1 = {
@@ -45,7 +52,9 @@ beforeAll((done) => {
       id: result.id,
     });
     return Game.create(Game1)
-      .then((result) => {})
+      .then(() => {
+        return Post.create(post2);
+      })
       .then(() => {
         done();
       })
@@ -297,8 +306,7 @@ test("200 Success get User detail", (done) => {
       const { body, status } = response;
 
       expect(status).toBe(200);
-      expect(body).toHaveProperty("id", expect.any(Number));
-      expect(body).toHaveProperty("email", expect.any(String));
+      expect(body).toHaveProperty("user", expect.any(Object));
       done();
     })
     .catch((err) => {
@@ -339,6 +347,39 @@ test("404 No User detail", (done) => {
       expect(status).toBe(404);
       expect(body).toEqual(expect.any(Object));
       expect(body).toHaveProperty("msg", "Data Not Found");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("200 Success get Posts", (done) => {
+  request(app)
+    .get("/users/posts")
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      expect(Array.isArray(body)).toBeTruthy();
+      expect(body.length).toBeGreaterThan(0);
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("200 Success get premium", (done) => {
+  request(app)
+    .get("/users/premium")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "Your account is now premium");
       done();
     })
     .catch((err) => {

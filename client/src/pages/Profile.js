@@ -58,41 +58,32 @@ export default function Profile() {
 					</div>
 				</div>
 				<div className="flex flex-col w-full basis-1/2 gap-3 xl:mt-0 md:mt-4">
-					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
-						<div className="card-body text-start">
-							<h2 className="card-title">@{userDetail?.user?.username}</h2>
-							<p>{userDetail?.user?.Posts[0]?.content}</p>
-							<figure className="pt-5">
-								<img
-									src={userDetail?.user?.Posts.imgUrl}
-									alt="Shoes"
-									className="rounded-xl w-full"
-								/>
-							</figure>
-						</div>
-					</div>
-					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
-						<div className="card-body text-start">
-							<h2 className="card-title">@adminjisoo</h2>
-							<p>Main apa hari ini ges?</p>
-							<figure className="pt-5">
-								<img
-									src="https://placeimg.com/400/225/arch"
-									alt="Shoes"
-									className="rounded-xl w-full"
-								/>
-							</figure>
-						</div>
-					</div>
+					{userDetail?.user?.Posts.map((post) => {
+						return (
+							<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
+								<div className="card-body text-start">
+									<h2 className="card-title">@{userDetail?.user?.username}</h2>
+									<p>{post.content}</p>
+									<figure className="pt-5">
+										<img
+											src={post.imgUrl}
+											alt="Shoes"
+											className="rounded-xl w-full"
+										/>
+									</figure>
+								</div>
+							</div>
+						);
+					})}
 				</div>
 				<div className="flex flex-col xl:mt-0 2xs:mt-4 w-full basis-1/4 gap-3">
-					{userDetail?.user?.Posts.map((post) => {
+					{userDetail?.user?.UserGames.map((game) => {
 						return (
 							<div
 								className="card xl:w-96 md:w-full h-auto flex justify-center"
-								key={post.id}
+								key={game.id}
 								style={{
-									backgroundImage: `url(${post.Game.imgUrl})`,
+									backgroundImage: `url(${game.imgUrl})`,
 									height: undefined,
 									borderRadius: "3px",
 									backgroundPosition: "center",
@@ -105,16 +96,11 @@ export default function Profile() {
 										height: "100%",
 										width: "100%",
 										borderRadius: "3px",
-										backgroundColor: "rgba(0, 0, 0, 0.8)",
+										backgroundColor: "rgba(0, 0, 0, 0.5	)",
 									}}>
-									<h2 className="card-title ">{post.Game.name}</h2>
-									{userDetail?.user?.UserGames.map((usergame) => {
-										return (
-											<p className="text-slate-300" key={usergame.id}>
-												{usergame.aboutMe}
-											</p>
-										);
-									})}
+									<h2 className="card-title ">{game.name}</h2>
+
+									<p className="text-slate-300">{game.aboutMe}</p>
 								</div>
 							</div>
 						);
