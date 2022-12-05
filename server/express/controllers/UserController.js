@@ -93,7 +93,7 @@ class UserController {
         data: {
           personalizations: [
             {
-              to: [{ email }],
+              to: [{ email: email }],
               subject: "Verify your account!",
             },
           ],
@@ -349,12 +349,7 @@ class UserController {
           ],
         },
       };
-      axios
-        .request(sendGridOptions)
-        .then(function (response) {})
-        .catch(function (error) {
-          console.error(error);
-        });
+      await axios.request(sendGridOptions);
 
       res.status(201).json(registered);
     } catch (error) {
@@ -377,7 +372,6 @@ class UserController {
       }
 
       let validateUser = comparePassword(password, findUser.password);
-
 
       if (!validateUser) {
         throw { name: "INVALID_DATA" };
@@ -770,7 +764,6 @@ class UserController {
       next(error);
     }
   }
-
 }
 
 module.exports = UserController;
