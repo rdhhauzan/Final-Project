@@ -55,8 +55,9 @@ class UserGameController {
     try {
       const { id } = req.params;
       const { rank, role, matchType, aboutMe } = req.body;
-      let usergame = await User.findByPk(id);
-      let game = await Game.findByPk(GameId);
+      let usergame = await UserGame.findByPk(id);
+      if (!usergame) throw { name: "NOT_FOUND" };
+      let game = await Game.findByPk(usergame.GameId);
       if (!usergame) {
         throw { name: "NOT_FOUND" };
       }
@@ -75,6 +76,7 @@ class UserGameController {
       );
       res.status(200).json({ msg: "Your game info has been updated!" });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }

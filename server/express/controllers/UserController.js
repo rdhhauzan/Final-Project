@@ -1,15 +1,8 @@
 const { comparePassword } = require("../helpers/bcrypt");
-const { OAuth2Client } = require("google-auth-library");
 const { createToken, verifyToken } = require("../helpers/jwt");
 const midtransClient = require("midtrans-client");
-const {
-  User,
-  UserGame,
-  Post,
-  Follow,
-  Game,
-  sequelize,
-} = require("../models/index");
+const Google = require("../lib/Google");
+const { User, UserGame, Post, Follow, Game } = require("../models/index");
 const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
@@ -75,9 +68,7 @@ class UserController {
       axios
         .request(options)
         .then(function (response) {})
-        .catch(function (error) {
-          console.error(error);
-        });
+        .catch(function (error) {});
 
       //SENDGRID
       const sendGridOptions = {
@@ -349,7 +340,10 @@ class UserController {
           ],
         },
       };
-      await axios.request(sendGridOptions);
+      axios
+        .request(sendGridOptions)
+        .then(function (response) {})
+        .catch(function (error) {});
 
       res.status(201).json(registered);
     } catch (error) {
@@ -463,11 +457,6 @@ class UserController {
         include: [
           { model: UserGame, required: false },
           { model: Post, required: false, include: Game },
-          // {
-          //   model: Follow,
-          //   include: { model: User, include: UserGame, required: false },
-          //   required: false,
-          // },
         ],
       });
       if (!user) {
@@ -487,8 +476,7 @@ class UserController {
     try {
       const { uniqueStr } = req.params;
       let payload = verifyToken(uniqueStr);
-      const foundUser = User.findOne({ where: { email: payload } });
-      if (!foundUser) throw { name: "INVALID_VERIF_LINK" };
+      const foundUser = await User.findOne({ where: { email: payload } });
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
     } catch (error) {
@@ -522,11 +510,8 @@ class UserController {
 
       axios
         .request(options)
-        .then(function (response) {
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
+        .then(function (response) {})
+        .catch(function (error) {});
       res.status(200).json(follow);
     } catch (error) {
       next(error);
@@ -534,7 +519,7 @@ class UserController {
   }
 
   static async addPost(req, res, next) {
-    const t = await sequelize.transaction();
+    // const t = await sequelize.transaction();
     let { title, content, GameId } = req.body;
     const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
     try {
@@ -557,7 +542,10 @@ class UserController {
                 "X-RapidAPI-Host": "community-purgomalum.p.rapidapi.com",
               },
             };
-            let { data } = await axios.request(options, { transaction: t });
+            let { data } = await axios.request(
+              options
+              // { transaction: t }
+            );
 
             content = data.result;
             let imgUrl = result.secure_url;
@@ -568,19 +556,22 @@ class UserController {
               imgUrl,
               UserId: req.user.id,
             };
-            await Post.create(payload, { transaction: t });
-            await t.commit();
+            await Post.create(
+              payload
+              // { transaction: t }
+            );
+            // await t.commit();
             res.status(200).json({ msg: "Post sucessfully updated" });
           } catch (error) {
-            await t.rollback();
+            // await t.rollback();
             next(error);
           }
-        },
-        { transaction: t }
+        }
+        // { transaction: t }
       );
       bufferToStream(data).pipe(stream);
     } catch (error) {
-      await t.rollback();
+      // await t.rollback();
       next(error);
     }
   }
@@ -603,14 +594,7 @@ class UserController {
   static async google(req, res, next) {
     try {
       let uuid = uuidv4();
-      let { id_token } = req.headers;
-      const client = new OAuth2Client(process.env.GOOGLE_ID);
-      const ticket = await client.verifyIdToken({
-        idToken: id_token,
-        audience: process.env.GOOGLE_ID,
-      });
-      const payload = ticket.getPayload();
-      const userid = payload["sub"];
+      const payload = await Google.googleLogin(req.headers.id_token);
       const [user, created] = await User.findOrCreate({
         where: {
           email: payload.email,
@@ -656,9 +640,7 @@ class UserController {
       axios
         .request(options)
         .then(function (response) {})
-        .catch(function (error) {
-          console.error(error);
-        });
+        .catch(function (error) {});
       const access_token = createToken({ id: user.id });
       res.status(200).json({
         access_token,
@@ -709,46 +691,13 @@ class UserController {
     }
   }
 
-  // static userPayment(req, res, next) {
-  //   let randomized = Math.floor(Math.random() * 10000);
-
-  //   let data = JSON.stringify({
-  //     transaction_details: {
-  //       order_id: "ORDER-" + randomized ,
-  //       gross_amount: 10000,
-  //     },
-  //     credit_card: {
-  //       secure: true,
-  //     },
-  //   });
-
-  //   let config = {
-  //     method: "post",
-  //     url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //       Authorization:
-  //         "Basic U0ItTWlkLXNlcnZlci1UcUxfdGZCUWJ4QkdhOWNFME8wWElxM1E6",
-  //     },
-  //     data: data,
-  //   };
-
-  //   axios(config)
-  //     .then(function (response) {
-  //       res.status(201).json(response.data);
-  //     })
-  //     .catch(function (error) {
-  //     });
-  // }
-
   static async premium(req, res, next) {
     try {
       let { id } = req.user;
-      let user = await User.findByPk(id);
-      if (!user) {
-        throw { name: "NOT_FOUND" };
-      }
+      // let user = await User.findByPk(id);
+      // if (!user) {
+      //   throw { name: "NOT_FOUND" };
+      // }
       await User.update({ isPremium: true }, { where: { id } });
       res.status(200).json({ msg: "Your account is now premium" });
     } catch (error) {
@@ -758,7 +707,10 @@ class UserController {
 
   static async getPosts(req, res, next) {
     try {
-      let posts = await Post.findAll({ include: { all: true, nested: true } });
+      let posts = await Post.findAll({
+        include: { all: true, nested: true },
+        order: [["updatedAt", "DESC"]],
+      });
       res.status(200).json(posts);
     } catch (error) {
       next(error);
