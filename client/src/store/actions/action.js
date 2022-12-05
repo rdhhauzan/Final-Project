@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const URL = "http://localhost:3000";
 
@@ -68,7 +69,14 @@ export function login(payload) {
 			localStorage.setItem("id", data.id);
 			localStorage.setItem("uuid", data.uuid);
 			localStorage.setItem("email", data.email);
-			// console.log(data);
+			Swal.fire({
+				title: `Welcome, @${data.username}!`,
+				text: "Add a game to your profile to start using TeamUP!",
+				background: "#303030",
+				color: "#FFFFFF",
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: '<a href="/add-game"> Add a game </a>',
+			});
 		} catch (err) {
 			console.log(err);
 		}

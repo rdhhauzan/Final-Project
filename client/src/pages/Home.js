@@ -60,23 +60,27 @@ export default function Home() {
 		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen font-chakra">
 			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
-					{posts.map((post) => {
-						return (
-							<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
-								<div className="card-body text-start">
-									<h2 className="card-title">@{post.User.username}</h2>
-									<p>{post.content}</p>
-									<figure className="pt-5">
-										<img
-											src={post.imgUrl}
-											alt="Shoes"
-											className="rounded-xl w-full"
-										/>
-									</figure>
+					{posts.length > 0 ? (
+						posts.map((post) => {
+							return (
+								<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
+									<div className="card-body text-start">
+										<h2 className="card-title">@{userDetail.user.username}</h2>
+										<p>{post.content}</p>
+										<figure className="pt-5">
+											<img
+												src={post.imgUrl}
+												alt="Shoes"
+												className="rounded-xl w-full"
+											/>
+										</figure>
+									</div>
 								</div>
-							</div>
-						);
-					})}
+							);
+						})
+					) : (
+						<p> Please add a game to start your journey! </p>
+					)}
 				</div>
 				<div className="flex flex-col w-full xl:mt-0 2xs:my-4 basis-4/12">
 					<div className="card w-full bg-[#303030] rounded-sm flex">
