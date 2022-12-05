@@ -306,8 +306,7 @@ test("200 Success get User detail", (done) => {
       const { body, status } = response;
 
       expect(status).toBe(200);
-      expect(body).toHaveProperty("id", expect.any(Number));
-      expect(body).toHaveProperty("email", expect.any(String));
+      expect(body).toHaveProperty("user", expect.any(Object));
       done();
     })
     .catch((err) => {
@@ -364,6 +363,23 @@ test("200 Success get Posts", (done) => {
       expect(status).toBe(200);
       expect(Array.isArray(body)).toBeTruthy();
       expect(body.length).toBeGreaterThan(0);
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("200 Success get premium", (done) => {
+  request(app)
+    .get("/users/premium")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "Your account is now premium");
       done();
     })
     .catch((err) => {

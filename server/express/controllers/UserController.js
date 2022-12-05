@@ -485,7 +485,6 @@ class UserController {
       });
       res.status(200).json({ user, followed });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -507,7 +506,6 @@ class UserController {
     try {
       let { id } = req.params;
       const findTarget = await User.findOne({ where: { id: id } });
-      console.log(findTarget.uuid, "<<<<<<<<<<<");
       if (id == req.user.id) {
         throw { name: "FOLLOW_ERROR" };
       }
@@ -531,14 +529,12 @@ class UserController {
       axios
         .request(options)
         .then(function (response) {
-          console.log(response.data);
         })
         .catch(function (error) {
           console.error(error);
         });
       res.status(200).json(follow);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -708,7 +704,6 @@ class UserController {
         // transaction token
         let transactionToken = transaction.token;
         let transactionUrl = transaction.redirect_url;
-        // console.log("transactionToken:", transactionToken);
         res.status(200).json({
           transactionToken: transactionToken,
           redirect_url: transactionUrl,
@@ -750,7 +745,6 @@ class UserController {
   //       res.status(201).json(response.data);
   //     })
   //     .catch(function (error) {
-  //       console.log(error);
   //     });
   // }
 
@@ -773,7 +767,6 @@ class UserController {
       let posts = await Post.findAll({ include: { all: true, nested: true } });
       res.status(200).json(posts);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
