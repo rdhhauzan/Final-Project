@@ -98,7 +98,12 @@ export default function Home() {
                 >
                   Profile
                 </button>
-                <button className="btn btn-sm mx-1 rounded-full text-slate-200 font-normal mt-2 text-sm">
+                <button
+                  className="btn btn-sm mx-1 rounded-full text-slate-200 font-normal mt-2 text-sm"
+                  onClick={() => {
+                    navigation("/addgame");
+                  }}
+                >
                   Add a Game
                 </button>
               </div>
