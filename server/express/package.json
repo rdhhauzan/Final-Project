@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx jest --verbose --forceExit --runInBand --setTimeOut=1000 --coverage",
+    "start": "node app.js",
     "db-start": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
     "db-test": "npx sequelize-cli --env=test db:drop && npx sequelize-cli --env=test db:create && npx sequelize-cli --env=test db:migrate",
     "package": "npm i pg express sequelize bcryptjs jsonwebtoken cors cloudinary dotenv multer sharp && npm i -D nodemon sequelize-cli jest supertest"
