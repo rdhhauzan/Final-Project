@@ -107,8 +107,11 @@ export function login(payload) {
 				text: "Add a game to your profile to start using TeamUP!",
 				background: "#303030",
 				color: "#FFFFFF",
+				showCancelButton: true,
+				cancelButtonColor: "#D7385E",
+				cancelButtonText: '<a href="/home">Go to home</a>',
 				confirmButtonColor: "#D7385E",
-				confirmButtonText: '<a href="/add-game"> Add a game </a>',
+				confirmButtonText: '<a href="/addgame"> Add a game </a>',
 			});
 		} catch (err) {
 			console.log(err);
