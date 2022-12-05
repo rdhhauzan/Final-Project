@@ -20,6 +20,7 @@ const user1 = {
   dob: "01/01/2022",
   domisili: "Address",
   gender: "male",
+  isLogin: true,
 };
 const user2 = {
   email: "user.test2@mail.com",
@@ -28,20 +29,23 @@ const user2 = {
   dob: "01/01/2022",
   domisili: "Address",
   gender: "male",
+  isLogin: true,
 };
 
 const usergames1 = {
   GameId: 1,
-  UserId: 2,
+  UserId: 1,
   rank: 1,
   role: "test1",
-  matchType: "test1",
+  matchType: "fun",
   aboutMe: "test1",
 };
 const usergames2 = {
   rank: 1,
+  GameId: 1,
+  UserId: 1,
   role: "test2",
-  matchType: "test2",
+  matchType: "fun",
   aboutMe: "test2",
 };
 const usergames3 = {
@@ -49,7 +53,7 @@ const usergames3 = {
   UserId: 2,
   rank: 1,
   role: "test3",
-  matchType: "test3",
+  matchType: "fun",
   aboutMe: "test3",
 };
 
