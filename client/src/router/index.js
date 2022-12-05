@@ -5,32 +5,37 @@ import LandingPage from "../pages/LandingPage";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
 import UserProfile from "../components/UserProfile";
+import AddGame from "../pages/AddGame";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <LandingPage />,
-	},
-	{
-		path: "/register",
-		element: <Register />,
-	},
-	{
-		path: "/login",
-		element: <Login />,
-	},
-	{
-		path: "/profile",
-		element: <Profile />,
-	},
-	{
-		path: "/profile/edit",
-		element: <UserProfile />,
-	},
-	{
-		path: "/home",
-		element: <Home />,
-	},
+  {
+    path: "/",
+    element: <LandingPage />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+  },
+  {
+    path: "/profile/edit",
+    element: <UserProfile />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
+  },
+  {
+    path: "/addgame",
+    element: <AddGame />,
+  },
 ]);
 
 export default router;
