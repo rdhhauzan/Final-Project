@@ -1,56 +1,52 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUsers } from "../store/actions/action";
+import {
+	fetchPosts,
+	fetchUserById,
+	fetchOnlineUsers,
+} from "../store/actions/action";
 
 export default function Home() {
 	const dispatch = useDispatch();
 	const navigation = useNavigate();
-	const { users } = useSelector((state) => state);
+	const id = localStorage.getItem("id");
+	const { posts, userDetail, onlineUsers } = useSelector((state) => state);
 
 	useEffect(() => {
-		dispatch(fetchUsers());
+		dispatch(fetchPosts());
+		dispatch(fetchOnlineUsers());
+		dispatch(fetchUserById(id));
+		// eslint-disable-next-line
 	}, []);
 
 	return (
 		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen font-chakra">
 			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
-					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
-						{users.map((user) => {
-							return (
+					{posts.map((post) => {
+						return (
+							<div
+								className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center"
+								key={post.id}>
 								<div className="card-body text-start">
-									<h2 className="card-title">{user.username}</h2>
-									<p>{user.Posts.content}</p>
+									<h2 className="card-title">@{post.User.username}</h2>
+									<p>{post.content}</p>
 									<figure className="pt-5">
 										<img
-											src={user.Posts.imgUrl}
+											src={post.imgUrl}
 											alt="Shoes"
 											className="rounded-xl w-full"
 										/>
 									</figure>
 								</div>
-							);
-						})}
-					</div>
-					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
-						<div className="card-body text-start">
-							<h2 className="card-title">@beban1</h2>
-							<p>Ranked bersama @adminjisoo & @beban2!</p>
-							<figure className="pt-5">
-								<img
-									src="https://placeimg.com/400/225/arch"
-									alt="Shoes"
-									className="rounded-xl w-full"
-								/>
-							</figure>
-						</div>
-					</div>
+							</div>
+						);
+					})}
 				</div>
-				<div className="flex flex-col w-full xl:mt-0 2xs:mt-4 basis-4/12">
-					<div className="card w-full bg-[#303030] rounded-sm flex"></div>
+				<div className="flex flex-col w-full xl:mt-0 2xs:my-4 basis-4/12">
 					<div className="card w-full bg-[#303030] rounded-sm flex">
-						<div className="card-title items-start bg-[#D7385E]">
+						<div className="card-title sticky top-0 items-start bg-[#D7385E]">
 							<div>
 								<figure className="flex">
 									<img
@@ -61,7 +57,7 @@ export default function Home() {
 								</figure>
 							</div>
 							<div>
-								<p className="mt-5">@adminjisoo</p>
+								<p className="mt-5">@{userDetail?.user?.username}</p>
 								<button
 									className="btn btn-sm mx-1 rounded-full text-slate-200 font-normal mt-2 text-sm"
 									onClick={() => navigation("/profile")}>
@@ -72,9 +68,22 @@ export default function Home() {
 								</button>
 							</div>
 						</div>
-						<div className="card-body items-start text-start">
-							<p>harusnya ini orang banyak yg onlen</p>
-						</div>
+						{onlineUsers.map((onlineUser) => {
+							return (
+								<div className="card-body flex flex-row mx-5 justify-between text-start">
+									<div className="flex flex-row gap-3">
+										<img
+											src={onlineUser.profPict}
+											className="self-center h-10 w-10"
+										/>
+										<p className="self-center">{onlineUser.username}</p>
+									</div>
+									<div className="flex items-end text-end">
+										<button className="btn btn-primary rounded-sm">+</button>
+									</div>
+								</div>
+							);
+						})}
 					</div>
 				</div>
 			</div>

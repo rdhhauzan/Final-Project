@@ -12,6 +12,7 @@ export default function Profile() {
 
 	useEffect(() => {
 		dispatch(fetchUserById(id));
+		// eslint-disable-next-line
 	}, []);
 
 	return (
@@ -23,12 +24,12 @@ export default function Profile() {
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
-					stroke-width="1.5"
+					strokeWidth="1.5"
 					stroke="currentColor"
 					className="flex justify-center self-center w-7 h-7">
 					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
+						strokeLinecap="round"
+						strokeLinejoin="round"
 						d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
 					/>
 				</svg>
@@ -56,11 +57,11 @@ export default function Profile() {
 						</button>
 					</div>
 				</div>
-				<div className="flex flex-col w-full basis-1/2 gap-3">
+				<div className="flex flex-col w-full basis-1/2 gap-3 xl:mt-0 md:mt-4">
 					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
 							<h2 className="card-title">@{userDetail?.user?.username}</h2>
-							<p>{userDetail?.user?.Posts[0].content}</p>
+							<p>{userDetail?.user?.Posts[0]?.content}</p>
 							<figure className="pt-5">
 								<img
 									src={userDetail?.user?.Posts.imgUrl}
@@ -84,28 +85,40 @@ export default function Profile() {
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-col w-full basis-1/4 gap-3">
-					<div className="card w-full bg-[#303030] rounded flex justify-center">
-						<div className="card-body items-center text-center">
-							<h2 className="card-title">Mobile Legends</h2>
-						</div>
-					</div>
-					<div className="card w-full bg-[#303030] rounded flex justify-center">
-						<figure className="px-10 pt-10">
-							<img
-								src="https://placeimg.com/400/225/arch"
-								alt="Shoes"
-								className="rounded-xl"
-							/>
-						</figure>
-						<div className="card-body items-center text-center">
-							<h2 className="card-title">Apex Legends</h2>
-							<p>
-								{" "}
-								Ceritanya ini deskripsi. Tapi ga mau pake lorem ipsum hehe.
-							</p>
-						</div>
-					</div>
+				<div className="flex flex-col xl:mt-0 2xs:mt-4 w-full basis-1/4 gap-3">
+					{userDetail?.user?.Posts.map((post) => {
+						return (
+							<div
+								className="card xl:w-96 md:w-full h-auto flex justify-center"
+								key={post.id}
+								style={{
+									backgroundImage: `url(${post.Game.imgUrl})`,
+									height: undefined,
+									borderRadius: "3px",
+									backgroundPosition: "center",
+									backgroundRepeat: "no-repeat",
+									backgroundSize: "cover",
+								}}>
+								<div
+									className="card-body items-center text-center"
+									style={{
+										height: "100%",
+										width: "100%",
+										borderRadius: "3px",
+										backgroundColor: "rgba(0, 0, 0, 0.8)",
+									}}>
+									<h2 className="card-title ">{post.Game.name}</h2>
+									{userDetail?.user?.UserGames.map((usergame) => {
+										return (
+											<p className="text-slate-300" key={usergame.id}>
+												{usergame.aboutMe}
+											</p>
+										);
+									})}
+								</div>
+							</div>
+						);
+					})}
 				</div>
 			</div>
 		</div>
