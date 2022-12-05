@@ -1,5 +1,4 @@
 import axios from "axios";
-import { CometChat } from "@cometchat-pro/chat";
 
 const URL = "http://localhost:3000";
 
@@ -55,14 +54,6 @@ export function login(payload) {
       localStorage.setItem("id", data.id);
       localStorage.setItem("uuid", data.uuid);
       localStorage.setItem("email", data.email);
-      CometChat.login(data.uuid, authKey).then(
-        (user) => {
-          console.log("Login Successful:", { user }, "<<<<<<<<<<");
-        },
-        (error) => {
-          console.log("Login failed with exception:", { error });
-        }
-      );
     } catch (err) {
       console.log(err);
     }
