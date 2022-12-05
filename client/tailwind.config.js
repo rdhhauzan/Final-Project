@@ -14,9 +14,6 @@ module.exports = {
       spacing: {
         128: "32rem",
       },
-      backgroundImage: {
-        "add-game-bg": "url('assets/gs.png')",
-      },
     },
     screens: {
       "2xs": "360px",
