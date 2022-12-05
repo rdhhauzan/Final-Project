@@ -303,6 +303,21 @@ test("400 - Email Not Found", async () => {
   expect(response.body.msg).toBe("Invalid email / Password");
 });
 
+test("200 Success Hello world", (done) => {
+  request(app)
+    .get("/")
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      done();expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "Hello world");
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
 test("200 Success get users", (done) => {
   request(app)
     .get("/users")
@@ -337,16 +352,15 @@ test("401 Failed get users Invalid Token", (done) => {
     });
 });
 
-test("401 Failed get users No Token", (done) => {
+test("400 Failed get users No Token", (done) => {
   request(app)
     .get("/users")
-    .set("access_token", null)
     .then((response) => {
       const { body, status } = response;
 
-      expect(status).toBe(401);
+      expect(status).toBe(400);
       expect(body).toEqual(expect.any(Object));
-      expect(body).toHaveProperty("msg", "Invalid Token");
+      expect(body).toHaveProperty("msg", "Invalid email / Password");
       done();
     })
     .catch((err) => {
@@ -421,12 +435,6 @@ test("200 Success get User detail", (done) => {
     });
 });
 
-test("200 Success update profile", () => {
-  request(app)
-    .put("/users/edit/1")
-    .set("access_token" + validToken)
-    .attach("image", testImage);
-});
 
 test("200 Success logout User", (done) => {
   request(app)

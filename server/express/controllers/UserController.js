@@ -2,13 +2,7 @@ const { comparePassword } = require("../helpers/bcrypt");
 const { createToken, verifyToken } = require("../helpers/jwt");
 const midtransClient = require("midtrans-client");
 const Google = require("../lib/Google");
-const {
-  User,
-  UserGame,
-  Post,
-  Follow,
-  Game,
-} = require("../models/index");
+const { User, UserGame, Post, Follow, Game } = require("../models/index");
 const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
@@ -482,8 +476,7 @@ class UserController {
     try {
       const { uniqueStr } = req.params;
       let payload = verifyToken(uniqueStr);
-      const foundUser = User.findOne({ where: { email: payload } });
-      if (!foundUser) throw { name: "INVALID_VERIF_LINK" };
+      const foundUser = await User.findOne({ where: { email: payload } });
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
     } catch (error) {
@@ -701,10 +694,10 @@ class UserController {
   static async premium(req, res, next) {
     try {
       let { id } = req.user;
-      let user = await User.findByPk(id);
-      if (!user) {
-        throw { name: "NOT_FOUND" };
-      }
+      // let user = await User.findByPk(id);
+      // if (!user) {
+      //   throw { name: "NOT_FOUND" };
+      // }
       await User.update({ isPremium: true }, { where: { id } });
       res.status(200).json({ msg: "Your account is now premium" });
     } catch (error) {
@@ -714,7 +707,10 @@ class UserController {
 
   static async getPosts(req, res, next) {
     try {
-      let posts = await Post.findAll({ include: { all: true, nested: true } });
+      let posts = await Post.findAll({
+        include: { all: true, nested: true },
+        order: [["updatedAt", "DESC"]],
+      });
       res.status(200).json(posts);
     } catch (error) {
       next(error);
