@@ -1,6 +1,7 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { OAuth2Client } = require("google-auth-library");
 const { createToken, verifyToken } = require("../helpers/jwt");
+const midtransClient = require("midtrans-client");
 const {
   User,
   UserGame,
@@ -100,7 +101,8 @@ class UserController {
           content: [
             {
               type: "text/html",
-              value: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"><head>
+              value: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+              <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml"><head>
               <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
               <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
               <!--[if !mso]><!-->
@@ -376,12 +378,15 @@ class UserController {
 
       let validateUser = comparePassword(password, findUser.password);
 
+
       if (!validateUser) {
         throw { name: "INVALID_DATA" };
       }
 
       let payload = {
         id: findUser.id,
+        uuid: findUser.uuid,
+        email: findUser.email,
       };
       await User.update({ isLogin: true }, { where: { id: findUser.id } });
       const access_token = createToken(payload);
@@ -501,6 +506,8 @@ class UserController {
   static async followUser(req, res, next) {
     try {
       let { id } = req.params;
+      const findTarget = await User.findOne({ where: { id: id } });
+      console.log(findTarget.uuid, "<<<<<<<<<<<");
       if (id == req.user.id) {
         throw { name: "FOLLOW_ERROR" };
       }
@@ -508,8 +515,30 @@ class UserController {
         FollowerId: req.user.id,
         FollowedId: id,
       });
+      const axios = require("axios");
+
+      const options = {
+        method: "POST",
+        url: `https://2269480a5983d987.api-us.cometchat.io/v3/users/${req.user.uuid}/friends`,
+        headers: {
+          apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: { accepted: [`${findTarget.uuid}`] },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
       res.status(200).json(follow);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -652,6 +681,103 @@ class UserController {
       next(error);
     }
   }
+
+  static async userPayment(req, res, next) {
+    try {
+      // Create Snap API instance
+      let snap = new midtransClient.Snap({
+        // Set to true if you want Production Environment (accept real transaction).
+        isProduction: false,
+        serverKey: "SB-Mid-server-nU1WKAwolq2Zzv-eKVov7L65",
+      });
+
+      let parameter = {
+        transaction_details: {
+          order_id: "YOUR-ORDERID-" + Math.floor(Math.random() * 500000),
+          gross_amount: 20000,
+        },
+        credit_card: {
+          secure: true,
+        },
+        customer_details: {
+          email: req.user.email,
+        },
+      };
+
+      snap.createTransaction(parameter).then((transaction) => {
+        // transaction token
+        let transactionToken = transaction.token;
+        let transactionUrl = transaction.redirect_url;
+        // console.log("transactionToken:", transactionToken);
+        res.status(200).json({
+          transactionToken: transactionToken,
+          redirect_url: transactionUrl,
+        });
+      });
+      // res.redirect(200, transactionUrl);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // static userPayment(req, res, next) {
+  //   let randomized = Math.floor(Math.random() * 10000);
+
+  //   let data = JSON.stringify({
+  //     transaction_details: {
+  //       order_id: "ORDER-" + randomized ,
+  //       gross_amount: 10000,
+  //     },
+  //     credit_card: {
+  //       secure: true,
+  //     },
+  //   });
+
+  //   let config = {
+  //     method: "post",
+  //     url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //       Authorization:
+  //         "Basic U0ItTWlkLXNlcnZlci1UcUxfdGZCUWJ4QkdhOWNFME8wWElxM1E6",
+  //     },
+  //     data: data,
+  //   };
+
+  //   axios(config)
+  //     .then(function (response) {
+  //       res.status(201).json(response.data);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }
+
+  static async premium(req, res, next) {
+    try {
+      let { id } = req.user;
+      let user = await User.findByPk(id);
+      if (!user) {
+        throw { name: "NOT_FOUND" };
+      }
+      await User.update({ isPremium: true }, { where: { id } });
+      res.status(200).json({ msg: "Your account is now premium" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getPosts(req, res, next) {
+    try {
+      let posts = await Post.findAll({ include: { all: true, nested: true } });
+      res.status(200).json(posts);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
 }
 
 module.exports = UserController;

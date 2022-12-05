@@ -1,7 +1,18 @@
 import { useNavigate, Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchUserById } from "../store/actions/action";
 
 export default function Profile() {
+	const dispatch = useDispatch();
 	const navigation = useNavigate();
+	const id = localStorage.getItem("id");
+
+	const { userDetail } = useSelector((state) => state);
+
+	useEffect(() => {
+		dispatch(fetchUserById(id));
+	}, []);
 
 	return (
 		<div className="flex xl:flex-row 2xs:flex-col text-slate-200 xl:w-full xl:min-h-screen font-poppins">
@@ -33,7 +44,7 @@ export default function Profile() {
 					</div>
 					<div className="flex mt-5 justify-center">
 						<p>
-							<strong>@adminjisoo</strong>
+							<strong>@{userDetail?.user?.username}</strong>
 						</p>
 					</div>
 					<div className="flex mt-3 justify-center">
@@ -46,20 +57,20 @@ export default function Profile() {
 					</div>
 				</div>
 				<div className="flex flex-col w-full basis-1/2 gap-3">
-					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
+					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
-							<h2 className="card-title">@adminjisoo</h2>
-							<p>Carry para beban di ranked, berat punggung @beban1 @beban2</p>
+							<h2 className="card-title">@{userDetail?.user?.username}</h2>
+							<p>{userDetail?.user?.Posts[0].content}</p>
 							<figure className="pt-5">
 								<img
-									src="https://placeimg.com/400/225/arch"
+									src={userDetail?.user?.Posts.imgUrl}
 									alt="Shoes"
 									className="rounded-xl w-full"
 								/>
 							</figure>
 						</div>
 					</div>
-					<div className="card w-full bg-[#1C2120] rounded shadow-xl shadow-black flex justify-center">
+					<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 						<div className="card-body text-start">
 							<h2 className="card-title">@adminjisoo</h2>
 							<p>Main apa hari ini ges?</p>
@@ -74,12 +85,12 @@ export default function Profile() {
 					</div>
 				</div>
 				<div className="flex flex-col w-full basis-1/4 gap-3">
-					<div className="card w-full bg-[#2A302F] rounded flex justify-center">
+					<div className="card w-full bg-[#303030] rounded flex justify-center">
 						<div className="card-body items-center text-center">
 							<h2 className="card-title">Mobile Legends</h2>
 						</div>
 					</div>
-					<div className="card w-full bg-[#2A302F] rounded flex justify-center">
+					<div className="card w-full bg-[#303030] rounded flex justify-center">
 						<figure className="px-10 pt-10">
 							<img
 								src="https://placeimg.com/400/225/arch"
