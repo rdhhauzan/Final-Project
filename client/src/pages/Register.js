@@ -12,7 +12,7 @@ export default function Register() {
 		password: "",
 		dob: "01/01/1970",
 		domisili: "Jakarta",
-		gender: "",
+		gender: "DISCLOSED",
 	});
 
 	const genders = ["FEMALE", "MALE", "DISCLOSED	"];
@@ -28,7 +28,6 @@ export default function Register() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(registerForm, "ini form ");
 		dispatch(register(registerForm))
 			.then(() => {
 				console.log("registered");
@@ -91,14 +90,14 @@ export default function Register() {
 						<div className="flex flex-row gap-5">
 							{genders.map((gender) => {
 								return (
-									<div className="flex flex-row gap-2">
+									<div className="flex flex-row gap-2" key={gender.id}>
 										<input
 											type="radio"
 											name="gender"
 											onChange={handleChange}
-											value={registerForm.gender}
+											value={gender}
 											className="radio checked:bg-[#D7385E]"
-											checked
+											checked={registerForm.gender === gender}
 										/>
 										<label className="flex text-xs self-center">{gender}</label>
 									</div>
