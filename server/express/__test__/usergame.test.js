@@ -37,7 +37,7 @@ const usergames1 = {
   UserId: 1,
   rank: 1,
   role: "test1",
-  matchType: "fun",
+  matchType: "Competitive",
   aboutMe: "test1",
 };
 const usergames2 = {
@@ -45,7 +45,7 @@ const usergames2 = {
   GameId: 1,
   UserId: 1,
   role: "test2",
-  matchType: "fun",
+  matchType: "Competitive",
   aboutMe: "test2",
 };
 const usergames3 = {
@@ -53,7 +53,7 @@ const usergames3 = {
   UserId: 2,
   rank: 1,
   role: "test3",
-  matchType: "fun",
+  matchType: "Competitive",
   aboutMe: "test3",
 };
 

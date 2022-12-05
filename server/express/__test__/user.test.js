@@ -2,8 +2,11 @@ const app = require("../app");
 const request = require("supertest");
 const { User, Game, Post } = require("../models");
 const { createToken } = require("../helpers/jwt");
+const fs = require("fs");
+const UserController = require("../controllers/UserController");
+const Google = require("../lib/Google");
 
-const testImage = "./assets/test.jpg";
+const testImage = "./__test__/assets/test.jpg";
 const post = {
   title: "test",
   content: "content",
@@ -27,6 +30,7 @@ let Game1 = {
 
 let uniqueStr1 = "user.test@mail.com";
 let validToken;
+let validToken2;
 const user1 = {
   email: "user.test@mail.com",
   username: "User Test",
@@ -45,23 +49,50 @@ const user2 = {
   gender: "male",
   uniqueStr: createToken(uniqueStr1),
 };
+const user3 = {
+  email: "user.test3@mail.com",
+  username: "User Test",
+  password: "usertest",
+  dob: "01/01/2022",
+  domisili: "Address",
+  gender: "male",
+  uniqueStr: createToken(uniqueStr1),
+};
+const user4 = {
+  email: "user.test4@mail.com",
+  username: "User Test",
+  password: "usertest",
+  dob: "01/01/2022",
+  domisili: "Address",
+  gender: "male",
+  uniqueStr: createToken(uniqueStr1),
+};
 
 beforeAll((done) => {
   User.create(user2).then((result) => {
     validToken = createToken({
       id: result.id,
     });
-    return Game.create(Game1)
-      .then(() => {
-        return Post.create(post2);
-      })
-      .then(() => {
-        done();
-      })
-      .catch((err) => {
-        done(err);
+    return User.create(user3).then((result) => {
+      validToken2 = createToken({
+        id: result.id,
       });
+      return Game.create(Game1)
+        .then(() => {
+          return Post.create(post2);
+        })
+        .then(() => {
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
   });
+});
+
+beforeEach(() => {
+  jest.restoreAllMocks();
 });
 
 afterAll((done) => {
@@ -72,15 +103,91 @@ afterAll((done) => {
     .catch((err) => {
       done(err);
     });
+  Post.destroy({ truncate: true, cascade: true, restartIdentity: true })
+    .then((_) => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+  Game.destroy({ truncate: true, cascade: true, restartIdentity: true })
+    .then((_) => {
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+//google
+it("Should return error when hit Login", (done) => {
+  jest.spyOn(UserController, "google").mockRejectedValue("Error"); // you can pass your value as arg
+  // or => User.findAll = jest.fn().mockRejectedValue('Error')
+  request(app)
+    .post("/users/google")
+    .send(user1)
+    .then((res) => {
+      // expect your response here
+      expect(res.status).toBe(500);
+      expect(res.body.msg).toBe("Internal Server Error");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+it("Should be return success when hit Login", (done) => {
+  jest
+    .spyOn(Google, "googleLogin")
+    .mockResolvedValue({ email: "user.test@mail.com", given_name: "google" });
+
+  request(app)
+    .post("/users/google")
+    .set("id_token", "token asal")
+    .send(user1)
+    .then((res) => {
+      expect(res.status).toBe(200);
+      expect(res.body).toBeInstanceOf(Object);
+      expect(res.body).toHaveProperty("email", expect.any(String));
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+//file upload
+describe("Add post", () => {
+  test("Successfully post with jpg image", async () =>
+    request(app)
+      .post("/users/post")
+      .set("access_token", validToken)
+      .field("title", post.title)
+      .field("GameId", post.GameId)
+      .field("content", post.content)
+      .attach("image", testImage)
+      .expect(200)
+      .then((response) => {}));
+});
+
+describe("edit profile", () => {
+  test("Successfully post with jpg image", async () =>
+    request(app)
+      .put("/users/edit/1")
+      .set("access_token", validToken)
+      .attach("image", testImage)
+      .expect(200)
+      .then((response) => {}));
 });
 
 //register
 describe("Test Register users", () => {
   test("201 - Successfully Register users", async () => {
-    let response = await request(app).post("/users/register").send(user1);
+    let response = await request(app).post("/users/register").send(user4);
     expect(response.statusCode).toBe(201);
     expect(response.body).toBeInstanceOf(Object);
-    expect(response.body).toHaveProperty("email", user1.email);
+    expect(response.body).toHaveProperty("email", user4.email);
   });
 });
 
@@ -196,6 +303,21 @@ test("400 - Email Not Found", async () => {
   expect(response.body.msg).toBe("Invalid email / Password");
 });
 
+test("200 Success Hello world", (done) => {
+  request(app)
+    .get("/")
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      done();expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "Hello world");
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
 test("200 Success get users", (done) => {
   request(app)
     .get("/users")
@@ -230,16 +352,15 @@ test("401 Failed get users Invalid Token", (done) => {
     });
 });
 
-test("401 Failed get users No Token", (done) => {
+test("400 Failed get users No Token", (done) => {
   request(app)
     .get("/users")
-    .set("access_token", null)
     .then((response) => {
       const { body, status } = response;
 
-      expect(status).toBe(401);
+      expect(status).toBe(400);
       expect(body).toEqual(expect.any(Object));
-      expect(body).toHaveProperty("msg", "Invalid Token");
+      expect(body).toHaveProperty("msg", "Invalid email / Password");
       done();
     })
     .catch((err) => {
@@ -314,12 +435,6 @@ test("200 Success get User detail", (done) => {
     });
 });
 
-test("200 Success update profile", () => {
-  request(app)
-    .put("/users/edit/1")
-    .set("access_token" + validToken)
-    .attach("image", testImage);
-});
 
 test("200 Success logout User", (done) => {
   request(app)
@@ -386,3 +501,37 @@ test("200 Success get premium", (done) => {
       done(err);
     });
 });
+
+test("200 Success payment", (done) => {
+  request(app)
+    .post("/users/payment")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("redirect_url", expect.any(String));
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+// test("404 Failed get users", (done) => {
+//   User.destroy({ truncate: true, cascade: true, restartIdentity: true });
+//   request(app)
+//     .get("/users")
+//     .then((response) => {
+//       const { body, status } = response;
+
+//       expect(status).toBe(404);
+//       expect(body).toEqual(expect.any(Object));
+//       expect(body).toHaveProperty("msg", "Data Not Found");
+//       done();
+//     })
+//     .catch((err) => {
+//       done(err);
+//     });
+// });

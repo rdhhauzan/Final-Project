@@ -37,7 +37,13 @@ const errorHandler = (err, req, res, next) => {
       });
       break;
 
-    case "INVALID_DATA" || "INVALID_ACCESS":
+    case "INVALID_DATA":
+      res.status(400).json({
+        msg: "Invalid email / Password",
+      });
+      break;
+
+    case "INVALID_ACCESS":
       res.status(400).json({
         msg: "Invalid email / Password",
       });

@@ -1,7 +1,7 @@
 const { verifyToken } = require("../helpers/jwt");
 const { User } = require("../models/index");
 
-const loginAuth = async (req, res, next) => {
+const loginAuth = async(req, res, next) => {
   try {
     let { access_token } = req.headers;
     if (!access_token) {
@@ -9,14 +9,15 @@ const loginAuth = async (req, res, next) => {
     }
 
     const validateToken = verifyToken(access_token);
-    if (!validateToken) {
-      throw { name: "INVALID_ACCESS" };
-    }
 
-    const getUser = await User.findByPk(validateToken.id);
-    if (!getUser) {
-      throw { name: "INVALID_ACCESS" };
-    }
+    // if (!validateToken) {
+    //   throw { name: "INVALID_ACCESS" };
+    // }
+
+    // const getUser = await User.findByPk(validateToken.id);
+    // if (!getUser) {
+    //   throw { name: "INVALID_ACCESS" };
+    // }
 
     req.user = {
       id: validateToken.id,

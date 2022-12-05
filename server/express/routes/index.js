@@ -7,7 +7,7 @@ const userGamesRoute = require("./userGamesRoute");
 const errorHandler = require("../middlewares/errorHandler");
 
 router.get("/", async (req,res) =>{
-    res.send("Hello world")
+    res.send({msg: "Hello world"})
 })
 router.use("/games", gamesRoute);
 router.use("/users", usersRoute);
