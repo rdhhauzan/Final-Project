@@ -14,11 +14,11 @@
       "Mythic Glory"
     ],
     "roleList": ["Jungler", "Roamer", "Exp Lane", "Mid Lane", "Gold Lane"],
-    "imgUrl": "https://i.imgur.com/3IJPbOd.png"
+    "imgUrl": "https://i.imgur.com/4FPH1if.png"
   },
   {
     "name": "Apex Legends",
-    "platform": ["PC", "Mobile", "Console"],
+    "platform": ["PC", "Console"],
     "maxPlayers": 3,
     "rankList": [
       "Bronze",
@@ -30,7 +30,7 @@
       "Apex Predator"
     ],
     "roleList": ["Offensive", "Defensive", "Recon", "Support"],
-    "imgUrl": "https://i.imgur.com/Up14MZU.png"
+    "imgUrl": "https://i.imgur.com/I8GoMBg.png"
   },
   {
     "name": "Valorant",
@@ -47,6 +47,23 @@
       "Radiant"
     ],
     "roleList": ["Duelist", "Initiator", "Sentinel", "Controller"],
-    "imgUrl": "https://i.imgur.com/FfEKlQq.png"
+    "imgUrl": "https://i.imgur.com/xxNtM6B.png"
+  },
+  {
+    "name": "League of Legends",
+    "platform": ["PC"],
+    "maxPlayers": 5,
+    "rankList": [
+      "Iron",
+      "Bronze",
+      "Silver",
+      "Gold",
+      "Platinum",
+      "Diamond",
+      "Grandmaster",
+      "Challenger"
+    ],
+    "roleList": ["ADC", "Top", "Support", "Mid", "Jungler"],
+    "imgUrl": "https://i.imgur.com/FQZqn4R.png"
   }
 ]
