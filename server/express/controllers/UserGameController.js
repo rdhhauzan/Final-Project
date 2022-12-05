@@ -7,7 +7,7 @@ class UserGameController {
       const { id } = req.user;
       const userGames = await UserGame.findAll({
         where: { UserId: id },
-        include: { all: true },
+        include: { model: Game, require: false },
       });
       res.status(200).json(userGames);
     } catch (error) {

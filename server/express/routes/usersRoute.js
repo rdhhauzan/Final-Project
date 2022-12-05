@@ -16,12 +16,12 @@ router.get("/posts", UserController.getPosts);
 router.use(loginAuth);
 
 router.get("/", UserController.getUsers);
-router.post("/post", upload.single("image"), UserController.addPost);
+router.post("/post", upload.single("image"), UserController.addPost); //testing
 router.get("/logout", UserController.logoutUser);
 router.get("/online", UserController.getOnlineUsers);
-router.post("/payment", UserController.userPayment);
+router.post("/payment", UserController.userPayment); //testing
 router.get("/premium", UserController.premium);
-router.put("/edit/:id", upload.single("image"), UserController.editUser);
+router.put("/edit/:id", upload.single("image"), UserController.editUser); //testing
 router.post("/follow/:id", UserController.followUser);
 router.get("/:id", UserController.getUserDetail);
 module.exports = router;
