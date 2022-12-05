@@ -1,4 +1,4 @@
-import styles, { layout } from "../style";
+import styles from "../style";
 import { Navbar, TemplateLanding, GamesCard, Footer } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchGames } from "../store/actions/action";
@@ -10,6 +10,7 @@ const LandingPage = () => {
 
 	useEffect(() => {
 		dispatch(fetchGames());
+		// eslint-disable-next-line
 	}, []);
 
 	return (

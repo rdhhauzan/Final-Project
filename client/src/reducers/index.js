@@ -1,6 +1,8 @@
 const initialState = {
 	games: [],
+	posts: [],
 	users: [],
+	onlineUsers: [],
 	userDetail: {},
 };
 
@@ -11,10 +13,20 @@ export function rootReducer(state = initialState, action) {
 				...state,
 				games: action.payload,
 			};
+		case "posts/setPosts":
+			return {
+				...state,
+				posts: action.payload,
+			};
 		case "users/setUsers":
 			return {
 				...state,
 				users: action.payload,
+			};
+		case "onlineUsers/setOnlineUsers":
+			return {
+				...state,
+				onlineUsers: action.payload,
 			};
 		case "userDetail/setUserDetail":
 			return {
