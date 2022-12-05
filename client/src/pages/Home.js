@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers } from "../store/actions/action";
 
@@ -7,9 +7,11 @@ export default function Home() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const { users } = useSelector((state) => state);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     dispatch(fetchUsers());
+    setLoading(true);
     window.CometChatWidget.init({
       appID: "2269480a5983d987",
       appRegion: "us",
@@ -18,11 +20,11 @@ export default function Home() {
       (response) => {
         console.log("Initialization completed successfully");
         //You can now call login function.
-        CometChatWidget.login({
+        window.CometChatWidget.login({
           uid: localStorage.getItem("uuid"),
         }).then(
           (response) => {
-            CometChatWidget.launch({
+            window.CometChatWidget.launch({
               widgetID: "bf899074-3999-4b4f-b173-1a680d708768",
               docked: "true",
               alignment: "right", //left or right
