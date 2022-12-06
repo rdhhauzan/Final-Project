@@ -36,7 +36,6 @@ export default function Home() {
 		dispatch(fetchPosts);
 		dispatch(fetchUserById(id));
 		dispatch(fetchOnlineUsers());
-		console.log(posts);
 		// eslint-disable-next-line
 	}, []);
 
@@ -68,8 +67,8 @@ export default function Home() {
 							<div className="card-body text-start">
 								<h2 className="card-title">@developer</h2>
 								<p>
-									Please add a game to play together with your new teammates!
-									Never play alone, and share the joy to your post!{" "}
+									Please add a game to play together with your new teammates and
+									make a post to see other's posts.{" "}
 								</p>
 								<figure className="pt-5">
 									<img
