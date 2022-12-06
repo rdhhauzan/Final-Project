@@ -5,24 +5,25 @@ import { addPost, fetchGames } from "../store/actions/action";
 import Swal from "sweetalert2";
 
 export default function ModalPost() {
-	const navigation = useNavigate();
-	const dispatch = useDispatch();
-	const { games } = useSelector((state) => state);
-	const [postInput, setPostInput] = useState({
-		title: "",
-		content: "",
-		GameId: "1",
-		image: "",
-	});
+  const navigation = useNavigate();
+  const dispatch = useDispatch();
+  const { games } = useSelector((state) => state);
+  const [postInput, setPostInput] = useState({
+    title: "",
+    content: "",
+    GameId: "1",
+    image: "",
+  });
 
-	const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
 
-	useEffect(() => {
-		dispatch(fetchGames());
-	}, []);
+  useEffect(() => {
+    dispatch(fetchGames());
+  }, []);
 
-	const handleChange = (e) => {
-		let { name, value } = e.target;
+  const handleChange = (e) => {
+    let { name, value } = e.target;
 
 		if (name === "image") {
 			let image = e.target.files[0];
@@ -33,29 +34,39 @@ export default function ModalPost() {
 			[name]: value,
 		});
 	};
+    if (name === "image") {
+      let image = e.target.files[0];
+      value = image;
+    }
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		if (
-			postInput.title === "" ||
-			postInput.content === "" ||
-			postInput.GameId === ""
-		) {
-			Swal.fire({
-				title: "Fields cannot be empty!",
-				icon: "warning",
-				text: "Please fill in all the fields to post!",
-				background: "#303030",
-				color: "#FFFFFF",
-				confirmButtonColor: "#D7385E",
-				confirmButtonText: "OK",
-			});
-		} else {
-			let formData = new FormData();
-			formData.append("title", postInput.title);
-			formData.append("content", postInput.content);
-			formData.append("GameId", postInput.GameId);
-			if (postInput.image) formData.append("image", postInput.image);
+    setPostInput({
+      ...postInput,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (
+      postInput.title === "" ||
+      postInput.content === "" ||
+      postInput.GameId === ""
+    ) {
+      Swal.fire({
+        title: "Fields cannot be empty!",
+        icon: "warning",
+        text: "Please fill in all the fields to post!",
+        background: "#303030",
+        color: "#FFFFFF",
+        confirmButtonColor: "#D7385E",
+        confirmButtonText: "OK",
+      });
+    } else {
+      let formData = new FormData();
+      formData.append("title", postInput.title);
+      formData.append("content", postInput.content);
+      formData.append("GameId", postInput.GameId);
+      if (postInput.image) formData.append("image", postInput.image);
 
 			dispatch(addPost(formData))
 				.then(() => {
