@@ -1,8 +1,7 @@
-import { json, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchUserById } from "../store/actions/action";
-
+import { editUser, fetchUserById } from "../store/actions/action";
 export default function Profile() {
   const dispatch = useDispatch();
   const id = localStorage.getItem("id");
@@ -11,8 +10,9 @@ export default function Profile() {
   const { userDetail } = useSelector((state) => state);
   const [form, setForm] = useState({
     username: userDetail?.user?.username,
-    password: userDetail?.user?.password,
+    password: "",
     domisili: userDetail?.user?.domisili,
+    image: "",
   });
 
   useEffect(() => {
@@ -20,10 +20,23 @@ export default function Profile() {
     // eslint-disable-next-line
   }, []);
 
-  const onSubmitHandler = () => {};
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+    let formData = new FormData();
+    formData.append("username", form.username);
+    formData.append("password", form.password);
+    formData.append("domisili", form.domisili);
+    if (form.image) formData.append("image", form.image);
+    dispatch(editUser(formData, userDetail?.user?.id));
+  };
 
   const onChangeHandler = (event) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+    if (name === "image") {
+      let image = event.target.files[0];
+      value = image;
+    }
+    console.log(form);
     setForm({ ...form, [name]: value });
   };
 
@@ -54,6 +67,7 @@ export default function Profile() {
           <form
             className="flex flex-col w-full basis-1/4 transition-all"
             enctype="multipart/form-data"
+            onSubmit={onSubmitHandler}
           >
             <div className="flex mt-10 justify-center">
               <label
@@ -62,9 +76,15 @@ export default function Profile() {
               >
                 <div className="flex flex-col">Icon</div>
               </label>
-              <input id="upload" type="file" className="hidden" />
+              <input
+                id="upload"
+                type="file"
+                className="hidden"
+                name="image"
+                onChange={onChangeHandler}
+              />
               <img
-                src="https://i.imgur.com/qAFLT3Z.jpeg"
+                src={userDetail?.user?.profPict}
                 className="w-40 h-40 rounded-full"
                 alt="placeholder profile"
               ></img>
@@ -78,6 +98,7 @@ export default function Profile() {
                     className="rounded-md"
                     name="username"
                     value={form.username}
+                    onChange={onChangeHandler}
                   />
                 </div>
                 <div className="flex flex-col text-center">
@@ -87,15 +108,17 @@ export default function Profile() {
                     className="rounded-md"
                     name="password"
                     value={form.password}
+                    onChange={onChangeHandler}
                   />
                 </div>
                 <div className="flex flex-col text-center">
-                  <label htmlFor="domicile">Domicile</label>
+                  <label htmlFor="domisili">Domicile</label>
                   <input
-                    type="domicile"
+                    type="text"
                     className="rounded-md"
-                    name="domicile"
+                    name="domisili"
                     value={form.domisili}
+                    onChange={onChangeHandler}
                   />
                 </div>
                 <div className="flex flex-row justify-between">
@@ -125,7 +148,7 @@ export default function Profile() {
           <div className="flex flex-col w-full basis-1/4 transition-all">
             <div className="flex mt-10 justify-center">
               <img
-                src="https://i.imgur.com/qAFLT3Z.jpeg"
+                src={userDetail?.user?.profPict}
                 className="w-40 h-40 rounded-full"
                 alt="placeholder profile"
               ></img>
