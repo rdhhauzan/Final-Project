@@ -278,7 +278,7 @@ class UserController {
                       <tbody>
                         <tr>
                         <td align="center" bgcolor="#D7385E " class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;">
-                          <a href="https://final-project-production.up.railway.app/verify/${uniqueStr}" style="background-color:#D7385E  ; border:1px solid #D7385E  ; border-color:#D7385E  ; border-radius:0px; border-width:1px; color:white; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Verify Email Now</a>
+                          <a href="https://final-project-production.up.railway.app/users/verify/${uniqueStr}" style="background-color:#D7385E  ; border:1px solid #D7385E  ; border-color:#D7385E  ; border-radius:0px; border-width:1px; color:white; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Verify Email Now</a>
                         </td>
                         </tr>
                       </tbody>
@@ -509,10 +509,14 @@ class UserController {
   static async verifyAccount(req, res, next) {
     try {
       const { uniqueStr } = req.params;
-      let payload = verifyToken(uniqueStr);
-      const foundUser = await User.findOne({ where: { email: payload } });
+      verifyToken(uniqueStr);
+      // const foundUser = await User.findOne({ where: { email: payload.email } });
+      // if (!foundUser) {
+      //   throw {name: "NOT_FOUND"}
+      // }
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
+      // res.redirect("https://www.google.com/") //redirect ke login page client
     } catch (error) {
       next(error);
     }
