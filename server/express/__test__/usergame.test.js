@@ -9,6 +9,13 @@ let Game1 = {
   rankList: [1, 2, 3, 4, 5, 6, 7, 8],
   roleList: ["Jungler", "Roamer", "Exp Lane", "Mid Lane", "Gold Lane"],
 };
+let Game2 = {
+  name: "Test Game",
+  platform: ["Mobile"],
+  maxPlayers: 5,
+  rankList: [1, 2, 3, 4, 5, 6, 7, 8],
+  roleList: ["Jungler", "Roamer", "Exp Lane", "Mid Lane", "Gold Lane"],
+};
 
 let validToken;
 let validToken1;
@@ -65,14 +72,16 @@ beforeAll((done) => {
         id: result.id,
       });
       return Game.create(Game1).then(() => {
-        return UserGame.create(usergames1).then(() => {
-          return UserGame.create(usergames3)
-            .then(() => {
-              done();
-            })
-            .catch((err) => {
-              done(err);
-            });
+        return Game.create(Game2).then(() => {
+          return UserGame.create(usergames1).then(() => {
+            return UserGame.create(usergames3)
+              .then(() => {
+                done();
+              })
+              .catch((err) => {
+                done(err);
+              });
+          });
         });
       });
     });
@@ -153,9 +162,9 @@ test("404 failed to get  user game by id", (done) => {
     });
 });
 
-test("201 Success create  user game", (done) => {
+test("201 Success create user game", (done) => {
   request(app)
-    .post("/usergames/1")
+    .post("/usergames/2")
     .set("access_token", validToken)
     .send(usergames2)
     .then((response) => {
@@ -166,6 +175,23 @@ test("201 Success create  user game", (done) => {
         "msg",
         "Your game info has been successfully created!"
       );
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("400 Success create user game", (done) => {
+  request(app)
+    .post("/usergames/1")
+    .set("access_token", validToken)
+    .send(usergames2)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(400);
+      expect(body).toHaveProperty("msg", "You already have this game info!");
       done();
     })
     .catch((err) => {

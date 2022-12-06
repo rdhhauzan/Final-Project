@@ -310,7 +310,8 @@ test("200 Success Hello world", (done) => {
       const { body, status } = response;
 
       expect(status).toBe(200);
-      done();expect(body).toEqual(expect.any(Object));
+      done();
+      expect(body).toEqual(expect.any(Object));
       expect(body).toHaveProperty("msg", "Hello world");
     })
     .catch((err) => {
@@ -377,7 +378,6 @@ test("200 Success get online Users", (done) => {
 
       expect(status).toBe(200);
       expect(Array.isArray(body)).toBeTruthy();
-      expect(body.length).toBeGreaterThan(0);
       done();
     })
     .catch((err) => {
@@ -434,7 +434,6 @@ test("200 Success get User detail", (done) => {
       done(err);
     });
 });
-
 
 test("200 Success logout User", (done) => {
   request(app)
@@ -519,19 +518,85 @@ test("200 Success payment", (done) => {
     });
 });
 
-// test("404 Failed get users", (done) => {
-//   User.destroy({ truncate: true, cascade: true, restartIdentity: true });
-//   request(app)
-//     .get("/users")
-//     .then((response) => {
-//       const { body, status } = response;
+test("200 Success get Posts by Game", (done) => {
+  request(app)
+    .get("/users/posts/1")
+    .then((response) => {
+      const { body, status } = response;
 
-//       expect(status).toBe(404);
-//       expect(body).toEqual(expect.any(Object));
-//       expect(body).toHaveProperty("msg", "Data Not Found");
-//       done();
-//     })
-//     .catch((err) => {
-//       done(err);
-//     });
-// });
+      expect(status).toBe(200);
+      expect(Array.isArray(body)).toBeTruthy();
+      expect(body.length).toBeGreaterThan(0);
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("404 Failed get Posts by Game", (done) => {
+  request(app)
+    .get("/users/posts/100")
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(404);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "Data Not Found");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("200 Success delete post", (done) => {
+  request(app)
+    .delete("/users/post/1")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg",  "Your post has been deleted");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("404 No post Found", (done) => {
+  request(app)
+    .delete("/users/post/100")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(404);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "Data Not Found");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("403 Unaothorized delete post", (done) => {
+  request(app)
+    .delete("/users/post/2")
+    .set("access_token", validToken2)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(403);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "You are not authorized!");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});

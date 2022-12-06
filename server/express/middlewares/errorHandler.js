@@ -61,6 +61,12 @@ const errorHandler = (err, req, res, next) => {
       });
       break;
 
+    case "UNAUTHORIZED":
+      res.status(403).json({
+        msg: "You are not authorized!",
+      });
+      break;
+
     default:
       res.status(500).json({
         msg: "Internal Server Error",
