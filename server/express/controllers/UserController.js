@@ -516,6 +516,7 @@ class UserController {
       // }
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
+      // res.redirect("https://www.google.com/") //redirect ke login page client
     } catch (error) {
       next(error);
     }
