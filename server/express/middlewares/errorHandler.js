@@ -55,6 +55,12 @@ const errorHandler = (err, req, res, next) => {
       });
       break;
 
+    case "USERGAME_EXISTS":
+      res.status(400).json({
+        msg: "You already have this game info!",
+      });
+      break;
+
     default:
       res.status(500).json({
         msg: "Internal Server Error",
