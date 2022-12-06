@@ -29,6 +29,8 @@ let Game1 = {
 };
 
 let uniqueStr1 = "user.test@mail.com";
+let email = "user.test2@mail.com";
+let uniqueStr3 = "user.test3@mail.com";
 let validToken;
 let validToken2;
 const user1 = {
@@ -39,7 +41,8 @@ const user1 = {
   domisili: "Address",
   gender: "male",
   isLogin: false,
-  uniqueStr: createToken(uniqueStr1),
+  isValid: true,
+  uniqueStr: createToken({uniqueStr1}),
 };
 const user2 = {
   email: "user.test2@mail.com",
@@ -48,7 +51,8 @@ const user2 = {
   dob: "01/01/2022",
   domisili: "Address",
   gender: "male",
-  uniqueStr: createToken(uniqueStr1),
+  uniqueStr: createToken({email}),
+  isValid: true,
   isLogin: false,
 };
 const user3 = {
@@ -59,7 +63,7 @@ const user3 = {
   domisili: "Address",
   gender: "male",
   isLogin: false,
-  uniqueStr: createToken(uniqueStr1),
+  uniqueStr: createToken({uniqueStr3}),
 };
 const user4 = {
   email: "user.test4@mail.com",
@@ -69,7 +73,6 @@ const user4 = {
   domisili: "Address",
   gender: "male",
   isLogin: false,
-  uniqueStr: createToken(uniqueStr1),
 };
 
 beforeAll((done) => {
@@ -265,8 +268,8 @@ test("Bad Request Password Empty, 400", async () => {
 describe("Test verify users", () => {
   test("200 - Successfully Verify users", async () => {
     let response = await request(app)
-      .get(`/users/verify/${user1.uniqueStr}`)
-      .send(user1);
+      .get(`/users/verify/${user2.uniqueStr}`)
+      .send(user2);
     expect(response.statusCode).toBe(200);
     expect(response.body).toBeInstanceOf(Object);
     expect(response.body).toHaveProperty(
