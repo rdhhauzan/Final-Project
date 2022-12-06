@@ -212,22 +212,6 @@ export function fetchUserById(id) {
 
 export function addPost(payload) {
 	return (dispatch) => {
-		axios({
-			method: "POST",
-			url: `${URL}/users/post`,
-			data: payload,
-			headers: {
-				access_token: localStorage.getItem("access_token"),
-				"Content-Type": "multipart/form-data",
-				"Access-Control-Allow-Origin": "*",
-			},
-			body: FormData,
-		});
-	};
-}
-
-export function addPost(payload) {
-	return (dispatch) => {
 		return axios({
 			method: "POST",
 			url: `${URL}/users/post`,
