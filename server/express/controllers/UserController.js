@@ -392,32 +392,46 @@ class UserController {
   }
   static async editUser(req, res, next) {
     const { username, email, password, dob, domisili, gender } = req.body;
-    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+    let { id } = req.params;
+    let buffer;
     try {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: "profile pictures" },
-        async (error, result) => {
-          if (error) throw { name: "INVALID_ACCESS" };
-          try {
-            let profPict = result.secure_url;
-            let { id } = req.params;
-            let payload = {
-              username,
-              email,
-              password,
-              dob,
-              domisili,
-              gender,
-              profPict,
-            };
-            await User.update(payload, { where: { id } });
-            res.status(200).json({ msg: "Profile sucessfully updated" });
-          } catch (error) {
-            next(error);
+      if (req.file) {
+        buffer = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "profile pictures" },
+          async (error, result) => {
+            if (error) throw { name: "INVALID_ACCESS" };
+            try {
+              let profPict = result.secure_url;
+              let payload = {
+                username,
+                email,
+                password,
+                dob,
+                domisili,
+                gender,
+                profPict,
+              };
+              await User.update(payload, { where: { id } });
+              res.status(200).json({ msg: "Profile sucessfully updated" });
+            } catch (error) {
+              next(error);
+            }
           }
-        }
-      );
-      bufferToStream(data).pipe(stream);
+        );
+        bufferToStream(buffer).pipe(stream);
+      } else {
+        let payload = {
+          username,
+          email,
+          password,
+          dob,
+          domisili,
+          gender,
+        };
+        await User.update(payload, { where: { id } });
+        res.status(200).json({ msg: "Profile sucessfully updated" });
+      }
     } catch (error) {
       next(error);
     }
@@ -539,59 +553,75 @@ class UserController {
   }
 
   static async addPost(req, res, next) {
-    // const t = await sequelize.transaction();
     let { title, content, GameId } = req.body;
-    const data = await sharp(req.file.buffer).webp({ quality: 20 }).toBuffer();
     try {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: "posts" },
-        async (error, result) => {
-          if (error) throw { name: "INVALID_ACCESS" };
-          try {
-            const axios = require("axios");
+      if (req.file) {
+        let buffer = await sharp(req.file.buffer)
+          .webp({ quality: 20 })
+          .toBuffer();
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "posts" },
+          async (error, result) => {
+            if (error) throw { name: "INVALID_ACCESS" };
+            try {
+              const options = {
+                method: "GET",
+                url: "https://community-purgomalum.p.rapidapi.com/json",
+                params: {
+                  text: content,
+                  add: "anjing,ngentot,bangsat,bajingan,babi,fuck,kontol,tolol,memek,goblok",
+                },
+                headers: {
+                  "X-RapidAPI-Key": process.env.PURGOMALUM_API,
+                  "X-RapidAPI-Host": "community-purgomalum.p.rapidapi.com",
+                },
+              };
+              let { data } = await axios.request(options);
 
-            const options = {
-              method: "GET",
-              url: "https://community-purgomalum.p.rapidapi.com/json",
-              params: {
-                text: content,
-                add: "anjing,ngentot,bangsat,bajingan,babi,fuck,kontol,tolol,memek,goblok",
-              },
-              headers: {
-                "X-RapidAPI-Key": process.env.PURGOMALUM_API,
-                "X-RapidAPI-Host": "community-purgomalum.p.rapidapi.com",
-              },
-            };
-            let { data } = await axios.request(
-              options
-              // { transaction: t }
-            );
-
-            content = data.result;
-            let imgUrl = result.secure_url;
-            let payload = {
-              title,
-              content,
-              GameId,
-              imgUrl,
-              UserId: req.user.id,
-            };
-            await Post.create(
-              payload
-              // { transaction: t }
-            );
-            // await t.commit();
-            res.status(200).json({ msg: "Post sucessfully updated" });
-          } catch (error) {
-            // await t.rollback();
-            next(error);
+              content = data.result;
+              let imgUrl = result.secure_url;
+              let payload = {
+                title,
+                content,
+                GameId,
+                imgUrl,
+                UserId: req.user.id,
+              };
+              await Post.create(payload);
+              res.status(200).json({ msg: "Post sucessfully updated" });
+            } catch (error) {
+              next(error);
+            }
           }
-        }
-        // { transaction: t }
-      );
-      bufferToStream(data).pipe(stream);
+        );
+
+        bufferToStream(buffer).pipe(stream);
+      } else {
+        const options = {
+          method: "GET",
+          url: "https://community-purgomalum.p.rapidapi.com/json",
+          params: {
+            text: content,
+            add: "anjing,ngentot,bangsat,bajingan,babi,fuck,kontol,tolol,memek,goblok",
+          },
+          headers: {
+            "X-RapidAPI-Key": process.env.PURGOMALUM_API,
+            "X-RapidAPI-Host": "community-purgomalum.p.rapidapi.com",
+          },
+        };
+        let { data } = await axios.request(options);
+
+        content = data.result;
+        let payload = {
+          title,
+          content,
+          GameId,
+          UserId: req.user.id,
+        };
+        await Post.create(payload);
+        res.status(200).json({ msg: "Post sucessfully updated" });
+      }
     } catch (error) {
-      // await t.rollback();
       next(error);
     }
   }
@@ -772,7 +802,6 @@ class UserController {
       });
       res.status(200).json(postGame);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
