@@ -38,6 +38,7 @@ const user1 = {
   dob: "01/01/2022",
   domisili: "Address",
   gender: "male",
+  isLogin: false,
   uniqueStr: createToken(uniqueStr1),
 };
 const user2 = {
@@ -48,6 +49,7 @@ const user2 = {
   domisili: "Address",
   gender: "male",
   uniqueStr: createToken(uniqueStr1),
+  isLogin: false,
 };
 const user3 = {
   email: "user.test3@mail.com",
@@ -56,6 +58,7 @@ const user3 = {
   dob: "01/01/2022",
   domisili: "Address",
   gender: "male",
+  isLogin: false,
   uniqueStr: createToken(uniqueStr1),
 };
 const user4 = {
@@ -65,6 +68,7 @@ const user4 = {
   dob: "01/01/2022",
   domisili: "Address",
   gender: "male",
+  isLogin: false,
   uniqueStr: createToken(uniqueStr1),
 };
 
@@ -336,6 +340,85 @@ test("200 Success get users", (done) => {
     });
 });
 
+it("Should return error when get users", (done) => {
+  jest.spyOn(User, "findAll").mockRejectedValue("Error");
+  request(app)
+    .get("/users/")
+    .set("access_token", validToken)
+    .then((res) => {
+      // expect your response here
+      expect(res.status).toBe(500);
+      expect(res.body.msg).toBe("Internal Server Error");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+it("Should return error when update premium", (done) => {
+  jest.spyOn(User, "update").mockRejectedValue("Error");
+  request(app)
+    .get("/users/premium")
+    .set("access_token", validToken)
+    .then((res) => {
+      // expect your response here
+      expect(res.status).toBe(500);
+      expect(res.body.msg).toBe("Internal Server Error");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+it("Should return error when get Posts", (done) => {
+  jest.spyOn(Post, "findAll").mockRejectedValue("Error");
+  request(app)
+    .get("/users/posts")
+    .then((res) => {
+      // expect your response here
+      expect(res.status).toBe(500);
+      expect(res.body.msg).toBe("Internal Server Error");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+it("Should return error when delete Posts", (done) => {
+  jest.spyOn(Post, "destroy").mockRejectedValue("Error");
+  request(app)
+    .delete("/users/post/1")
+    .set("access_token", validToken)
+    .then((res) => {
+      // expect your response here
+      expect(res.status).toBe(500);
+      expect(res.body.msg).toBe("Internal Server Error");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+it("Should return error when get users", (done) => {
+  jest.spyOn(User, "findAll").mockRejectedValue("Error");
+  request(app)
+    .get("/users/online")
+    .set("access_token", validToken)
+    .then((res) => {
+      // expect your response here
+      expect(res.status).toBe(500);
+      expect(res.body.msg).toBe("Internal Server Error");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
 test("401 Failed get users Invalid Token", (done) => {
   request(app)
     .get("/users")
@@ -451,6 +534,23 @@ test("200 Success logout User", (done) => {
     });
 });
 
+test("400 Failed logout User", (done) => {
+  request(app)
+    .get(`/users/logout`)
+    .set("access_token", validToken)
+    .send({ isLogin: false })
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(400);
+      expect(body).toHaveProperty("msg", "Invalid email / Password");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
 test("404 No User detail", (done) => {
   request(app)
     .get(`/users/99`)
@@ -559,7 +659,7 @@ test("200 Success delete post", (done) => {
 
       expect(status).toBe(200);
       expect(body).toEqual(expect.any(Object));
-      expect(body).toHaveProperty("msg",  "Your post has been deleted");
+      expect(body).toHaveProperty("msg", "Your post has been deleted");
       done();
     })
     .catch((err) => {

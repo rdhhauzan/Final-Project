@@ -596,9 +596,6 @@ class UserController {
   static async logoutUser(req, res, next) {
     try {
       let user = await User.findByPk(req.user.id);
-      if (!user) {
-        throw { name: "INVALID_ACCESS" };
-      }
       if (!user.isLogin) {
         throw { name: "INVALID_ACCESS" };
       }
@@ -781,10 +778,6 @@ class UserController {
   static async deletePost(req, res, next) {
     try {
       let { id } = req.params;
-      let post = await Post.findByPk(id);
-      if (!post) {
-        throw { name: "NOT_FOUND" };
-      }
       await Post.destroy({ where: { id } });
       res.status(200).json({ msg: "Your post has been deleted" });
     } catch (error) {
