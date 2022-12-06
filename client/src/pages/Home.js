@@ -113,7 +113,7 @@ export default function Home() {
               <div>
                 <div className="flex flex-row">
                   <p className="mt-5">@{userDetail?.user?.username}</p>
-                  {userDetail.user.isPremium ? (
+                  {userDetail?.user?.isPremium ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -141,7 +141,7 @@ export default function Home() {
                 >
                   Add a Game
                 </button>
-                {userDetail.user.isPremium ? null : (
+                {userDetail?.user?.isPremium ? null : (
                   <button
                     className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 text-sm"
                     onClick={() => dispatch(payment())}
