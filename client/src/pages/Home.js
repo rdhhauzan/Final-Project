@@ -5,54 +5,41 @@ import {
 	fetchPosts,
 	fetchUserById,
 	fetchOnlineUsers,
-	fetchGames,
-	addPost,
 } from "../store/actions/action";
+import ModalPost from "./ModalPost";
+import Swal from "sweetalert2";
 
 export default function Home() {
 	const dispatch = useDispatch();
 	const navigation = useNavigate();
 	const id = localStorage.getItem("id");
-	const { userDetail, posts, onlineUsers, games } = useSelector(
-		(state) => state
-	);
-	const [postInput, setPostInput] = useState({
-		title: "",
-		content: "",
-		GameId: "",
-		image: "",
-	});
+	const { userDetail, posts, onlineUsers } = useSelector((state) => state);
+	const [show, setShow] = useState(false);
 
-	const handleChange = (e) => {
-		let { name, value } = e.target;
-
-		if (name === "image") {
-			let image = e.target.files[0];
-			value = image;
-		}
-
-		setPostInput({
-			...postInput,
-			[name]: value,
-		});
-	};
-
-	const handleSubmit = (e) => {
+	const handleClose = () => setShow(false);
+	const handleShow = () => setShow(true);
+	const logout = (e) => {
 		e.preventDefault();
-		let formData = new FormData();
-		formData.append("title", postInput.title);
-		formData.append("content", postInput.content);
-		formData.append("GameId", postInput.GameId);
-		formData.append("image", postInput.image);
-		dispatch(addPost(formData));
+		localStorage.clear();
+		Swal.fire({
+			title: "Logged Out",
+			text: "Please login to find friends to play with.",
+			background: "#303030",
+			color: "#FFFFFF",
+			confirmButtonColor: "#D7385E",
+		});
+		navigation("/");
 	};
 
 	useEffect(() => {
-		dispatch(fetchPosts());
 		dispatch(fetchUserById(id));
 		dispatch(fetchOnlineUsers());
-		dispatch(fetchGames());
 		// eslint-disable-next-line
+		console.log(onlineUsers);
+	}, []);
+
+	useEffect(() => {
+		dispatch(fetchPosts());
 	}, []);
 
 	return (
@@ -98,100 +85,11 @@ export default function Home() {
 								<div className="flex justify-end">
 									<label
 										htmlFor="modal-post"
-										className="btn bg-[#D7385E] text-slate-200">
+										className="btn bg-[#D7385E] text-slate-200"
+										onClick={handleShow}>
 										Make a Post
 									</label>
-
-									{/* Modal post */}
-									<form onSubmit={handleSubmit}>
-										<input
-											type="checkbox"
-											id="modal-post"
-											className="modal-toggle"
-										/>
-										<label
-											htmlFor="modal-post"
-											className="modal cursor-pointer">
-											<label className="modal-box relative">
-												<div>
-													<h1 className="mb-2 text-2xl">
-														{" "}
-														Share your game result!{" "}
-													</h1>
-												</div>
-												<div>
-													<div className="flex">
-														<p className="flex mr-5 items-center"> Title</p>
-														<input
-															name="title"
-															onChange={handleChange}
-															className="flex text-start my-3 w-full outline outline-1 rounded-sm"
-														/>
-													</div>
-													<div className="flex justify-between my-3">
-														<p className="my-1"> Content</p>
-														<select
-															name="GameId"
-															onChange={handleChange}
-															className="select select-bordered select-sm max-w-xs">
-															<option disabled selected>
-																{" "}
-																Pick Games
-															</option>
-															{games.map((game) => {
-																return (
-																	<option value={game.id} key={game.id}>
-																		{game.name}
-																	</option>
-																);
-															})}
-														</select>
-													</div>
-													<textarea
-														name="content"
-														onChange={handleChange}
-														className="w-full outline outline-1 rounded-sm"
-													/>
-													<div className="flex justify-end gap-3 mt-2">
-														<input
-															className="hidden"
-															type="file"
-															name="image"
-															onChange={handleChange}
-															id="upload-image"
-														/>
-														<label
-															htmlFor="upload-image"
-															className="btn bg-[#D7385E] text-slate-200">
-															{" "}
-															<svg
-																xmlns="http://www.w3.org/2000/svg"
-																fill="none"
-																viewBox="0 0 24 24"
-																strokeWidth={1.5}
-																stroke="currentColor"
-																className="w-6 h-6">
-																<path
-																	strokeLinecap="round"
-																	strokeLinejoin="round"
-																	d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
-																/>
-																<path
-																	strokeLinecap="round"
-																	strokeLinejoin="round"
-																	d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
-																/>
-															</svg>
-														</label>
-														<button className="btn bg-[#D7385E] text-slate-200">
-															{" "}
-															Post{" "}
-														</button>
-													</div>
-												</div>
-											</label>
-										</label>
-									</form>
+									<ModalPost key={userDetail.id} />
 								</div>
 							</div>
 						</div>
@@ -199,7 +97,7 @@ export default function Home() {
 				</div>
 				{/* Profile + Online users + Group + Recommended Friends section */}
 				<div className="flex flex-col w-full xl:mt-0 2xs:my-4 basis-4/12">
-					<div className="card w-full bg-[#303030] rounded-sm flex">
+					<div className="card w-full bg-[#262525] rounded-sm flex">
 						<div className="card-title sticky top-0 items-start bg-[#D7385E]">
 							<div>
 								<figure className="flex">
@@ -212,28 +110,49 @@ export default function Home() {
 							</div>
 							<div>
 								<p className="mt-5">@{userDetail?.user?.username}</p>
+
 								<button
-									className="btn btn-sm mx-1 rounded-full text-slate-200 font-normal mt-2 text-sm"
+									className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 text-sm"
 									onClick={() => navigation("/profile")}>
 									Profile
 								</button>
 								<button
-									className="btn btn-sm mx-1 rounded-full text-slate-200 font-normal mt-2 text-sm"
+									className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 text-sm"
 									onClick={() => navigation("/addgame")}>
 									Add a Game
 								</button>
 							</div>
+							<button
+								className="btn absolute right-0 bg-transparent border-0 rounded-md hover:bg-transparent hover:border-0"
+								onClick={logout}>
+								{" "}
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth={1.5}
+									stroke="white"
+									className="w-6 h-6 hover:scale-125">
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+									/>
+								</svg>
+							</button>
 						</div>
 						{onlineUsers.map((onlineUser) => {
 							return (
 								<div className="card-body flex flex-row mx-5 justify-between text-start">
 									<div className="flex flex-row gap-3">
 										<img
-											src={onlineUser.profPict}
+											src={onlineUser.userData.profPict}
 											className="self-center h-10 w-10"
 											alt="profile pict"
 										/>
-										<p className="self-center">{onlineUser.username}</p>
+										<p className="self-center">
+											{onlineUser.userData.username}
+										</p>
 									</div>
 									<div className="flex items-end text-end">
 										<button className="btn btn-primary rounded-sm">+</button>
