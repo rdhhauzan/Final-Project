@@ -222,7 +222,11 @@ export function addPost(payload) {
 				"Access-Control-Allow-Origin": "*",
 			},
 			body: FormData,
-		}).then(() => dispatch(fetchPosts()));
+		})
+			.then(() => {
+				dispatch(fetchPosts());
+			})
+			.catch((error) => console.log(error));
 	};
 }
 
@@ -270,6 +274,8 @@ export function payment() {
 					);
 				},
 			});
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 }

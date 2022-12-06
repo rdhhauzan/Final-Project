@@ -5,10 +5,10 @@ import {
 	fetchPosts,
 	fetchUserById,
 	fetchOnlineUsers,
-	payment,
 } from "../store/actions/action";
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
+import PremiumCard from "../components/PremiumCard";
 
 export default function Home() {
 	const dispatch = useDispatch();
@@ -33,21 +33,18 @@ export default function Home() {
 	};
 
 	useEffect(() => {
+		dispatch(fetchPosts);
 		dispatch(fetchUserById(id));
 		dispatch(fetchOnlineUsers());
+		console.log(posts);
 		// eslint-disable-next-line
-		console.log(onlineUsers);
-	}, []);
-
-	useEffect(() => {
-		dispatch(fetchPosts());
 	}, []);
 
 	return (
 		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen font-chakra">
 			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
-					{posts.length > 0 ? (
+					{userDetail?.user?.Posts.length > 0 ? (
 						posts.map((post) => {
 							return (
 								<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
@@ -58,7 +55,7 @@ export default function Home() {
 											<img
 												src={post.imgUrl}
 												alt="Shoes"
-												className="rounded-xl w-full min-h-full"
+												className="rounded-xl w-full"
 											/>
 										</figure>
 									</div>
@@ -101,7 +98,7 @@ export default function Home() {
 							<div>
 								<figure className="flex">
 									<img
-										src="https://i.imgur.com/qAFLT3Z.jpeg"
+										src={userDetail?.user?.profPict}
 										alt="Shoes"
 										className="mx-5 my-3 w-20 h-20 rounded-full"
 									/>
@@ -135,14 +132,6 @@ export default function Home() {
 									onClick={() => navigation("/addgame")}>
 									Add a Game
 								</button>
-								{/* {userDetail?.user?.isPremium ? null : (
-                  <button
-                    className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 text-sm"
-                    onClick={() => dispatch(payment())}
-                  >
-                    Go Premium
-                  </button>
-                )} */}
 							</div>
 							<button
 								className="btn absolute right-0 bg-transparent border-0 rounded-md hover:bg-transparent hover:border-0"
@@ -183,19 +172,7 @@ export default function Home() {
 							);
 						})}
 					</div>
-					{userDetail?.user?.isPremium ? null : (
-						<div className="flex flex-col items-center justify-center bg-[#262525] shadow-md shadow-black rounded-sm">
-							<p className="text-lg mt-3">
-								{" "}
-								Be a premium member to form a group!{" "}
-							</p>
-							<button
-								className="btn btn-sm mx-1 rounded-full bg-[#D7385E] hover:scale-105 text-slate-200 font-normal my-2 text-sm"
-								onClick={() => dispatch(payment())}>
-								Go Premium
-							</button>
-						</div>
-					)}
+					{userDetail?.user?.isPremium ? null : <PremiumCard />}
 				</div>
 			</div>
 		</div>
