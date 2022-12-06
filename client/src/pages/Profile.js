@@ -10,7 +10,7 @@ export default function Profile() {
   const { userDetail } = useSelector((state) => state);
   const [form, setForm] = useState({
     username: userDetail?.user?.username,
-    password: userDetail?.user?.password,
+    password: "",
     domisili: userDetail?.user?.domisili,
     image: "",
   });
@@ -84,7 +84,7 @@ export default function Profile() {
                 onChange={onChangeHandler}
               />
               <img
-                src="https://i.imgur.com/qAFLT3Z.jpeg"
+                src={userDetail?.user?.profPict}
                 className="w-40 h-40 rounded-full"
                 alt="placeholder profile"
               ></img>
@@ -148,7 +148,7 @@ export default function Profile() {
           <div className="flex flex-col w-full basis-1/4 transition-all">
             <div className="flex mt-10 justify-center">
               <img
-                src="https://i.imgur.com/qAFLT3Z.jpeg"
+                src={userDetail?.user?.profPict}
                 className="w-40 h-40 rounded-full"
                 alt="placeholder profile"
               ></img>
