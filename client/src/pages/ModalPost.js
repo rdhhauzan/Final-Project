@@ -30,7 +30,6 @@ export default function ModalPost() {
 			value = image;
 		}
 
-		console.log(postInput);
 		setPostInput({
 			...postInput,
 			[name]: value,

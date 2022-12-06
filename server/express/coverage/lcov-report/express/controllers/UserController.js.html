@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.57% </span>
+                <span class="strong">94.01% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>157/166</span>
+                <span class='fraction'>157/167</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.75% </span>
+                <span class="strong">72.72% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>25/33</span>
+                <span class='fraction'>24/33</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.73% </span>
+                <span class="strong">95.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>157/164</span>
+                <span class='fraction'>157/165</span>
             </div>
         
             
@@ -852,7 +852,10 @@
 <a name='L787'></a><a href='#L787'>787</a>
 <a name='L788'></a><a href='#L788'>788</a>
 <a name='L789'></a><a href='#L789'>789</a>
-<a name='L790'></a><a href='#L790'>790</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<a name='L790'></a><a href='#L790'>790</a>
+<a name='L791'></a><a href='#L791'>791</a>
+<a name='L792'></a><a href='#L792'>792</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -1298,19 +1301,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1643,6 +1647,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { comparePassword } = require("../helpers/bcrypt");
 const { createToken, verifyToken } = require("../helpers/jwt");
+const { Op } = require("sequelize");
 const midtransClient = require("midtrans-client");
 const Google = require("../lib/Google");
 const { User, UserGame, Post, Follow, Game } = require("../models/index");
@@ -1710,8 +1715,8 @@ class UserController {
 &nbsp;
       axios
         .request(options)
-        .then(<span class="fstat-no" title="function not covered" >fu</span>nction (response) {})
-        .catch(function (error) {});
+        .then(function (response) {})
+        .catch(<span class="fstat-no" title="function not covered" >fu</span>nction (error) {});
 &nbsp;
       //SENDGRID
       const sendGridOptions = {
@@ -2082,6 +2087,7 @@ class UserController {
     try {
       let onlineUsers = [];
       let users = await User.findAll({
+        where: { uuid: { [Op.not]: req.user.uuid } },
         include: [
           { model: UserGame, required: false },
           { model: Post, required: false },
@@ -2098,8 +2104,8 @@ class UserController {
         }
       );
 &nbsp;
-      users.forEach((user) =&gt; {
-        data.data.forEach(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
+      users.forEach(<span class="fstat-no" title="function not covered" >(u</span>ser) =&gt; {
+<span class="cstat-no" title="statement not covered" >        data.data.forEach(<span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          if (data.uid == user.uuid) {</span>
 <span class="cstat-no" title="statement not covered" >            onlineUsers.push({ userData: user, cometData: data });</span>
           }
@@ -2116,7 +2122,7 @@ class UserController {
       let { id } = req.params;
       let user = await User.findByPk(id, {
         include: [
-          { model: UserGame, required: false },
+          { model: UserGame, required: false, include: Game },
           { model: Post, required: false, include: Game },
         ],
       });
@@ -2297,8 +2303,8 @@ class UserController {
 &nbsp;
       axios
         .request(options)
-        .then(<span class="fstat-no" title="function not covered" >fu</span>nction (response) {})
-        .catch(function (error) {});
+        .then(function (response) {})
+        .catch(<span class="fstat-no" title="function not covered" >fu</span>nction (error) {});
       const access_token = createToken({ id: user.id });
       res.status(200).json({
         access_token,
@@ -2437,7 +2443,7 @@ module.exports = UserController;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-06T06:01:56.568Z
+                at 2022-12-06T08:17:00.894Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
