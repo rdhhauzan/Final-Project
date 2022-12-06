@@ -457,10 +457,7 @@ class UserController {
 
       users.forEach((user) => {
         data.data.forEach((data) => {
-          console.log(data.uid, user.uuid);
           if (data.uid == user.uuid) {
-            console.log("sama");
-            console.log(data.uid, user.uuid);
             onlineUsers.push({ userData: user, cometData: data });
           }
         });
