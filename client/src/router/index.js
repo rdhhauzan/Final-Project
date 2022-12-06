@@ -11,6 +11,9 @@ const router = createBrowserRouter([
 	{
 		path: "/",
 		element: <LandingPage />,
+		loader: () => {
+			if (localStorage.getItem("access_token")) return redirect("/home");
+		},
 	},
 	{
 		path: "/register",
