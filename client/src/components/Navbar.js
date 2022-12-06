@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { close, menu } from "../assets";
-// import bocchi from "../assets/bocchi.jpg";
 import teamupnologo from "../assets/teamupnologo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+	const navigation = useNavigate();
 	const [toggle, setToggle] = useState(false);
 
 	return (
 		<nav className="w-full flex py-5 justify-between items-center navbar">
-			<img src={teamupnologo} alt="fotologo" className="w-[200px] h-full" />
+			<img
+				src={teamupnologo}
+				alt="fotologo"
+				className="w-[200px] h-full cursor-pointer"
+				onClick={() => navigation("/home")}
+			/>
 			<ul className="list-none sm:flex hidden justify-end items-center flex-1">
 				<li
 					className={`font-poppins font-normal cursor-pointer text-[16px] mr-10 text-white `}>

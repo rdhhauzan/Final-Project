@@ -437,14 +437,32 @@ class UserController {
 
   static async getOnlineUsers(req, res, next) {
     try {
+      let onlineUsers = [];
       let users = await User.findAll({
         include: [
           { model: UserGame, required: false },
           { model: Post, required: false },
         ],
-        where: { isLogin: true },
       });
-      res.status(200).json(users);
+      let { data } = await axios.get(
+        "https://2269480a5983d987.api-us.cometchat.io/v3/users?searchIn=&status=available&perPage=100&page=1&withTags=false",
+        {
+          headers: {
+            apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      users.forEach((user) => {
+        data.data.forEach((data) => {
+          if (data.uid == user.uuid) {
+            onlineUsers.push({ userData: user, cometData: data });
+          }
+        });
+      });
+      res.status(200).json(onlineUsers);
     } catch (error) {
       next(error);
     }
@@ -511,7 +529,9 @@ class UserController {
       axios
         .request(options)
         .then(function (response) {})
-        .catch(function (error) {});
+        .catch(function (error) {
+          console.error(error);
+        });
       res.status(200).json(follow);
     } catch (error) {
       next(error);

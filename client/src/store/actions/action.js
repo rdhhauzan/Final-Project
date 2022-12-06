@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const URL = "http://localhost:3000";
 
@@ -34,6 +35,16 @@ export function setUserDetail(payload) {
   return {
     type: "userDetail/setUserDetail",
     payload,
+  };
+}
+
+export function addUserGame(payload, id) {
+  return async (dispatch) => {
+    axios({
+      method: "post",
+      url: `${URL}/usergame/${id}`,
+      data: payload,
+    });
   };
 }
 
@@ -101,6 +112,17 @@ export function login(payload) {
           //Check the reason for error and take appropriate action.
         }
       );
+      Swal.fire({
+        title: `Welcome, @${data.username}!`,
+        text: "Add a game to your profile to start using TeamUP!",
+        background: "#303030",
+        color: "#FFFFFF",
+        showCancelButton: true,
+        cancelButtonColor: "#D7385E",
+        cancelButtonText: '<a href="/home">Go to home</a>',
+        confirmButtonColor: "#D7385E",
+        confirmButtonText: '<a href="/addgame"> Add a game </a>',
+      });
     } catch (err) {
       console.log(err);
     }
