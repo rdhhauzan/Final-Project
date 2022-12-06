@@ -173,10 +173,26 @@ describe("Add post", () => {
       .attach("image", testImage)
       .expect(200)
       .then((response) => {}));
+  test("Successfully post without jpg image", async () =>
+    request(app)
+      .post("/users/post")
+      .set("access_token", validToken)
+      .field("title", post.title)
+      .field("GameId", post.GameId)
+      .field("content", post.content)
+      .expect(200)
+      .then((response) => {}));
 });
 
 describe("edit profile", () => {
-  test("Successfully post with jpg image", async () =>
+  test("Successfully edit with jpg image", async () =>
+    request(app)
+      .put("/users/edit/1")
+      .set("access_token", validToken)
+      .attach("image", testImage)
+      .expect(200)
+      .then((response) => {}));
+  test("Successfully edit without jpg image", async () =>
     request(app)
       .put("/users/edit/1")
       .set("access_token", validToken)
