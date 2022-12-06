@@ -88,9 +88,9 @@ export default function Register() {
 							</label>
 						</div>
 						<div className="flex flex-row gap-5">
-							{genders.map((gender) => {
+							{genders.map((gender, index) => {
 								return (
-									<div className="flex flex-row gap-2" key={gender.id}>
+									<div className="flex flex-row gap-2" key={index}>
 										<input
 											type="radio"
 											name="gender"
