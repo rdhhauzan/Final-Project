@@ -9,11 +9,23 @@ export default function Profile() {
   const [clicked, setClicked] = useState(false);
 
   const { userDetail } = useSelector((state) => state);
+  const [form, setForm] = useState({
+    username: userDetail?.user?.username,
+    password: userDetail?.user?.password,
+    domisili: userDetail?.user?.domisili,
+  });
 
   useEffect(() => {
     dispatch(fetchUserById(id));
     // eslint-disable-next-line
   }, []);
+
+  const onSubmitHandler = () => {};
+
+  const onChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setForm({ ...form, [name]: value });
+  };
 
   return (
     <div className="flex xl:flex-row 2xs:flex-col text-slate-200 xl:w-full xl:min-h-screen font-poppins">
@@ -65,6 +77,7 @@ export default function Profile() {
                     type="username"
                     className="rounded-md"
                     name="username"
+                    value={form.username}
                   />
                 </div>
                 <div className="flex flex-col text-center">
@@ -73,6 +86,7 @@ export default function Profile() {
                     type="password"
                     className="rounded-md"
                     name="password"
+                    value={form.password}
                   />
                 </div>
                 <div className="flex flex-col text-center">
@@ -81,6 +95,7 @@ export default function Profile() {
                     type="domicile"
                     className="rounded-md"
                     name="domicile"
+                    value={form.domisili}
                   />
                 </div>
                 <div className="flex flex-row justify-between">
@@ -97,9 +112,7 @@ export default function Profile() {
                   <div className="h-full">
                     <button
                       className="btn-sm btn-outline border border-sky-400 rounded-lg text-sky-400 hover:text-white hover:border-sky-400 hover:bg-sky-400 transition-all m-2"
-                      onClick={() => {
-                        setClicked(false);
-                      }}
+                      type="submit"
                     >
                       done
                     </button>
