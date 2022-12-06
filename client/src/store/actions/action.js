@@ -64,6 +64,26 @@ export function addUserGame(payload, id) {
   };
 }
 
+export function editUser(payload, id) {
+  return async (dispatch) => {
+    try {
+      await axios({
+        method: "PUT",
+        url: `${URL}/users/edit/${id}`,
+        data: payload,
+        headers: {
+          access_token: localStorage.getItem("access_token"),
+          "Content-Type": "multipart/form-data",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: FormData,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export function register(payload) {
   return async () => {
     try {
