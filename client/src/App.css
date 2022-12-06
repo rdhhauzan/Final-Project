@@ -5,10 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap');
 
 .app__launcher {
-    border-radius: 50%;
+    background-color: transparent;
     overflow: hidden;
 }
 
-
-
-
+/* .option__videocall-group {
+    display: none;
+} */
