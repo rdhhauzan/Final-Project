@@ -714,11 +714,37 @@ class UserController {
   static async premium(req, res, next) {
     try {
       let { id } = req.user;
+      let { uuid } = req.user;
       // let user = await User.findByPk(id);
       // if (!user) {
       //   throw { name: "NOT_FOUND" };
       // }
       await User.update({ isPremium: true }, { where: { id } });
+      const options = {
+        method: "PUT",
+        url: `https://2269480a5983d987.api-us.cometchat.io/v3/users/${uuid}`,
+        headers: {
+          apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: {
+          metadata: {
+            "@private": {
+              email: "user@email.com",
+              contactNumber: "0123456789",
+            },
+          },
+          role: "premium",
+        },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {})
+        .catch(function (error) {
+          console.error(error);
+        });
       res.status(200).json({ msg: "Your account is now premium" });
     } catch (error) {
       next(error);
