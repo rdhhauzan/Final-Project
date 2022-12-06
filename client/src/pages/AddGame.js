@@ -40,7 +40,7 @@ export default function AddGame() {
     >
       {game ? (
         <div className="m-5 rounded-xl self-center flex flex-col bg-primary bg-opacity-95 py-10">
-          <p className="text-2xl font-poppins font-medium self-center">
+          <p className="text-2xl font-poppins font-medium self-center ">
             Please input your game info
           </p>
           <form
@@ -127,18 +127,10 @@ export default function AddGame() {
         </div>
       ) : (
         <div className="m-5 rounded-xl w-5/6 self-center flex flex-col bg-primary bg-opacity-95">
-          <button
-            className="text-4xl font-poppins font-medium self-end rounded-xl hover:bg-black hover:text-white transition-colors text-white px-2"
-            onClick={() => {
-              navigate("/home");
-            }}
-          >
-            X
-          </button>
-          <p className="text-2xl font-poppins font-medium self-center mt-5 mb-3">
+          <p className="text-2xl font-poppins font-medium self-center mt-10 mb-3">
             What game are you going to play?
           </p>
-          <div className="flex justify-center mb-10">
+          <div className="flex justify-center ">
             <div className="flex flex-wrap w-11/12 justify-around">
               {games.map((e, index) => {
                 return (
@@ -159,6 +151,14 @@ export default function AddGame() {
               })}
             </div>
           </div>
+          <button
+            className="text-xl font-poppins self-center rounded-xl hover:underline transition-colors text-white mb-10"
+            onClick={() => {
+              navigate("/home");
+            }}
+          >
+            {"<< Go Back"}
+          </button>
         </div>
       )}
     </div>

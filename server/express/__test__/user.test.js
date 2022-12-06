@@ -549,3 +549,54 @@ test("404 Failed get Posts by Game", (done) => {
       done(err);
     });
 });
+
+test("200 Success delete post", (done) => {
+  request(app)
+    .delete("/users/post/1")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(200);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg",  "Your post has been deleted");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("404 No post Found", (done) => {
+  request(app)
+    .delete("/users/post/100")
+    .set("access_token", validToken)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(404);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "Data Not Found");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});
+
+test("403 Unaothorized delete post", (done) => {
+  request(app)
+    .delete("/users/post/2")
+    .set("access_token", validToken2)
+    .then((response) => {
+      const { body, status } = response;
+
+      expect(status).toBe(403);
+      expect(body).toEqual(expect.any(Object));
+      expect(body).toHaveProperty("msg", "You are not authorized!");
+      done();
+    })
+    .catch((err) => {
+      done(err);
+    });
+});

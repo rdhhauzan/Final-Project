@@ -40,7 +40,7 @@ export default function Profile() {
       <div className="flex xl:flex-row 2xs:flex-col xl:gap-10 w-screen h-content 2xs:py-5 xl:px-5 2xs:px-2">
         {clicked ? (
           <form
-            className="flex flex-col w-full basis-1/4"
+            className="flex flex-col w-full basis-1/4 transition-all"
             enctype="multipart/form-data"
           >
             <div className="flex mt-10 justify-center">
@@ -109,7 +109,7 @@ export default function Profile() {
             </div>
           </form>
         ) : (
-          <div className="flex flex-col w-full basis-1/4">
+          <div className="flex flex-col w-full basis-1/4 transition-all">
             <div className="flex mt-10 justify-center">
               <img
                 src="https://i.imgur.com/qAFLT3Z.jpeg"
