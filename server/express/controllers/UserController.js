@@ -1,4 +1,4 @@
-const { comparePassword } = require("../helpers/bcrypt");
+const { comparePassword, hashPassword } = require("../helpers/bcrypt");
 const { createToken, verifyToken } = require("../helpers/jwt");
 const { Op } = require("sequelize");
 const midtransClient = require("midtrans-client");
@@ -458,6 +458,7 @@ class UserController {
         include: [
           { model: UserGame, required: false },
           { model: Post, required: false },
+          { model: Follow, required: false },
         ],
       });
       let { data } = await axios.get(
