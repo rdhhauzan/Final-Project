@@ -199,7 +199,12 @@ describe("edit profile", () => {
     request(app)
       .put("/users/edit/1")
       .set("access_token", validToken)
-      .attach("image", testImage)
+      .expect(200)
+      .then((response) => {}));
+  test("Successfully edit with password", async () =>
+    request(app)
+      .put("/users/edit/3")
+      .set("access_token", validToken2)
       .expect(200)
       .then((response) => {}));
 });
