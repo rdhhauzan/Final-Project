@@ -76,7 +76,6 @@ class UserGameController {
       );
       res.status(200).json({ msg: "Your game info has been updated!" });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

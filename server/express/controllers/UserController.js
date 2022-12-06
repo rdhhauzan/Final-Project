@@ -529,9 +529,7 @@ class UserController {
       axios
         .request(options)
         .then(function (response) {})
-        .catch(function (error) {
-          console.error(error);
-        });
+        .catch(function (error) {});
       res.status(200).json(follow);
     } catch (error) {
       next(error);
@@ -733,6 +731,25 @@ class UserController {
       });
       res.status(200).json(posts);
     } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getPostsByGameId(req, res, next) {
+    try {
+      let { id } = req.params;
+      let game = await Game.findByPk(id);
+      if (!game) {
+        throw { name: "NOT_FOUND" };
+      }
+      let postGame = await Post.findAll({
+        where: { GameId: id },
+        include: { all: true, nested: true },
+        order: [["updatedAt", "DESC"]],
+      });
+      res.status(200).json(postGame);
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   }

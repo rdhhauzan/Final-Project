@@ -12,6 +12,7 @@ router.post("/login", UserController.loginUser);
 router.post("/google", UserController.google); 
 router.get("/verify/:uniqueStr", UserController.verifyAccount);
 router.get("/posts", UserController.getPosts);
+router.get("/posts/:id", UserController.getPostsByGameId)
 
 router.use(loginAuth);
 
