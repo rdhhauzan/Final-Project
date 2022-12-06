@@ -40,7 +40,7 @@ export function setUserDetail(payload) {
 
 export function addUserGame(payload, id) {
   return async (dispatch) => {
-    axios({
+    await axios({
       method: "post",
       url: `${URL}/usergame/${id}`,
       data: payload,
