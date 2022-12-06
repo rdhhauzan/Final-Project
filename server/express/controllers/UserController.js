@@ -391,7 +391,10 @@ class UserController {
     }
   }
   static async editUser(req, res, next) {
-    const { username, email, password, dob, domisili, gender } = req.body;
+    let { username, email, password, dob, domisili, gender } = req.body;
+    if (password) {
+      password = hashPassword(password);
+    }
     let { id } = req.params;
     let buffer;
     try {
