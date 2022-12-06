@@ -29,9 +29,8 @@ export default function AddGame() {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
   };
-  const onSubmitHandler = (id) => {
-    console.log(form, id);
-    // dispatch(addUserGame(form));
+  const onSubmitHandler = async (id) => {
+    dispatch(addUserGame(form, id));
   };
   return (
     <div

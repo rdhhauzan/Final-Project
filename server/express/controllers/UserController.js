@@ -1,5 +1,6 @@
 const { comparePassword } = require("../helpers/bcrypt");
 const { createToken, verifyToken } = require("../helpers/jwt");
+const { Op } = require("sequelize");
 const midtransClient = require("midtrans-client");
 const Google = require("../lib/Google");
 const { User, UserGame, Post, Follow, Game } = require("../models/index");
@@ -439,6 +440,7 @@ class UserController {
     try {
       let onlineUsers = [];
       let users = await User.findAll({
+        where: { uuid: { [Op.not]: req.user.uuid } },
         include: [
           { model: UserGame, required: false },
           { model: Post, required: false },
@@ -473,7 +475,7 @@ class UserController {
       let { id } = req.params;
       let user = await User.findByPk(id, {
         include: [
-          { model: UserGame, required: false },
+          { model: UserGame, required: false, include: Game },
           { model: Post, required: false, include: Game },
         ],
       });
