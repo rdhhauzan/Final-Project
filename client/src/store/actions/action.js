@@ -40,11 +40,25 @@ export function setUserDetail(payload) {
 
 export function addUserGame(payload, id) {
   return async (dispatch) => {
-    await axios({
-      method: "post",
-      url: `${URL}/usergame/${id}`,
-      data: payload,
-    });
+    try {
+      await axios({
+        method: "post",
+        url: `${URL}/usergames/${id}`,
+        data: payload,
+        headers: { access_token: localStorage.getItem("access_token") },
+      });
+      Swal.fire({
+        title: `Game Info Added!`,
+        text: "This game info has been added to your profile",
+        background: "#303030",
+        color: "#FFFFFF",
+        showCancelButton: false,
+        confirmButtonColor: "#D7385E",
+        confirmButtonText: "<a href='/home'>Okay!</a>",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 }
 
@@ -189,5 +203,53 @@ export function fetchUserById(id) {
     } catch (err) {
       console.log(err);
     }
+  };
+}
+
+export function payment() {
+  return async (dispatch) => {
+    try {
+      let { data } = await axios.post(
+        `${URL}/users/payment`,
+        {},
+        {
+          headers: { access_token: localStorage.getItem("access_token") },
+        }
+      );
+      let transactionToken = data.transactionToken;
+      window.snap.pay(transactionToken, {
+        onSuccess: async function (result) {
+          console.log("success");
+          console.log(result);
+          Swal.fire({
+            icon: "success",
+            title: "Payment Success!",
+            text: "Please Logout and Login again to Refresh your Premium Status",
+          });
+          await axios.get(`${URL}/users/premium`, {
+            headers: {
+              access_token: localStorage.getItem("access_token"),
+            },
+          });
+          localStorage.clear();
+          this.isLogin = false;
+          // this.isPremium = true;
+        },
+
+        onPending: function (result) {
+          console.log("pending");
+          console.log(result);
+        },
+        onError: function (result) {
+          console.log("error");
+          console.log(result);
+        },
+        onClose: function () {
+          console.log(
+            "customer closed the popup without finishing the payment"
+          );
+        },
+      });
+    } catch (error) {}
   };
 }

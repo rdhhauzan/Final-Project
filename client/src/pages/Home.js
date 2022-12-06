@@ -5,6 +5,7 @@ import {
   fetchPosts,
   fetchUserById,
   fetchOnlineUsers,
+  payment,
 } from "../store/actions/action";
 
 export default function Home() {
@@ -112,6 +113,14 @@ export default function Home() {
                 >
                   Add a Game
                 </button>
+                {userDetail.user.isPremium ? null : (
+                  <button
+                    className="btn btn-sm mx-1 rounded-full text-slate-200 font-normal mt-2 text-sm"
+                    onClick={() => dispatch(payment())}
+                  >
+                    Go Premium
+                  </button>
+                )}
               </div>
             </div>
             {onlineUsers.map((onlineUser) => {

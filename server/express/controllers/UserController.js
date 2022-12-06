@@ -473,7 +473,7 @@ class UserController {
       let { id } = req.params;
       let user = await User.findByPk(id, {
         include: [
-          { model: UserGame, required: false },
+          { model: UserGame, required: false, include: Game },
           { model: Post, required: false, include: Game },
         ],
       });
