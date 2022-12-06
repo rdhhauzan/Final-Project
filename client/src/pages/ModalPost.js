@@ -16,7 +16,6 @@ export default function ModalPost() {
 	});
 
 	const [show, setShow] = useState(false);
-	const handleClose = () => setShow(false);
 
 	useEffect(() => {
 		dispatch(fetchGames());
@@ -29,7 +28,6 @@ export default function ModalPost() {
 			let image = e.target.files[0];
 			value = image;
 		}
-
 		setPostInput({
 			...postInput,
 			[name]: value,
@@ -61,8 +59,14 @@ export default function ModalPost() {
 
 			dispatch(addPost(formData))
 				.then(() => {
-					handleClose();
 					navigation("/home");
+					setPostInput({
+						title: "",
+						content: "",
+						GameId: "1",
+						image: "",
+					});
+					setShow(false);
 				})
 				.catch((err) => console.log(err));
 		}
@@ -70,7 +74,12 @@ export default function ModalPost() {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<input type="checkbox" id="modal-post" className="modal-toggle" />
+			<input
+				type="checkbox"
+				id="modal-post"
+				className="modal-toggle"
+				onClick={() => setShow(true)}
+			/>
 			<label htmlFor="modal-post" className="modal cursor-pointer">
 				<label className="modal-box relative">
 					<div>
@@ -81,6 +90,7 @@ export default function ModalPost() {
 							<p className="flex mr-5 items-center"> Title</p>
 							<input
 								name="title"
+								value={postInput.title}
 								onChange={handleChange}
 								className="flex text-start my-3 w-full outline outline-1 rounded-sm"
 							/>
@@ -89,6 +99,7 @@ export default function ModalPost() {
 							<p className="my-1"> Content</p>
 							<select
 								name="GameId"
+								value={postInput.GameId}
 								onChange={handleChange}
 								className="select select-bordered select-sm max-w-xs">
 								{games.map((game) => {
@@ -102,6 +113,7 @@ export default function ModalPost() {
 						</div>
 						<textarea
 							name="content"
+							value={postInput.content}
 							onChange={handleChange}
 							className="w-full outline outline-1 rounded-sm"
 						/>
@@ -110,6 +122,7 @@ export default function ModalPost() {
 								className="hidden"
 								type="file"
 								name="image"
+								value={postInput.image}
 								onChange={handleChange}
 								id="upload-image"
 							/>
