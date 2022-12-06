@@ -509,11 +509,11 @@ class UserController {
   static async verifyAccount(req, res, next) {
     try {
       const { uniqueStr } = req.params;
-      let payload = verifyToken(uniqueStr);
-      const foundUser = await User.findOne({ where: { email: payload.email } });
-      if (!foundUser) {
-        throw {name: "NOT_FOUND"}
-      }
+      verifyToken(uniqueStr);
+      // const foundUser = await User.findOne({ where: { email: payload.email } });
+      // if (!foundUser) {
+      //   throw {name: "NOT_FOUND"}
+      // }
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
     } catch (error) {
