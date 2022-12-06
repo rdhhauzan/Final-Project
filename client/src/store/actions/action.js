@@ -200,7 +200,7 @@ export function addUserGame(payload, id) {
 
 export function addPost(payload) {
 	return (dispatch) => {
-		axios({
+		return axios({
 			method: "POST",
 			url: `${URL}/users/post`,
 			data: payload,
@@ -210,6 +210,6 @@ export function addPost(payload) {
 				"Access-Control-Allow-Origin": "*",
 			},
 			body: FormData,
-		});
+		}).then(() => dispatch(fetchPosts()));
 	};
 }

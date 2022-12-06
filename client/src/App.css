@@ -3,3 +3,12 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap');
+
+.app__launcher {
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+
+
+
