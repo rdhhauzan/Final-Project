@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchUserById } from "../store/actions/action";
@@ -160,7 +160,7 @@ export default function Profile() {
                 className="card xl:w-96 md:w-full h-auto flex justify-center"
                 key={game.id}
                 style={{
-                  backgroundImage: `url(${game.imgUrl})`,
+                  backgroundImage: `url(${game.Game.imgUrl})`,
                   height: undefined,
                   borderRadius: "3px",
                   backgroundPosition: "center",
@@ -168,15 +168,7 @@ export default function Profile() {
                   backgroundSize: "cover",
                 }}
               >
-                <div
-                  className="card-body items-center text-center"
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    borderRadius: "3px",
-                    backgroundColor: "rgba(0, 0, 0, 0.5	)",
-                  }}
-                >
+                <div className="card-body items-center text-center bg-black bg-opacity-75 opacity-0 hover:opacity-100">
                   <h2 className="card-title ">{game.name}</h2>
 
                   <p className="text-slate-300">{game.aboutMe}</p>
