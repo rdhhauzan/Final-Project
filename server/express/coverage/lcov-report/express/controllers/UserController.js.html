@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.61% </span>
+                <span class="strong">91.95% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>163/176</span>
+                <span class='fraction'>160/174</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.67% </span>
+                <span class="strong">93.02% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>163/174</span>
+                <span class='fraction'>160/172</span>
             </div>
         
             
@@ -883,7 +883,11 @@
 <a name='L818'></a><a href='#L818'>818</a>
 <a name='L819'></a><a href='#L819'>819</a>
 <a name='L820'></a><a href='#L820'>820</a>
-<a name='L821'></a><a href='#L821'>821</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<a name='L821'></a><a href='#L821'>821</a>
+<a name='L822'></a><a href='#L822'>822</a>
+<a name='L823'></a><a href='#L823'>823</a>
+<a name='L824'></a><a href='#L824'>824</a>
+<a name='L825'></a><a href='#L825'>825</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -1394,12 +1398,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1773,8 +1781,8 @@ class UserController {
 &nbsp;
       axios
         .request(options)
-        .then(function (response) {})
-        .catch(<span class="fstat-no" title="function not covered" >fu</span>nction (error) {});
+        .then(<span class="fstat-no" title="function not covered" >fu</span>nction (response) {})
+        .catch(function (error) {});
 &nbsp;
       //SENDGRID
       const sendGridOptions = {
@@ -1983,7 +1991,7 @@ class UserController {
                       &lt;tbody&gt;
                         &lt;tr&gt;
                         &lt;td align="center" bgcolor="#D7385E " class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;"&gt;
-                          &lt;a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="background-color:#D7385E  ; border:1px solid #D7385E  ; border-color:#D7385E  ; border-radius:0px; border-width:1px; color:white; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank"&gt;Verify Email Now&lt;/a&gt;
+                          &lt;a href="https://final-project-production.up.railway.app/users/verify/${uniqueStr}" style="background-color:#D7385E  ; border:1px solid #D7385E  ; border-color:#D7385E  ; border-radius:0px; border-width:1px; color:white; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank"&gt;Verify Email Now&lt;/a&gt;
                         &lt;/td&gt;
                         &lt;/tr&gt;
                       &lt;/tbody&gt;
@@ -2048,8 +2056,8 @@ class UserController {
       };
       axios
         .request(sendGridOptions)
-        .then(function (response) {})
-        .catch(<span class="fstat-no" title="function not covered" >fu</span>nction (error) {});
+        .then(<span class="fstat-no" title="function not covered" >fu</span>nction (response) {})
+        .catch(function (error) {});
 &nbsp;
       res.status(201).json(registered);
     } catch (error) {
@@ -2214,12 +2222,16 @@ class UserController {
   static async verifyAccount(req, res, next) {
     try {
       const { uniqueStr } = req.params;
-      let payload = verifyToken(uniqueStr);
-      const foundUser = await User.findOne({ where: { email: payload } });
+      // let payload = verifyToken(uniqueStr);
+      // console.log(payload);
+      // const foundUser = await User.findOne({ where: { email: payload.email } });
+      // if (!foundUser) {
+      //   throw {name: "NOT_FOUND"}
+      // }
       await User.update({ isValid: true }, { where: { uniqueStr } });
       res.status(200).json({ msg: "Your email has been verified!" });
     } catch (error) {
-      next(error);
+<span class="cstat-no" title="statement not covered" >      next(error);</span>
     }
   }
 &nbsp;
@@ -2391,8 +2403,8 @@ class UserController {
 &nbsp;
       axios
         .request(options)
-        .then(function (response) {})
-        .catch(<span class="fstat-no" title="function not covered" >fu</span>nction (error) {});
+        .then(<span class="fstat-no" title="function not covered" >fu</span>nction (response) {})
+        .catch(function (error) {});
       const access_token = createToken({ id: user.id });
       res.status(200).json({
         access_token,
@@ -2530,7 +2542,7 @@ module.exports = UserController;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-06T11:21:36.883Z
+                at 2022-12-06T16:08:44.748Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
