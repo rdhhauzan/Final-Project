@@ -132,7 +132,9 @@ export default function AddGame() {
 								}}>
 								Cancel
 							</button>
-							<button type="submit" className="btn self-center">
+							<button
+								type="submit"
+								className="btn self-center bg-[#D7385E] text-slate-200">
 								Submit
 							</button>
 						</div>
@@ -149,7 +151,7 @@ export default function AddGame() {
 								return (
 									<button
 										key={e.id}
-										className="w-128 h-fit scale:75 rounded-2xl"
+										className="w-128 h-fit scale:75 rounded-2xl bg-"
 										onClick={() => {
 											setGame(e);
 											setBg(bgset[index]);
