@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { register } from "../store/actions/action";
+import Swal from "sweetalert2";
 
 export default function Register() {
 	const dispatch = useDispatch();
@@ -12,7 +13,7 @@ export default function Register() {
 		password: "",
 		dob: "01/01/1970",
 		domisili: "Jakarta",
-		gender: "DISCLOSED",
+		gender: "",
 	});
 
 	const genders = ["FEMALE", "MALE", "DISCLOSED	"];
@@ -28,12 +29,28 @@ export default function Register() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		dispatch(register(registerForm))
-			.then(() => {
-				console.log("registered");
-				navigation("/");
-			})
-			.catch((err) => console.log(err));
+		if (
+			registerForm.username === "" ||
+			registerForm.email === "" ||
+			registerForm.password === "" ||
+			registerForm.gender === ""
+		) {
+			return Swal.fire({
+				title: "Error!",
+				icon: "error",
+				text: "Please fill all the fields!",
+				background: "#303030",
+				color: "#FFFFFF",
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: "OK",
+			});
+		} else {
+			dispatch(register(registerForm))
+				.then(() => {
+					navigation("/");
+				})
+				.catch((err) => console.log(err));
+		}
 	};
 
 	return (
