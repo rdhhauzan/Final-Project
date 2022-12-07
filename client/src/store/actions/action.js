@@ -40,60 +40,6 @@ export function setUserDetail(payload) {
 	};
 }
 
-export function addUserGame(payload, id) {
-	return async (dispatch) => {
-		try {
-			await axios({
-				method: "post",
-				url: `${URL}/usergames/${id}`,
-				data: payload,
-				headers: { access_token: localStorage.getItem("access_token") },
-			});
-			Swal.fire({
-				title: `Game Info Added!`,
-				text: "This game info has been added to your profile",
-				background: "#303030",
-				color: "#FFFFFF",
-				showCancelButton: false,
-				confirmButtonColor: "#D7385E",
-				confirmButtonText: "<a href='/home'>Okay!</a>",
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	};
-}
-
-export function editUser(payload, id) {
-	return async (dispatch) => {
-		try {
-			await axios({
-				method: "PUT",
-				url: `${URL}/users/edit/${id}`,
-				data: payload,
-				headers: {
-					access_token: localStorage.getItem("access_token"),
-					"Content-Type": "multipart/form-data",
-					"Access-Control-Allow-Origin": "*",
-				},
-				body: FormData,
-			});
-			dispatch(fetchUserById(id));
-			Swal.fire({
-				title: `Edit Success`,
-				text: "You have edited your profile!",
-				background: "#303030",
-				color: "#FFFFFF",
-				showCancelButton: false,
-				confirmButtonColor: "#D7385E",
-				confirmButtonText: "Continue",
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	};
-}
-
 export function isLoading() {
 	return {
 		type: "isLoading",
@@ -286,7 +232,7 @@ export function fetchUserById(id) {
 	};
 }
 
-// AXIOS FUNCTIONS - ADD DATA
+// AXIOS FUNCTIONS - DATA MANIPULATION
 
 export function addPost(payload) {
 	return (dispatch) => {
@@ -308,6 +254,54 @@ export function addPost(payload) {
 	};
 }
 
+export function addUserGame(payload, id) {
+	return async (dispatch) => {
+		try {
+			await axios({
+				method: "post",
+				url: `${URL}/usergames/${id}`,
+				data: payload,
+				headers: { access_token: localStorage.getItem("access_token") },
+			});
+			Swal.fire({
+				title: `Game Info Added!`,
+				text: "This game info has been added to your profile",
+				background: "#303030",
+				color: "#FFFFFF",
+				showCancelButton: false,
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: "<a href='/home'>Okay!</a>",
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+}
+
+export function editUserGame(payload, id) {
+	return async (dispatch) => {
+		try {
+			await axios({
+				method: "put",
+				url: `${URL}/usergames/${id}`,
+				data: payload,
+				headers: { access_token: localStorage.getItem("access_token") },
+			});
+			Swal.fire({
+				title: `Game Info Edited!`,
+				text: "You have successfuly edited your game info!",
+				background: "#303030",
+				color: "#FFFFFF",
+				showCancelButton: false,
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: "Okay!",
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+}
+
 export function payment() {
 	return async (dispatch) => {
 		try {
@@ -323,16 +317,23 @@ export function payment() {
 				onSuccess: async function (result) {
 					console.log("success");
 					console.log(result);
+
 					Swal.fire({
 						icon: "success",
 						title: "Payment Success!",
-						text: "Please Logout and Login again to Refresh your Premium Status",
+						text: "Login again to Refresh your Premium Status",
+						background: "#303030",
+						color: "#FFFFFF",
+						confirmButtonColor: "#D7385E",
+						confirmButtonText: '<a href ="/login">Go to login </a>',
 					});
-					await axios.get(`${URL}/users/premium`, {
+
+					axios.get(`${URL}/users/premium`, {
 						headers: {
 							access_token: localStorage.getItem("access_token"),
 						},
 					});
+
 					localStorage.clear();
 					this.isLogin = false;
 					// this.isPremium = true;
@@ -379,6 +380,36 @@ export function followFriend(id) {
 				dispatch(fetchOnlineUsers());
 			})
 			.catch((err) => console.log(err));
+	};
+}
+
+export function editUser(payload, id) {
+	return async (dispatch) => {
+		try {
+			await axios({
+				method: "PUT",
+				url: `${URL}/users/edit/${id}`,
+				data: payload,
+				headers: {
+					access_token: localStorage.getItem("access_token"),
+					"Content-Type": "multipart/form-data",
+					"Access-Control-Allow-Origin": "*",
+				},
+				body: FormData,
+			});
+			dispatch(fetchUserById(id));
+			Swal.fire({
+				title: `Edit Success`,
+				text: "You have edited your profile!",
+				background: "#303030",
+				color: "#FFFFFF",
+				showCancelButton: false,
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: "Continue",
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	};
 }
 
