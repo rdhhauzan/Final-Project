@@ -65,37 +65,72 @@ export function addUserGame(payload, id) {
 }
 
 export function editUser(payload, id) {
-  return async (dispatch) => {
-    try {
-      await axios({
-        method: "PUT",
-        url: `${URL}/users/edit/${id}`,
-        data: payload,
-        headers: {
-          access_token: localStorage.getItem("access_token"),
-          "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: FormData,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+	return async (dispatch) => {
+		try {
+			await axios({
+				method: "PUT",
+				url: `${URL}/users/edit/${id}`,
+				data: payload,
+				headers: {
+					access_token: localStorage.getItem("access_token"),
+					"Content-Type": "multipart/form-data",
+					"Access-Control-Allow-Origin": "*",
+				},
+				body: FormData,
+			});
+			dispatch(fetchUserById(id));
+			Swal.fire({
+				title: `Edit Success`,
+				text: "You have edited your profile!",
+				background: "#303030",
+				color: "#FFFFFF",
+				showCancelButton: false,
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: "Continue",
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+}
+
+export function isLoading() {
+	return {
+		type: "isLoading",
+	};
+}
+
+export function doneLoading() {
+	return {
+		type: "doneLoading",
+	};
 }
 
 export function register(payload) {
 	return async () => {
 		try {
+			isLoading();
 			let { data } = await axios.post(`${URL}/users/register`, payload);
+			Swal.fire({
+				title: "Success!",
+				icon: "success",
+				text: "Registration successful! Please check your email to verify your account before login.",
+				background: "#303030",
+				color: "#FFFFFF",
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: "OK",
+			});
 		} catch (err) {
 			console.log(err);
+		} finally {
+			doneLoading();
 		}
 	};
 }
 
 export function login(payload) {
 	return async () => {
+		isLoading();
 		try {
 			const authKey = "a0b27f305eaed800bd7330c21a90db380a970e4e";
 			let { data } = await axios.post(`${URL}/users/login`, payload);
@@ -148,7 +183,17 @@ export function login(payload) {
 				confirmButtonText: '<a href="/addgame"> Add a game </a>',
 			});
 		} catch (err) {
-			console.log(err);
+			Swal.fire({
+				title: "Error!",
+				icon: "error",
+				text: err.response.data.msg,
+				background: "#303030",
+				color: "#FFFFFF",
+				confirmButtonColor: "#D7385E",
+				confirmButtonText: "OK",
+			});
+		} finally {
+			doneLoading();
 		}
 	};
 }
@@ -156,19 +201,24 @@ export function login(payload) {
 // AXIOS FUNCTION - FETCH DATA
 
 export function fetchGames() {
+	isLoading();
 	return (dispatch) => {
 		axios
 			.get(`${URL}/games`)
 			.then(({ data }) => {
 				dispatch(setGames(data));
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => console.log(err))
+			.finally(() => {
+				doneLoading();
+			});
 	};
 }
 
 export function fetchPosts() {
 	return async (dispatch) => {
 		try {
+			isLoading();
 			let { data } = await axios.get(`${URL}/users/posts`, {
 				headers: {
 					access_token: localStorage.getItem("access_token"),
@@ -177,6 +227,8 @@ export function fetchPosts() {
 			dispatch(setPosts(data));
 		} catch (err) {
 			console.log(err);
+		} finally {
+			doneLoading();
 		}
 	};
 }
@@ -184,6 +236,7 @@ export function fetchPosts() {
 export function fetchOnlineUsers() {
 	return async (dispatch) => {
 		try {
+			isLoading();
 			let { data } = await axios.get(`${URL}/users/online`, {
 				headers: {
 					access_token: localStorage.getItem("access_token"),
@@ -193,6 +246,8 @@ export function fetchOnlineUsers() {
 			dispatch(setOnlineUsers(data));
 		} catch (err) {
 			console.log(err);
+		} finally {
+			doneLoading();
 		}
 	};
 }
@@ -200,6 +255,7 @@ export function fetchOnlineUsers() {
 export function fetchUsers() {
 	return async (dispatch) => {
 		try {
+			isLoading();
 			let { data } = await axios.get(`${URL}/users`, {
 				headers: {
 					access_token: localStorage.getItem("access_token"),
@@ -209,6 +265,8 @@ export function fetchUsers() {
 			dispatch(setUsers(data));
 		} catch (err) {
 			console.log(err);
+		} finally {
+			doneLoading();
 		}
 	};
 }
@@ -297,5 +355,21 @@ export function payment() {
 		} catch (error) {
 			console.log(error);
 		}
+	};
+}
+
+// AXIOS FUNCTION - DELETE DATA
+
+export function deletePost(id) {
+	return (dispatch) => {
+		return axios({
+			method: "DELETE",
+			url: `${URL}/users/post/${id}`,
+			headers: {
+				access_token: localStorage.getItem("access_token"),
+			},
+		})
+			.then(() => dispatch(fetchPosts()))
+			.catch((error) => console.log(error));
 	};
 }
