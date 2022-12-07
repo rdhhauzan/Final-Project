@@ -28,6 +28,7 @@ export default function Profile() {
     formData.append("domisili", form.domisili);
     if (form.image) formData.append("image", form.image);
     dispatch(editUser(formData, userDetail?.user?.id));
+    setClicked(false);
   };
 
   const onChangeHandler = (event) => {
