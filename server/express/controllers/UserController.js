@@ -553,12 +553,12 @@ class UserController {
         include: [
           {
             model: UserGame,
-            order: [["id", "ASC"]],
             required: false,
             include: Game,
           },
           { model: Post, required: false, include: Game },
         ],
+        order: [[UserGame, "id", "ASC"]],
       });
       if (!user) {
         throw { name: "NOT_FOUND" };
