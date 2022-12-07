@@ -41,8 +41,20 @@ module.exports = {
 
       axios
         .request(options)
-        .then(function (response) {})
-        .catch(function (error) {});
+        .then(function (response) {
+          e.uuid = uuid;
+          e.createdAt = e.updatedAt = new Date();
+          e.dob = new Date(e.dob);
+          e.profPict = `https://avatars.dicebear.com/api/initials/${e.username}.svg`;
+          e.isValid = true;
+          e.isPremium = false;
+          e.isLogin = true;
+          e.password = hashPassword(e.password);
+          return e;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
 
       e.uuid = uuid;
       e.createdAt = e.updatedAt = new Date();
