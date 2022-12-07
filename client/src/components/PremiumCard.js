@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { payment } from "../store/actions/action";
+import axios from "axios";
 
 export default function PremiumCard() {
 	const dispatch = useDispatch();
+	const navigation = useNavigate();
 
 	return (
 		<div className="flex flex-col items-center justify-center bg-[#262525] shadow-md shadow-black rounded-sm">
