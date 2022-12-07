@@ -1,13 +1,18 @@
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { editUser, fetchUserById } from "../store/actions/action";
+import {
+  editUser,
+  editUserGame,
+  fetchGames,
+  fetchUserById,
+} from "../store/actions/action";
 export default function Profile() {
   const dispatch = useDispatch();
   const id = localStorage.getItem("id");
   const [clicked, setClicked] = useState(false);
-
-  const { userDetail } = useSelector((state) => state);
+  const [modalClick, setModalClick] = useState(false);
+  const { userDetail, games } = useSelector((state) => state);
   const [form, setForm] = useState({
     username: userDetail?.user?.username,
     password: "",
@@ -15,8 +20,16 @@ export default function Profile() {
     image: "",
   });
 
+  const [editGame, setEditGame] = useState({
+    rank: "",
+    role: "",
+    matchType: "",
+    aboutMe: "",
+  });
+
   useEffect(() => {
     dispatch(fetchUserById(id));
+    dispatch(fetchGames);
     // eslint-disable-next-line
   }, []);
 
@@ -37,8 +50,18 @@ export default function Profile() {
       let image = event.target.files[0];
       value = image;
     }
-    console.log(form);
     setForm({ ...form, [name]: value });
+  };
+
+  const onChangeModal = (event) => {
+    let { name, value } = event.target;
+    setEditGame({ ...editGame, [name]: value });
+  };
+
+  const onSubmitModal = (gameId) => {
+    dispatch(editUserGame(editGame, gameId));
+    dispatch(fetchUserById(id));
+    setModalClick(false);
   };
 
   return (
@@ -164,7 +187,6 @@ export default function Profile() {
                 className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
                 onClick={() => setClicked(true)}
               >
-                {" "}
                 Edit Profile
               </button>
             </div>
@@ -190,26 +212,177 @@ export default function Profile() {
             );
           })}
         </div>
-        <div className="flex flex-col xl:mt-0 2xs:mt-4 w-full basis-1/4 gap-3">
+        <div className="flex flex-col xl:mt-0 2xs:mt-4 w-full basis-1/4 gap-5">
           {userDetail?.user?.UserGames.map((game) => {
             return (
               <div
                 className="card xl:w-96 md:w-full h-auto flex justify-center"
                 key={game.id}
-                style={{
-                  backgroundImage: `url(${game.Game.imgUrl})`,
-                  height: undefined,
-                  borderRadius: "3px",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                }}
               >
-                <div className="card-body items-center text-center bg-black bg-opacity-75 opacity-0 hover:opacity-100">
-                  <h2 className="card-title ">{game.name}</h2>
+                <label
+                  htmlFor={game.id}
+                  className="btn bg-primary hover:bg-primary hover:border-primary border-primary hover:scale-105 w-fit h-fit hover:bg-none"
+                >
+                  <img src={game.Game.imgUrl} />
+                </label>
+                <input type="checkbox" id={game.id} className="modal-toggle" />
+                <label
+                  className="bg-black flex flex-col items-center bg-opacity-90 h-auto modal"
+                  htmlFor={game.id}
+                >
+                  <label
+                    className="modal-box relative flex flex-col gap-5"
+                    htmlFor=""
+                  >
+                    <div className="flex flex-row justify-center border-b border-gray-600 pb-2">
+                      <p className="text-slate-300 text-lg font-semibold">
+                        {userDetail.user.username}'s {game.Game.name} profile
+                      </p>
+                    </div>
+                    {modalClick ? (
+                      <form className="flex flex-col gap-3">
+                        <div className="flex flex-row w-full justify-around">
+                          <div>
+                            <p className="text-slate-300 text-sm text-center font-semibold">
+                              Rank
+                            </p>
+                            <select
+                              className="text-sm rounded-sm  bg-[#20252e]"
+                              onChange={onChangeModal}
+                              name="rank"
+                              value={editGame.rank}
+                            >
+                              {game.Game.rankList.map((rank, index) => {
+                                return <option value={index}>{rank}</option>;
+                              })}
+                            </select>
+                          </div>
+                          <div>
+                            <p className="text-slate-300 text-sm text-center font-semibold">
+                              Type
+                            </p>
+                            <select
+                              className="text-sm rounded-sm  bg-[#20252e]"
+                              onChange={onChangeModal}
+                              name="matchType"
+                              value={editGame.matchType}
+                            >
+                              <option value="Competitive">Competitive</option>
+                              <option value="Casual">Casual</option>
+                            </select>
+                          </div>
 
-                  <p className="text-slate-300">{game.aboutMe}</p>
-                </div>
+                          <div className="">
+                            <p className="text-slate-300 text-sm text-center font-semibold">
+                              Role
+                            </p>
+                            <select
+                              className="text-sm rounded-sm  bg-[#20252e]"
+                              onChange={onChangeModal}
+                              name="role"
+                              value={editGame.role}
+                            >
+                              {game.Game.roleList.map((role) => {
+                                return <option value={role}>{role}</option>;
+                              })}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="">
+                          <p className="text-slate-300 text-sm mb-2 font-semibold">
+                            About
+                          </p>
+                          <input
+                            className="text-slate-300 text-sm bg-[#20252e] p-2 rounded-md w-full"
+                            value={editGame.aboutMe}
+                            onChange={onChangeModal}
+                            name="aboutMe"
+                          />
+                        </div>
+                        <div className="flex flex-row justify-evenly">
+                          <button
+                            className="btn w-fit btn-sm hover:bg-red-500 hover:text-white border-none"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setModalClick(false);
+                              setEditGame({
+                                rank: "",
+                                role: "",
+                                matchType: "",
+                                aboutMe: "",
+                              });
+                            }}
+                          >
+                            Cancel
+                          </button>
+                          <label
+                            onClick={(e) => {
+                              onSubmitModal(game.id);
+                            }}
+                            className="btn w-fit btn-sm hover:bg-info hover:text-white border-none"
+                            type="submit"
+                          >
+                            Submit
+                          </label>
+                        </div>
+                      </form>
+                    ) : (
+                      <div className="flex flex-col gap-3">
+                        <div className="flex flex-row w-full justify-around">
+                          <div>
+                            <p className="text-slate-300 text-sm text-center font-semibold">
+                              Rank
+                            </p>
+                            <p className="text-slate-300 text-sm text-center">
+                              {game.Game.rankList[game.rank]}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-slate-300 text-sm text-center font-semibold">
+                              Type
+                            </p>
+                            <p className="text-slate-300 text-sm text-center">
+                              {game.matchType}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p className="text-slate-300 text-sm text-center font-semibold">
+                              Role
+                            </p>
+                            <p className="text-slate-300 text-sm text-center">
+                              {game.role}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="">
+                          <p className="text-slate-300 text-sm mb-2 font-semibold">
+                            About
+                          </p>
+                          <p className="text-slate-300 text-sm bg-[#111419] p-2 rounded-md">
+                            {game.aboutMe}
+                          </p>
+                        </div>
+                        <button
+                          className="btn w-fit self-end btn-sm hover:bg-tertiary hover:text-white border-none"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setModalClick(true);
+                            setEditGame({
+                              rank: game.rank,
+                              role: game.role,
+                              matchType: game.matchType,
+                              aboutMe: game.aboutMe,
+                            });
+                          }}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </label>
+                </label>
               </div>
             );
           })}

@@ -64,6 +64,30 @@ export function addUserGame(payload, id) {
   };
 }
 
+export function editUserGame(payload, id) {
+  return async (dispatch) => {
+    try {
+      await axios({
+        method: "put",
+        url: `${URL}/usergames/${id}`,
+        data: payload,
+        headers: { access_token: localStorage.getItem("access_token") },
+      });
+      Swal.fire({
+        title: `Game Info Edited!`,
+        text: "You have successfuly edited your game info!",
+        background: "#303030",
+        color: "#FFFFFF",
+        showCancelButton: false,
+        confirmButtonColor: "#D7385E",
+        confirmButtonText: "Okay!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export function editUser(payload, id) {
   return async (dispatch) => {
     try {

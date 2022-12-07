@@ -62,7 +62,7 @@ export default function Home() {
           {posts.length > 0 ? (
             posts.map((post) => {
               return (
-                <div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
+                <div className="card w-full bg-primary  rounded shadow-xl shadow-black flex justify-center">
                   <div className="card-body text-start" key={post.id}>
                     <h2 className="card-title">@{post?.User?.username}</h2>
                     <p>{post.content}</p>
