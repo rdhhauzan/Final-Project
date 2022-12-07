@@ -62,7 +62,7 @@ class UserController {
           uid: uuid,
           name: username,
           avatar:
-            "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
+          `https://avatars.dicebear.com/api/initials/${username}.svg`,
         },
       };
 
