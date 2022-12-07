@@ -3,6 +3,7 @@ import { Navbar, TemplateLanding, GamesCard, Footer } from "../components";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchGames } from "../store/actions/action";
 import { useEffect } from "react";
+import Features from "../components/Features";
 
 const LandingPage = () => {
 	const { games } = useSelector((state) => state);
@@ -21,9 +22,12 @@ const LandingPage = () => {
 				</div>
 			</div>
 
+			<div className={`${styles.boxWidth}`}>
+				<TemplateLanding />
+			</div>
 			<div className={`bg-primary ${styles.flexStart}`}>
 				<div className={`${styles.boxWidth}`}>
-					<TemplateLanding />
+					<Features />
 				</div>
 			</div>
 			<div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>
