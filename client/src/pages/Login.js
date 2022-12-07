@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login } from "../store/actions/action";
+import logo from "../assets/teamupnologo.png";
 
 export default function Login() {
 	const dispatch = useDispatch();
@@ -36,7 +37,11 @@ export default function Login() {
 			<div className="flex justify-center flex-col px-8 pt-8 pb-10 w-80 h-content shadow-lg bg-[#2A302F] max-w-sm">
 				<form onSubmit={handleSubmit}>
 					<div className="flex justify-center font-bold text-2xl mb-5">
-						<h1> LOGIN </h1>
+						<img
+							src={logo}
+							className="h-auto w-40 hover:cursor-pointer"
+							onClick={() => navigation("/")}
+						/>
 					</div>
 					<div className="form-group mb-6">
 						<label className="absolute px-2 form-label inline-block text-xs mb-2 text-slate-900">
@@ -62,12 +67,19 @@ export default function Login() {
 							className="form-control block w-full px-3 py-2.5 bg-white bg-clip-padding text-slate-900 border border-solid border-gray-300 rounded-sm"
 						/>
 					</div>
-					<div className="flex justify-center">
+					<div className="flex flex-col justify-center gap-2">
 						<button
 							type="submit"
 							className="btn btn-wide bg-[#D7385E] text-slate-200 rounded-sm">
-							Submit
+							LOGIN
 						</button>
+						<p className="mt-2 text-xs">
+							{" "}
+							Don't have an account?{" "}
+							<Link to="/register">
+								<u>Sign up now.</u>
+							</Link>
+						</p>
 					</div>
 				</form>
 			</div>

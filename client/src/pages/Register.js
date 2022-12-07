@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { register } from "../store/actions/action";
 import Swal from "sweetalert2";
+import logo from "../assets/teamupnologo.png";
 
 export default function Register() {
 	const dispatch = useDispatch();
@@ -58,7 +59,11 @@ export default function Register() {
 			<div className="flex justify-center flex-col px-8 py-5 w-full h-content shadow-lg bg-[#2A302F] max-w-sm">
 				<form onSubmit={handleSubmit}>
 					<div className="flex justify-center font-bold text-2xl mb-5">
-						<h1> REGISTER</h1>
+						<img
+							src={logo}
+							className="h-auto w-40 hover:cursor-pointer"
+							onClick={() => navigation("/")}
+						/>
 					</div>
 					<div className="form-group mb-6">
 						<label
@@ -126,19 +131,28 @@ export default function Register() {
 						<button
 							type="submit"
 							className="btn btn-wide bg-[#D7385E] text-slate-200 rounded-sm">
-							Submit
+							REGISTER
 						</button>
 					</div>
 				</form>
 				<div className="pt-5">
-					<p className="text-sm">OR YOU CAN REGISTER USING GOOGLE</p>
+					{/* <p className="text-sm text-center">
+						OR YOU CAN REGISTER USING GOOGLE
+					</p>
 					<div className="flex justify-center pt-5">
 						<button
 							type="submit"
 							className="btn btn-wide bg-[#D7385E] text-slate-200 rounded-sm">
 							CERITANYA GOOGLE LOGIN
 						</button>
-					</div>
+					</div> */}
+					<p className="mt-2 text-xs text-center">
+						{" "}
+						Already have an account?{" "}
+						<Link to="/login">
+							<u>Login.</u>
+						</Link>
+					</p>
 				</div>
 			</div>
 		</div>

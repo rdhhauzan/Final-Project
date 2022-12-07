@@ -358,6 +358,30 @@ export function payment() {
 	};
 }
 
+export function followFriend(id) {
+	return (dispatch) => {
+		return axios({
+			method: "POST",
+			url: `${URL}/users/follow/${id}`,
+			headers: {
+				access_token: localStorage.getItem("access_token"),
+			},
+		})
+			.then(() => {
+				Swal.fire({
+					title: "Followed!",
+					icon: "success",
+					background: "#303030",
+					color: "#FFFFFF",
+					confirmButtonColor: "#D7385E",
+					confirmButtonText: "OK",
+				});
+				dispatch(fetchOnlineUsers());
+			})
+			.catch((err) => console.log(err));
+	};
+}
+
 // AXIOS FUNCTION - DELETE DATA
 
 export function deletePost(id) {
@@ -369,7 +393,9 @@ export function deletePost(id) {
 				access_token: localStorage.getItem("access_token"),
 			},
 		})
-			.then(() => dispatch(fetchPosts()))
+			.then(() => {
+				dispatch(fetchPosts());
+			})
 			.catch((error) => console.log(error));
 	};
 }
