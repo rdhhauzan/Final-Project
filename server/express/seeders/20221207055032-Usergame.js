@@ -17,7 +17,7 @@ module.exports = {
       el.createdAt = el.updatedAt = new Date();
       return el;
     });
-    await queryInterface.bulkInsert("Usergames", usergames);
+    await queryInterface.bulkInsert("UserGames", usergames);
   },
 
   async down(queryInterface, Sequelize) {
