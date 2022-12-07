@@ -1,7 +1,8 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const URL = "http://localhost:3000";
+const URL = "https://final-project-production.up.railway.app";
+// const URL = "http://localhost:3000";
 
 // SET FUNCTIONS
 
