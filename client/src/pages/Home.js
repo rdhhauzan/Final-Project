@@ -43,8 +43,8 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen font-chakra">
-			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
+		<div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen">
+			<div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
 					{posts.length > 0 ? (
 						<div className="flex justify-end">
@@ -163,7 +163,7 @@ export default function Home() {
 									Profile
 								</button>
 								<button
-									className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 text-sm"
+									className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 2xs:mb-2 text-sm"
 									onClick={() => navigation("/addgame")}>
 									Add a Game
 								</button>
@@ -201,7 +201,10 @@ export default function Home() {
 										</p>
 									</div>
 									<div className="flex items-end text-end">
-										<button className="btn btn-primary rounded-sm">+</button>
+										<button className="btn btn-primary rounded-sm">
+											{" "}
+											Follow{" "}
+										</button>
 									</div>
 								</div>
 							);
