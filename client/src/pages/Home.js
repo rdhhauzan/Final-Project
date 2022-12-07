@@ -315,7 +315,7 @@ export default function Home() {
 												onClick={() => {
 													dispatch(followFriend(onlineUser.userData.id))
 														.then(() => {
-															dispatch(fetchOnlineUsers());
+															dispatch(fetchUserById(userDetail.user.id));
 														})
 														.catch((err) => console.log(err));
 												}}>
