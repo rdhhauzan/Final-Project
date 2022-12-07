@@ -6,6 +6,13 @@ const URL = "https://final-project-production.up.railway.app";
 
 // SET FUNCTIONS
 
+export function setMatch(payload) {
+  return {
+    type: "match/setMatch",
+    payload,
+  };
+}
+
 export function setGames(payload) {
   return {
     type: "games/setGames",
@@ -50,6 +57,17 @@ export function isLoading() {
 export function doneLoading() {
   return {
     type: "doneLoading",
+  };
+}
+export function isMatching() {
+  return {
+    type: "isMatching",
+  };
+}
+
+export function doneMatching() {
+  return {
+    type: "doneMatching",
   };
 }
 
@@ -422,7 +440,8 @@ export function findMatch(id) {
         url: `${URL}/usergames/match/${id}`,
         headers: { access_token: localStorage.getItem("access_token") },
       });
-      return data;
+
+      dispatch(setMatch(data.match));
     } catch (error) {
       console.log(error);
     }

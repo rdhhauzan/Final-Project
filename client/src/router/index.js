@@ -8,55 +8,48 @@ import UserProfile from "../components/UserProfile";
 import AddGame from "../pages/AddGame";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <LandingPage />,
-		loader: () => {
-			if (localStorage.getItem("access_token")) return redirect("/home");
-		},
-	},
-	{
-		path: "/register",
-		element: <Register />,
-		loader: () => {
-			if (localStorage.getItem("access_token")) return redirect("/");
-		},
-	},
-	{
-		path: "/login",
-		element: <Login />,
-		loader: () => {
-			if (localStorage.getItem("access_token")) return redirect("/");
-		},
-	},
-	{
-		path: "/profile",
-		element: <Profile />,
-		loader: () => {
-			if (!localStorage.getItem("access_token")) return redirect("/login");
-		},
-	},
-	{
-		path: "/profile/edit",
-		element: <UserProfile />,
-		loader: () => {
-			if (!localStorage.getItem("access_token")) return redirect("/login");
-		},
-	},
-	{
-		path: "/home",
-		element: <Home />,
-		loader: () => {
-			if (!localStorage.getItem("access_token")) return redirect("/login");
-		},
-	},
-	{
-		path: "/addgame",
-		element: <AddGame />,
-		loader: () => {
-			if (!localStorage.getItem("access_token")) return redirect("/login");
-		},
-	},
+  {
+    path: "/",
+    element: <LandingPage />,
+    loader: () => {
+      if (localStorage.getItem("access_token")) return redirect("/home");
+    },
+  },
+  {
+    path: "/register",
+    element: <Register />,
+    loader: () => {
+      if (localStorage.getItem("access_token")) return redirect("/");
+    },
+  },
+  {
+    path: "/login",
+    element: <Login />,
+    loader: () => {
+      if (localStorage.getItem("access_token")) return redirect("/");
+    },
+  },
+  {
+    path: "/profile/:id",
+    element: <Profile />,
+    loader: () => {
+      if (!localStorage.getItem("access_token")) return redirect("/login");
+    },
+  },
+  {
+    path: "/home",
+    element: <Home />,
+    loader: () => {
+      if (!localStorage.getItem("access_token")) return redirect("/login");
+    },
+  },
+  {
+    path: "/addgame",
+    element: <AddGame />,
+    loader: () => {
+      if (!localStorage.getItem("access_token")) return redirect("/login");
+    },
+  },
 ]);
 
 export default router;

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import {
@@ -9,7 +9,7 @@ import {
 } from "../store/actions/action";
 export default function Profile() {
   const dispatch = useDispatch();
-  const id = localStorage.getItem("id");
+  const { id } = useParams();
   const [clicked, setClicked] = useState(false);
   const [modalClick, setModalClick] = useState(false);
   const { userDetail, games } = useSelector((state) => state);
