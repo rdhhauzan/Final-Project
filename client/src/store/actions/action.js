@@ -337,3 +337,35 @@ export function payment() {
     }
   };
 }
+
+// AXIOS FUNCTION - DELETE DATA
+
+export function deletePost(id) {
+  return (dispatch) => {
+    return axios({
+      method: "DELETE",
+      url: `${URL}/users/post/${id}`,
+      headers: {
+        access_token: localStorage.getItem("access_token"),
+      },
+    })
+      .then(() => dispatch(fetchPosts()))
+      .catch((error) => console.log(error));
+  };
+}
+
+// AXIOS FUNCTION - DELETE DATA
+
+export function deletePost(id) {
+  return (dispatch) => {
+    return axios({
+      method: "DELETE",
+      url: `${URL}/users/post/${id}`,
+      headers: {
+        access_token: localStorage.getItem("access_token"),
+      },
+    })
+      .then(() => dispatch(fetchPosts()))
+      .catch((error) => console.log(error));
+  };
+}
