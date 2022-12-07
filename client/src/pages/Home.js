@@ -64,9 +64,7 @@ export default function Home() {
               return (
                 <div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
                   <div className="card-body text-start" key={post.id}>
-                    <h2 className="card-title">
-                      @{userDetail?.user?.username}
-                    </h2>
+                    <h2 className="card-title">@{post?.User?.username}</h2>
                     <p>{post.content}</p>
                     {post.imgUrl ? (
                       <figure className="pt-5 w-64 h-64">
