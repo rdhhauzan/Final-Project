@@ -86,6 +86,7 @@ export default function ModalPost() {
 							<p className="flex mr-5 items-center"> Title</p>
 							<input
 								name="title"
+								value={postInput.title}
 								onChange={handleChange}
 								className="flex text-start my-3 w-full outline outline-1 rounded-sm"
 							/>
@@ -94,6 +95,7 @@ export default function ModalPost() {
 							<p className="my-1"> Content</p>
 							<select
 								name="GameId"
+								value={postInput.GameId}
 								onChange={handleChange}
 								className="select select-bordered select-sm max-w-xs">
 								{games.map((game) => {
@@ -107,6 +109,7 @@ export default function ModalPost() {
 						</div>
 						<textarea
 							name="content"
+							value={postInput.content}
 							onChange={handleChange}
 							className="w-full outline outline-1 rounded-sm"
 						/>

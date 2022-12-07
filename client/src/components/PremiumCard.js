@@ -1,8 +1,9 @@
-import { useDispatch } from "react-redux";
-import { payment } from "../store/actions/action";
+import { useState } from "react";
+import ModalPremium from "../pages/ModalPremium";
 
 export default function PremiumCard() {
-	const dispatch = useDispatch();
+	const [show, setShow] = useState(false);
+	const handleShow = () => setShow(true);
 
 	return (
 		<div className="flex flex-col items-center justify-center bg-[#262525] shadow-md shadow-black rounded-sm">
@@ -10,14 +11,13 @@ export default function PremiumCard() {
 				{" "}
 				Be a premium member to form a group!{" "}
 			</p>
-			<button
-				className="btn btn-sm mx-1 rounded-full bg-[#D7385E] hover:scale-105 text-slate-200 font-normal my-2 text-sm"
-				onClick={(e) => {
-					e.preventDefault();
-					dispatch(payment());
-				}}>
+			<label
+				htmlFor="modal-premium"
+				className="btn mb-3 rounded-full bg-[#D7385E] text-slate-200"
+				onClick={handleShow}>
 				Go Premium
-			</button>
+			</label>
+			<ModalPremium />
 		</div>
 	);
 }

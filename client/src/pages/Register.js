@@ -76,7 +76,7 @@ export default function Register() {
 							name="username"
 							value={registerForm.username}
 							onChange={handleChange}
-							className="form-control block w-full px-3 py-2.5 text-gray-700 text-ellipsis bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm"
+							className="form-control block w-full px-3 pt-3.5 py-2.5 text-gray-700 text-ellipsis bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm"
 						/>
 					</div>
 					<div className="form-group mb-6">
@@ -88,7 +88,7 @@ export default function Register() {
 							name="email"
 							value={registerForm.email}
 							onChange={handleChange}
-							className="form-control block w-full px-3 py-2.5 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-xs"
+							className="form-control block w-full px-3 pt-3.5 py-2.5 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-xs"
 						/>
 					</div>
 					<div className="form-group mb-6">
@@ -100,7 +100,7 @@ export default function Register() {
 							name="password"
 							value={registerForm.password}
 							onChange={handleChange}
-							className="form-control block w-full px-3 py-2.5 bg-white bg-clip-padding text-slate-900 border border-solid border-gray-300 rounded-sm"
+							className="form-control block w-full px-3 pt-3.5 py-2.5 bg-white bg-clip-padding text-slate-900 border border-solid border-gray-300 rounded-sm"
 						/>
 					</div>
 					<div className="form-group flex flex-col mb-6 gap-2">
