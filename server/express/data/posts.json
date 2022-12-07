@@ -1,0 +1,52 @@
+[
+    {
+      "GameId": 1,
+      "UserId": 1,
+      "content": "YEES DAPET TIM ENAK"
+    },
+    {
+      "GameId": 1,
+      "UserId": 2,
+      "content": "Matchmakingnya keren juga"
+    },
+    {
+      "GameId": 2,
+      "UserId": 3,
+      "content": "Main lagi gak ya"
+    },
+    {
+      "GameId": 3,
+      "UserId": 4,
+      "content": "Yang penting fun lah ya"
+    },
+    {
+      "GameId": 4,
+      "UserId": 4,
+      "content": "enak ugha timnya"
+    },
+    {
+      "GameId": 1,
+      "UserId": 5,
+      "content": "mayan lah"
+    },
+    {
+      "GameId": 3,
+      "UserId": 4,
+      "content": "Main lagideh jadinya"
+    },
+    {
+      "GameId": 2,
+      "UserId": 9,
+      "content": "what a game"
+    },
+    {
+      "GameId": 4,
+      "UserId": 7,
+      "content": "gokkksss"
+    },
+    {
+      "GameId": 3,
+      "UserId": 10,
+      "content": "seru beud"
+    }
+]

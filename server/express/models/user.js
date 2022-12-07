@@ -22,7 +22,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      username: DataTypes.STRING,
+      username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: { msg: "Fill in the Username" },
+          notNull: { msg: "Fill in the Username" },
+        },
+      },
       email: {
         type: DataTypes.STRING,
         unique: { msg: "This email has already been used" },
@@ -41,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
           notNull: { msg: "Fill in the Password" },
           isLength(password) {
             if (password.length < 5) {
-              throw new Error("Minimum characters are 5");
+              throw new Error("Password minimum characters are 5");
             }
           },
         },
@@ -77,8 +84,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   User.beforeCreate((instance) => {
-    instance.profPict =
-      "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg";
+    instance.profPict = `https://avatars.dicebear.com/api/initials/${instance.username}.svg`;
     instance.password = hashPassword(instance.password);
   });
 

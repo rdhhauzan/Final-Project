@@ -6,6 +6,7 @@ import {
   fetchUserById,
   fetchOnlineUsers,
   deletePost,
+  followFriend,
 } from "../store/actions/action";
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
@@ -21,6 +22,7 @@ export default function Home() {
   const handleShow = () => setShow(true);
   const logout = (e) => {
     e.preventDefault();
+    window.CometChatWidget.logout();
     localStorage.clear();
     Swal.fire({
       title: "Logged Out",
@@ -208,7 +210,12 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="flex items-end text-end">
-                    <button className="btn btn-primary rounded-sm">
+                    <button
+                      className="btn btn-primary rounded-sm"
+                      onClick={() =>
+                        dispatch(followFriend(onlineUser.userData.id))
+                      }
+                    >
                       {" "}
                       Follow{" "}
                     </button>

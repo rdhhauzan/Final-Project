@@ -1,0 +1,122 @@
+[
+  {
+    "GameId": 1,
+    "UserId": 1,
+    "rank": 1,
+    "role": "Jungler",
+    "matchType": "Casual",
+    "aboutMe": "I am new to this game"
+  },
+  {
+    "GameId": 2,
+    "UserId": 1,
+    "rank": 3,
+    "role": "Offensive",
+    "matchType": "Competitive",
+    "aboutMe": "chill ranked"
+  },
+  {
+    "GameId": 1,
+    "UserId": 2,
+    "rank": 2,
+    "role": "Roamer",
+    "matchType": "Casual",
+    "aboutMe": "just wanna have fun"
+  },
+  {
+    "GameId": 2,
+    "UserId": 2,
+    "rank": 4,
+    "role": "Defensive",
+    "matchType": "Competitive",
+    "aboutMe": "Hard Grind"
+  },
+  {
+    "GameId": 2,
+    "UserId": 3,
+    "rank": 4,
+    "role": "Offensive",
+    "matchType": "Casual",
+    "aboutMe": "im a good fragger"
+  },
+  {
+    "GameId": 3,
+    "UserId": 3,
+    "rank": 2,
+    "role": "Duelist",
+    "matchType": "Casual",
+    "aboutMe": "Rip Aim"
+  },
+  {
+    "GameId": 2,
+    "UserId": 4,
+    "rank": 1,
+    "role": "Recon",
+    "matchType": "Casual",
+    "aboutMe": "i use aimbot"
+  },
+  {
+    "GameId": 3,
+    "UserId": 4,
+    "rank": 4,
+    "role": "Sentinel",
+    "matchType": "Casual",
+    "aboutMe": "Godlike Aim!"
+  },
+  {
+    "GameId": 3,
+    "UserId": 5,
+    "rank": 1,
+    "role": "Duelist",
+    "matchType": "Competitive",
+    "aboutMe": "jett only"
+  },
+  {
+    "GameId": 1,
+    "UserId": 5,
+    "rank": 1,
+    "role": "Mid Lane",
+    "matchType": "Competitive",
+    "aboutMe": "Miya Only"
+  },
+  {
+    "GameId": 3,
+    "UserId": 6,
+    "rank": 3,
+    "role": "Controller",
+    "matchType": "Casual",
+    "aboutMe": "I play well on any maps"
+  },
+  {
+    "GameId": 1,
+    "UserId": 7,
+    "rank": 6,
+    "role": "Gold Lane",
+    "matchType": "Competitive",
+    "aboutMe": "play the game as if it's my religion"
+  },
+  {
+    "GameId": 4,
+    "UserId": 8,
+    "rank": 4,
+    "role": "ADC",
+    "matchType": "Competitive",
+    "aboutMe": "LOL"
+  },
+  {
+    "GameId": 2,
+    "UserId": 9,
+    "rank": 4,
+    "role": "Recon",
+    "matchType": "Competitive",
+    "aboutMe": "Play Recon role Only"
+  },
+  {
+    "GameId": 3,
+    "UserId": 10,
+    "rank": 4,
+    "role": "Duelist",
+    "matchType": "Competitive",
+    "aboutMe": "Duelist?"
+  }
+]
