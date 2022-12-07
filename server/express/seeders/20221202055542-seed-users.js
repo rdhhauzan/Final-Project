@@ -1,6 +1,8 @@
 "use strict";
 const data = require("../data/users.json");
 const { hashPassword } = require("../helpers/bcrypt");
+const { v4: uuidv4 } = require("uuid");
+const axios = require("axios");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -15,13 +17,40 @@ module.exports = {
      * }], {});
      */
     const users = data.map((e) => {
+      let uuid = uuidv4();
+      const options = {
+        method: "POST",
+        url: "https://2269480a5983d987.api-us.cometchat.io/v3/users",
+        headers: {
+          apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        data: {
+          metadata: {
+            "@private": {
+              email: "user@email.com",
+              contactNumber: "0123456789",
+            },
+          },
+          uid: uuid,
+          name: e.username,
+          avatar: `https://avatars.dicebear.com/api/initials/${e.username}.svg`,
+        },
+      };
+
+      axios
+        .request(options)
+        .then(function (response) {})
+        .catch(function (error) {});
+
+      e.uuid = uuid;
       e.createdAt = e.updatedAt = new Date();
       e.dob = new Date(e.dob);
-      e.profPict =
-        "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg";
-      e.isValid = false;
+      e.profPict = `https://avatars.dicebear.com/api/initials/${e.username}.svg`;
+      e.isValid = true;
       e.isPremium = false;
-      e.isLogin = false;
+      e.isLogin = true;
       e.password = hashPassword(e.password);
       return e;
     });
