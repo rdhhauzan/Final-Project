@@ -56,7 +56,7 @@ export default function Home() {
 			let filteredPosts = posts.filter((post) => filter === post.Game.name);
 			setFiltered([...filteredPosts]);
 		}
-	}, [filter]);
+	}, [filter, posts]);
 
 	useEffect(() => {
 		dispatch(fetchOnlineUsers());
