@@ -11,6 +11,7 @@ import {
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
 import PremiumCard from "../components/PremiumCard";
+import ModalMatchmaking from "./ModalMatchmaking";
 
 export default function Home() {
 	const dispatch = useDispatch();
@@ -284,6 +285,29 @@ export default function Home() {
 						})}
 					</div>
 					{userDetail?.user?.isPremium ? null : <PremiumCard />}
+					<div>
+						<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center text-center">
+							<div className="card-body flex items-center">
+								<h2 className="card-title ">Go matchmaking!</h2>
+								<figure className="pt-5 text-center">
+									<img
+										src="https://cdni.iconscout.com/illustration/premium/thumb/gamers-play-online-video-game-5071155-4231654.png"
+										alt="Shoes"
+										className="rounded-xl w-full"
+									/>
+								</figure>
+								<div className="flex justify-center">
+									<label
+										htmlFor="modal-matchmaking"
+										className="btn bg-[#D7385E] text-slate-200"
+										onClick={handleShow}>
+										Enter matchmaking lobby
+									</label>
+									<ModalMatchmaking key={userDetail.id} />
+								</div>
+							</div>
+						</div>{" "}
+					</div>
 				</div>
 			</div>
 		</div>
