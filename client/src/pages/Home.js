@@ -17,8 +17,12 @@ export default function Home() {
 	const dispatch = useDispatch();
 	const navigation = useNavigate();
 	const id = localStorage.getItem("id");
-	const { userDetail, posts, onlineUsers } = useSelector((state) => state);
+	const { userDetail, posts, onlineUsers, games } = useSelector(
+		(state) => state
+	);
 	const [show, setShow] = useState(false);
+	const [filter, setFilter] = useState("All");
+	const [filtered, setFiltered] = useState([]);
 
 	const handleShow = () => setShow(true);
 	const logout = (e) => {
@@ -35,14 +39,29 @@ export default function Home() {
 		navigation("/");
 	};
 
+	const handleChange = (e) => {
+		let { value } = e.target;
+
+		setFilter(value);
+	};
+
+	useEffect(() => {
+		dispatch(fetchPosts());
+	}, []);
+
+	useEffect(() => {
+		if (filter === "All") {
+			setFiltered([...posts]);
+		} else {
+			let filteredPosts = posts.filter((post) => filter === post.Game.name);
+			setFiltered([...filteredPosts]);
+		}
+	}, [filter]);
+
 	useEffect(() => {
 		dispatch(fetchUserById(id));
 		dispatch(fetchOnlineUsers());
 		// eslint-disable-next-line
-	}, []);
-
-	useEffect(() => {
-		dispatch(fetchPosts());
 	}, []);
 
 	return (
@@ -51,6 +70,23 @@ export default function Home() {
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
 					{posts.length > 0 ? (
 						<div className="flex justify-end">
+							<div className="flex items-center mx-3">
+								<select
+									value={filter}
+									onChange={handleChange}
+									className="select select-bordered select-sm max-w-xs">
+									<option name="All" value="All">
+										All
+									</option>
+									{games.map((game) => {
+										return (
+											<option name={game.name} value={game.name} key={game.id}>
+												{game.name}
+											</option>
+										);
+									})}
+								</select>
+							</div>
 							<label
 								htmlFor="modal-post"
 								className="btn bg-[#D7385E] text-slate-200">
@@ -62,7 +98,7 @@ export default function Home() {
 					) : null}
 
 					{posts.length > 0 ? (
-						posts.map((post) => {
+						filtered.map((post) => {
 							return (
 								<div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
 									<div className="card-body text-start" key={post.id}>
