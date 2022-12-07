@@ -5,6 +5,7 @@ import {
 	fetchPosts,
 	fetchUserById,
 	fetchOnlineUsers,
+	deletePost,
 } from "../store/actions/action";
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
@@ -42,8 +43,8 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div className="flex xl:flex-row 2xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen font-chakra">
-			<div className="flex xl:flex-row 2xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
+		<div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen">
+			<div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
 				<div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
 					{posts.length > 0 ? (
 						<div className="flex justify-end">
@@ -74,6 +75,26 @@ export default function Home() {
 													className="rounded-xl w-full"
 												/>
 											</figure>
+										) : null}
+										{post.UserId === userDetail?.user?.id ? (
+											<button
+												className="btn flex self-end bg-transparent hover:bg-transparent hover:scale-110 border-0"
+												onClick={() => dispatch(deletePost(post.id))}>
+												{" "}
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													strokeWidth={1.5}
+													stroke="currentColor"
+													className="w-6 h-6">
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+													/>
+												</svg>
+											</button>
 										) : null}
 									</div>
 								</div>
@@ -142,7 +163,7 @@ export default function Home() {
 									Profile
 								</button>
 								<button
-									className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 text-sm"
+									className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 2xs:mb-2 text-sm"
 									onClick={() => navigation("/addgame")}>
 									Add a Game
 								</button>
@@ -180,7 +201,10 @@ export default function Home() {
 										</p>
 									</div>
 									<div className="flex items-end text-end">
-										<button className="btn btn-primary rounded-sm">+</button>
+										<button className="btn btn-primary rounded-sm">
+											{" "}
+											Follow{" "}
+										</button>
 									</div>
 								</div>
 							);
