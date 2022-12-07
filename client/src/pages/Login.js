@@ -43,8 +43,8 @@ export default function Login() {
 							onClick={() => navigation("/")}
 						/>
 					</div>
-					<div className="form-group mb-6">
-						<label className="absolute px-2 form-label inline-block text-xs mb-2 text-slate-900">
+					<div className="relative form-group mb-6">
+						<label className="absolute left-3 -top-2 px-2 rounded-sm bg-[#D7385E] form-label inline-block text-xs mb-2 uppercase text-white">
 							EMAIL ADDRESS
 						</label>
 						<input
@@ -55,8 +55,8 @@ export default function Login() {
 							className="form-control block w-full px-3 py-2.5 text-sm text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded-xs"
 						/>
 					</div>
-					<div className="form-group mb-6">
-						<label className="absolute px-2 form-label inline-block text-xs mb-2 text-slate-900">
+					<div className="relative form-group mb-6">
+						<label className="absolute left-3 -top-2 px-2 rounded-sm bg-[#D7385E] form-label inline-block text-xs mb-2 uppercase text-white">
 							PASSWORD
 						</label>
 						<input
