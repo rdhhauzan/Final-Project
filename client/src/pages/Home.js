@@ -22,6 +22,7 @@ export default function Home() {
 	const handleShow = () => setShow(true);
 	const logout = (e) => {
 		e.preventDefault();
+		window.CometChatWidget.logout();
 		localStorage.clear();
 		Swal.fire({
 			title: "Logged Out",
@@ -37,7 +38,7 @@ export default function Home() {
 		dispatch(fetchUserById(id));
 		dispatch(fetchOnlineUsers());
 		// eslint-disable-next-line
-	}, [onlineUsers]);
+	}, []);
 
 	useEffect(() => {
 		dispatch(fetchPosts());

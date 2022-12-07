@@ -61,8 +61,7 @@ class UserController {
           },
           uid: uuid,
           name: username,
-          avatar:
-            "https://static.vecteezy.com/system/resources/previews/007/698/902/original/geek-gamer-avatar-profile-icon-free-vector.jpg",
+          avatar: `https://avatars.dicebear.com/api/initials/${username}.svg`,
         },
       };
 
@@ -415,9 +414,40 @@ class UserController {
                 gender,
                 profPict,
               };
+              // ! Edit In Cometchat Too
+              const options = {
+                method: "PUT",
+                url: `https://2269480a5983d987.api-us.cometchat.io/v3/users/${req.user.uuid}`,
+                headers: {
+                  apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+                data: {
+                  metadata: {
+                    "@private": {
+                      email: "user@email.com",
+                      contactNumber: "0123456789",
+                    },
+                  },
+                  name: username,
+                  avatar: profPict,
+                },
+              };
+
+              axios
+                .request(options)
+                .then(function (response) {
+                  console.log(response);
+                })
+                .catch(function (error) {
+                  console.error(error);
+                });
               await User.update(payload, { where: { id } });
+
               res.status(200).json({ msg: "Profile sucessfully updated" });
             } catch (error) {
+              console.log(error);
               next(error);
             }
           }
@@ -433,9 +463,37 @@ class UserController {
           gender,
         };
         await User.update(payload, { where: { id } });
+        const options = {
+          method: "PUT",
+          url: `https://2269480a5983d987.api-us.cometchat.io/v3/users/${req.user.uuid}`,
+          headers: {
+            apiKey: "dd160c53b176e730b4e702acbc12a2ddfc921eda",
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          data: {
+            metadata: {
+              "@private": {
+                email: "user@email.com",
+                contactNumber: "0123456789",
+              },
+            },
+            name: username,
+          },
+        };
+
+        axios
+          .request(options)
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
         res.status(200).json({ msg: "Profile sucessfully updated" });
       }
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }

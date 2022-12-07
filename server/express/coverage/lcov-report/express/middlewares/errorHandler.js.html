@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>30/30</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>30/30</span>
             </div>
         
             
@@ -138,15 +138,9 @@
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
 <a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
+<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -220,80 +214,77 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const errorHandler = (err, req, res, next) =&gt; {
-  let error = [];
-  switch (err.name) {
-    case "SequelizeValidationError":
-      err.errors.forEach((e) =&gt; {
-        error.push(e.message);
-      });
-      res.status(400).json({ msg: error.join(" ") });
-      break;
+	let error = [];
+	switch (err.name) {
+		case "SequelizeValidationError":
+			res.status(400).json({ msg: err.errors[0].message });
+			break;
 &nbsp;
-    case "SequelizeUniqueConstraintError":
-      err.errors.forEach((e) =&gt; {
-        error.push(e.message);
-      });
-      res.status(400).json({ msg: error.join(" ") });
-      break;
+		case "SequelizeUniqueConstraintError":
+			err.errors.forEach((e) =&gt; {
+				error.push(e.message);
+			});
+			res.status(400).json({ msg: error.join(" ") });
+			break;
 &nbsp;
-    case "JsonWebTokenError":
-      res.status(401).json({ msg: "Invalid Token" });
-      break;
+		case "JsonWebTokenError":
+			res.status(401).json({ msg: "Invalid Token" });
+			break;
 &nbsp;
-    case "LOGIN_ERROR":
-      res.status(400).json({
-        msg: "Please Fill All Fields!",
-      });
-      break;
+		case "LOGIN_ERROR":
+			res.status(400).json({
+				msg: "Please Fill All Fields!",
+			});
+			break;
 &nbsp;
-    case "FOLLOW_ERROR":
-      res.status(400).json({
-        msg: "You can't follow yourself!",
-      });
-      break;
+		case "FOLLOW_ERROR":
+			res.status(400).json({
+				msg: "You can't follow yourself!",
+			});
+			break;
 &nbsp;
-    case "NOT_FOUND":
-      res.status(404).json({
-        msg: "Data Not Found",
-      });
-      break;
+		case "NOT_FOUND":
+			res.status(404).json({
+				msg: "Data Not Found",
+			});
+			break;
 &nbsp;
-    case "INVALID_DATA":
-      res.status(400).json({
-        msg: "Invalid email / Password",
-      });
-      break;
+		case "INVALID_DATA":
+			res.status(400).json({
+				msg: "Invalid email / Password",
+			});
+			break;
 &nbsp;
-    case "INVALID_ACCESS":
-      res.status(400).json({
-        msg: "Invalid email / Password",
-      });
-      break;
+		case "INVALID_ACCESS":
+			res.status(400).json({
+				msg: "Invalid email / Password",
+			});
+			break;
 &nbsp;
-    case "MATCHMAKING ERROR":
-      res.status(404).json({
-        msg: "No players found! please try again later!",
-      });
-      break;
+		case "MATCHMAKING ERROR":
+			res.status(404).json({
+				msg: "No players found! please try again later!",
+			});
+			break;
 &nbsp;
-    case "USERGAME_EXISTS":
-      res.status(400).json({
-        msg: "You already have this game info!",
-      });
-      break;
+		case "USERGAME_EXISTS":
+			res.status(400).json({
+				msg: "You already have this game info!",
+			});
+			break;
 &nbsp;
-    case "UNAUTHORIZED":
-      res.status(403).json({
-        msg: "You are not authorized!",
-      });
-      break;
+		case "UNAUTHORIZED":
+			res.status(403).json({
+				msg: "You are not authorized!",
+			});
+			break;
 &nbsp;
-    default:
-      res.status(500).json({
-        msg: "Internal Server Error",
-      });
-      break;
-  }
+		default:
+			res.status(500).json({
+				msg: "Internal Server Error",
+			});
+			break;
+	}
 };
 &nbsp;
 module.exports = errorHandler;
@@ -304,7 +295,7 @@ module.exports = errorHandler;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-06T17:13:50.231Z
+                at 2022-12-07T03:47:35.168Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
