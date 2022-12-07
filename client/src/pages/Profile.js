@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import {
@@ -6,10 +6,11 @@ import {
 	editUserGame,
 	fetchGames,
 	fetchUserById,
+	followFriend,
 } from "../store/actions/action";
 export default function Profile() {
 	const dispatch = useDispatch();
-	const id = localStorage.getItem("id");
+	const { id } = useParams();
 	const [clicked, setClicked] = useState(false);
 	const [modalClick, setModalClick] = useState(false);
 	const { userDetail, games } = useSelector((state) => state);
@@ -175,11 +176,19 @@ export default function Profile() {
 							</p>
 						</div>
 						<div className="flex mt-3 justify-center">
-							<button
-								className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
-								onClick={() => setClicked(true)}>
-								Edit Profile
-							</button>
+							{+localStorage.getItem("id") === userDetail?.user?.id ? (
+								<button
+									className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+									onClick={() => setClicked(true)}>
+									Edit Profile
+								</button>
+							) : (
+								<button
+									className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+									onClick={() => dispatch(followFriend(userDetail.user.id))}>
+									Follow
+								</button>
+							)}
 						</div>
 					</div>
 				)}

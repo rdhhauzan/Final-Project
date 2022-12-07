@@ -6,6 +6,13 @@ const URL = "https://final-project-production.up.railway.app";
 
 // SET FUNCTIONS
 
+export function setMatch(payload) {
+	return {
+		type: "match/setMatch",
+		payload,
+	};
+}
+
 export function setGames(payload) {
 	return {
 		type: "games/setGames",
@@ -50,6 +57,18 @@ export function isLoading() {
 export function doneLoading() {
 	return {
 		type: "doneLoading",
+	};
+}
+
+export function isMatching() {
+	return {
+		type: "isMatching",
+	};
+}
+
+export function doneMatching() {
+	return {
+		type: "doneMatching",
 	};
 }
 
@@ -408,6 +427,22 @@ export function editUser(payload, id) {
 				confirmButtonColor: "#D7385E",
 				confirmButtonText: "Continue",
 			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+}
+
+export function findMatch(id) {
+	return async (dispatch) => {
+		try {
+			const { data } = await axios({
+				method: "get",
+				url: `${URL}/usergames/match/${id}`,
+				headers: { access_token: localStorage.getItem("access_token") },
+			});
+
+			dispatch(setMatch(data.match));
 		} catch (error) {
 			console.log(error);
 		}

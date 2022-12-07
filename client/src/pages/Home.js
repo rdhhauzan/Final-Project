@@ -7,6 +7,8 @@ import {
 	fetchOnlineUsers,
 	deletePost,
 	followFriend,
+	findMatch,
+	fetchGames,
 } from "../store/actions/action";
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
@@ -17,12 +19,13 @@ export default function Home() {
 	const dispatch = useDispatch();
 	const navigation = useNavigate();
 	const id = localStorage.getItem("id");
-	const { userDetail, posts, onlineUsers, games } = useSelector(
+	const { userDetail, posts, onlineUsers, match, games } = useSelector(
 		(state) => state
 	);
 	const [show, setShow] = useState(false);
 	const [filter, setFilter] = useState("All");
 	const [filtered, setFiltered] = useState([]);
+	const [selected, setSelected] = useState({ name: "", id: "" });
 
 	const handleShow = () => setShow(true);
 	const logout = (e) => {
@@ -45,9 +48,9 @@ export default function Home() {
 		setFilter(value);
 	};
 
-	useEffect(() => {
-		dispatch(fetchPosts());
-	}, []);
+	const startMatchmaking = () => {
+		dispatch(findMatch(selected.id));
+	};
 
 	useEffect(() => {
 		if (filter === "All") {
@@ -59,14 +62,10 @@ export default function Home() {
 	}, [filter, posts]);
 
 	useEffect(() => {
-		dispatch(fetchOnlineUsers());
-
-		// eslint-disable-next-line
-	}, []);
-
-	useEffect(() => {
 		dispatch(fetchUserById(id));
-
+		dispatch(fetchOnlineUsers());
+		dispatch(fetchGames());
+		dispatch(fetchPosts());
 		// eslint-disable-next-line
 	}, []);
 
@@ -254,7 +253,9 @@ export default function Home() {
 								<div className="flex flex-row">
 									<button
 										className="btn btn-sm mx-1 rounded-full bg-[#303030] hover:scale-105 text-slate-200 font-normal mt-2 text-sm"
-										onClick={() => navigation("/profile")}>
+										onClick={() =>
+											navigation(`/profile/${userDetail?.user?.id}`)
+										}>
 										Profile
 									</button>
 									<button
@@ -344,10 +345,108 @@ export default function Home() {
 									<label
 										htmlFor="modal-matchmaking"
 										className="btn bg-[#D7385E] text-slate-200"
-										onClick={handleShow}>
+										onClick={() => {
+											setSelected({ id: "", name: "" });
+										}}>
 										Enter matchmaking lobby
 									</label>
-									<ModalMatchmaking key={userDetail.id} />
+									<div>
+										<input
+											type="checkbox"
+											id="modal-matchmaking"
+											className="modal-toggle"
+										/>
+										<label
+											htmlFor="modal-matchmaking"
+											className="bg-black flex flex-col items-center bg-opacity-90 h-auto modal">
+											<label
+												className="modal-box relative flex flex-col gap-3"
+												htmlFor="">
+												{match.length > 0 ? (
+													<div>
+														<h1 className="text-2xl">MATCH FOUND!</h1>
+														<h1 className="text-lg">
+															Do you want to find another match?
+														</h1>
+													</div>
+												) : (
+													<h1 className="text-2xl">
+														Pick a game to start matchmaking!
+													</h1>
+												)}
+
+												{selected.id ? (
+													<p className="">Selected game: {selected.name}</p>
+												) : (
+													<p className="text-[#2a303c]">Selected game: </p>
+												)}
+												<div className="flex flex-wrap justify-center gap-5 my-3">
+													{userDetail?.user?.UserGames.map((game) => {
+														return (
+															<button
+																className="w-[13.5rem] h-auto hover:scale-105 transition-all btn bg-[#2a303c] hover:bg-[#2a303c] hover:border-[#2a303c] border-[#2a303c]"
+																key={game.Game.id}
+																onClick={(e) => {
+																	e.preventDefault();
+																	setSelected({
+																		name: game.Game.name,
+																		id: game.Game.id,
+																	});
+																}}>
+																<img src={game.Game.imgUrl} />
+															</button>
+														);
+													})}
+												</div>
+
+												<label
+													className="btn bg-[#D7385E] text-slate-200"
+													htmlFor="modal-matchmaking"
+													onClick={(e) => {
+														e.preventDefault();
+														startMatchmaking();
+													}}>
+													START MATCHMAKING
+												</label>
+												{match.length > 0 ? (
+													<div>
+														<p>Your Team</p>
+														<div className="flex flex-row gap-3 justify-around">
+															{match?.map((player, index) => {
+																return (
+																	<button
+																		className="flex flex-col items-center bg-gradient-to-b from-primary via-[#201010] to-[#7f2036] rounded-lg p-2 hover:scale-110 transition-all"
+																		onClick={() => {
+																			navigation(`/profile/${player.User.id}`);
+																		}}>
+																		<p className="text-center font-semibold">
+																			{
+																				games[player.GameId].rankList[
+																					+player.rank
+																				]
+																			}
+																		</p>
+																		<img
+																			src={player.User.profPict}
+																			className="w-14 h-14 rounded-full"
+																		/>
+																		{player.User.username ===
+																		userDetail.user.username ? (
+																			<p className="text-center text-sm">You</p>
+																		) : (
+																			<p className="text-center text-sm">
+																				{player.User.username}
+																			</p>
+																		)}
+																	</button>
+																);
+															})}
+														</div>
+													</div>
+												) : null}
+											</label>
+										</label>
+									</div>
 								</div>
 							</div>
 						</div>{" "}
