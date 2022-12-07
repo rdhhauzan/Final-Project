@@ -280,8 +280,10 @@ export default function Home() {
 
 						{onlineUsers.map((onlineUser) => {
 							return (
-								<div className="card-body flex flex-row mx-5 justify-between text-start">
-									<div className="flex flex-row gap-3" key={onlineUser.id}>
+								<div className="card-body flex mx-5">
+									<div
+										className="flex flex-row gap-3 justify-between"
+										key={onlineUser.id}>
 										<img
 											src={onlineUser.userData.profPict}
 											className="self-center h-10 w-10"
@@ -291,31 +293,31 @@ export default function Home() {
 											{onlineUser.userData.username}
 										</p>
 
-										{userDetail.followed.map((other) => {
-											if (
-												onlineUser.userData.id === other.FollowedId &&
-												+localStorage.getItem("id") === other.FollowerId
-											) {
-												if (other.FollowedId !== other.FollowerId) {
-													return (
-														<p className="flex self-center text-slate-200">
-															{" "}
-															FOLLOWED{" "}
-														</p>
-													);
-												}
-											}
-										})}
+										{userDetail.followed.filter(
+											(e) => e.FollowedId == onlineUser.userData.id
+										).length > 0 && (
+											<p className="flex justify-end mr-1 items-end self-center text-slate-200">
+												{" "}
+												FOLLOWED{" "}
+											</p>
+										)}
+										{userDetail.followed.filter(
+											(e) => e.FollowedId == onlineUser.userData.id
+										).length == 0 && (
+											<button
+												className="btn btn-primary justify-end self-end rounded-sm"
+												onClick={() => {
+													dispatch(followFriend(onlineUser.userData.id))
+														.then(() => {
+															dispatch(fetchOnlineUsers());
+														})
+														.catch((err) => console.log(err));
+												}}>
+												{" "}
+												Follow{" "}
+											</button>
+										)}
 									</div>
-
-									<button
-										className="btn btn-primary rounded-sm"
-										onClick={() =>
-											dispatch(followFriend(onlineUser.userData.id))
-										}>
-										{" "}
-										Follow{" "}
-									</button>
 								</div>
 							);
 						})}
