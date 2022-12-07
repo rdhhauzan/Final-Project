@@ -59,8 +59,14 @@ export default function Home() {
 	}, [filter]);
 
 	useEffect(() => {
-		dispatch(fetchUserById(id));
 		dispatch(fetchOnlineUsers());
+
+		// eslint-disable-next-line
+	}, []);
+
+	useEffect(() => {
+		dispatch(fetchUserById(id));
+
 		// eslint-disable-next-line
 	}, []);
 
