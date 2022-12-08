@@ -13,14 +13,15 @@ import {
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
 import PremiumCard from "../components/PremiumCard";
+import ripple from "../assets/ripple.svg";
+import radio from "../assets/radio.svg";
 
 export default function Home() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const id = localStorage.getItem("id");
-  const { userDetail, posts, onlineUsers, match, games } = useSelector(
-    (state) => state
-  );
+  const { userDetail, posts, onlineUsers, match, games, matching, loading } =
+    useSelector((state) => state);
   const [show, setShow] = useState(false);
   const [filter, setFilter] = useState("All");
   const [filtered, setFiltered] = useState([]);
@@ -71,7 +72,13 @@ export default function Home() {
   useEffect(() => {
     dispatch(fetchPosts());
   }, []);
-
+  if (loading) {
+    return (
+      <div className="bg-black w-screen h-screen absolute opacity-50 flex justify-center items-center">
+        <img src={ripple} />
+      </div>
+    );
+  }
   return (
     <div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen">
       <div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
@@ -217,7 +224,7 @@ export default function Home() {
               <div>
                 <figure className="flex">
                   <img
-                    src="https://i.imgur.com/qAFLT3Z.jpeg"
+                    src={userDetail?.user?.profPict}
                     alt="Shoes"
                     className="mx-5 my-3 w-20 h-20 rounded-full"
                   />
@@ -410,7 +417,7 @@ export default function Home() {
                         >
                           START MATCHMAKING
                         </label>
-                        {match.length > 0 ? (
+                        {match.length > 0 && !matching ? (
                           <div>
                             <p>Your Team</p>
                             <div className="flex flex-row gap-3 justify-around">
@@ -445,6 +452,16 @@ export default function Home() {
                                 );
                               })}
                             </div>
+                          </div>
+                        ) : matching ? (
+                          <div className="flex flex-col gap-2">
+                            <img
+                              src={radio}
+                              className="w-32 h-32 self-center"
+                            />
+                            <p className="semibold text-xl text-white">
+                              Finding...
+                            </p>
                           </div>
                         ) : null}
                       </label>

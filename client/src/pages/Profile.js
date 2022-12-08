@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import ripple from "../assets/ripple.svg";
+
 import {
   editUser,
   editUserGame,
@@ -13,7 +15,7 @@ export default function Profile() {
   const { id } = useParams();
   const [clicked, setClicked] = useState(false);
   const [modalClick, setModalClick] = useState(false);
-  const { userDetail, games } = useSelector((state) => state);
+  const { userDetail, games, loading } = useSelector((state) => state);
   const [form, setForm] = useState({
     username: userDetail?.user?.username,
     password: "",
@@ -64,6 +66,13 @@ export default function Profile() {
     dispatch(fetchUserById(id));
     setModalClick(false);
   };
+  if (loading) {
+    return (
+      <div className="bg-black w-screen h-screen absolute opacity-50 flex justify-center items-center">
+        <img src={ripple} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex xl:flex-row 2xs:flex-col text-slate-200 xl:w-full xl:min-h-screen font-poppins">
