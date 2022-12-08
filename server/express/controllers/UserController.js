@@ -586,7 +586,7 @@ class UserController {
       //   throw {name: "NOT_FOUND"}
       // }
       await User.update({ isValid: true }, { where: { uniqueStr } });
-      res.status(200).json({ msg: "Your email has been verified!" });
+      res.status(200)
       res.redirect("https://team-up-370514.web.app"); //redirect ke login page client
     } catch (error) {
       next(error);
