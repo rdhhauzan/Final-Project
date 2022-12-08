@@ -191,6 +191,10 @@ export default function Profile() {
                 >
                   Edit Profile
                 </button>
+              ) : userDetail?.follower?.filter(
+                  (e) => e.FollowerId === +localStorage.getItem("id")
+                ).length > 0 ? (
+                <p className="flex self-center text-slate-200"> FOLLOWED </p>
               ) : (
                 <button
                   className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
@@ -376,21 +380,24 @@ export default function Profile() {
                             {game.aboutMe}
                           </p>
                         </div>
-                        <button
-                          className="btn w-fit self-end btn-sm hover:bg-tertiary hover:text-white border-none"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setModalClick(true);
-                            setEditGame({
-                              rank: game.rank,
-                              role: game.role,
-                              matchType: game.matchType,
-                              aboutMe: game.aboutMe,
-                            });
-                          }}
-                        >
-                          Edit
-                        </button>
+                        {+localStorage.getItem("id") !==
+                        userDetail?.user?.id ? null : (
+                          <button
+                            className="btn w-fit self-end btn-sm hover:bg-tertiary hover:text-white border-none"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setModalClick(true);
+                              setEditGame({
+                                rank: game.rank,
+                                role: game.role,
+                                matchType: game.matchType,
+                                aboutMe: game.aboutMe,
+                              });
+                            }}
+                          >
+                            Edit
+                          </button>
+                        )}
                       </div>
                     )}
                   </label>

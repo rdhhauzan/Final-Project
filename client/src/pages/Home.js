@@ -40,7 +40,7 @@ export default function Home() {
     });
     navigation("/");
   };
-  const [selected, setSelected] = useState({ name: "", id: "" });
+
   const handleChange = (e) => {
     let { value } = e.target;
 
