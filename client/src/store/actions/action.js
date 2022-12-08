@@ -74,7 +74,7 @@ export function doneMatching() {
 export function register(payload) {
   return async () => {
     try {
-      isLoading();
+      dispatch(isLoading());
       let { data } = await axios.post(`${URL}/users/register`, payload);
       Swal.fire({
         title: "Success!",
@@ -88,14 +88,14 @@ export function register(payload) {
     } catch (err) {
       console.log(err);
     } finally {
-      doneLoading();
+      dispatch(doneLoading());
     }
   };
 }
 
 export function login(payload) {
   return async () => {
-    isLoading();
+    dispatch(isLoading());
     try {
       const authKey = "a0b27f305eaed800bd7330c21a90db380a970e4e";
       let { data } = await axios.post(`${URL}/users/login`, payload);
@@ -158,7 +158,7 @@ export function login(payload) {
         confirmButtonText: "OK",
       });
     } finally {
-      doneLoading();
+      dispatch(doneLoading());
     }
   };
 }
@@ -166,7 +166,7 @@ export function login(payload) {
 // AXIOS FUNCTION - FETCH DATA
 
 export function fetchGames() {
-  isLoading();
+  dispatch(isLoading());
   return (dispatch) => {
     axios
       .get(`${URL}/games`)
@@ -175,7 +175,7 @@ export function fetchGames() {
       })
       .catch((err) => console.log(err))
       .finally(() => {
-        doneLoading();
+        dispatch(doneLoading());
       });
   };
 }
@@ -183,7 +183,7 @@ export function fetchGames() {
 export function fetchPosts() {
   return async (dispatch) => {
     try {
-      isLoading();
+      dispatch(isLoading());
       let { data } = await axios.get(`${URL}/users/posts`, {
         headers: {
           access_token: localStorage.getItem("access_token"),
@@ -193,7 +193,7 @@ export function fetchPosts() {
     } catch (err) {
       console.log(err);
     } finally {
-      doneLoading();
+      dispatch(doneLoading());
     }
   };
 }
@@ -201,7 +201,7 @@ export function fetchPosts() {
 export function fetchOnlineUsers() {
   return async (dispatch) => {
     try {
-      isLoading();
+      dispatch(isLoading());
       let { data } = await axios.get(`${URL}/users/online`, {
         headers: {
           access_token: localStorage.getItem("access_token"),
@@ -212,7 +212,7 @@ export function fetchOnlineUsers() {
     } catch (err) {
       console.log(err);
     } finally {
-      doneLoading();
+      dispatch(doneLoading());
     }
   };
 }
@@ -220,7 +220,7 @@ export function fetchOnlineUsers() {
 export function fetchUsers() {
   return async (dispatch) => {
     try {
-      isLoading();
+      dispatch(isLoading());
       let { data } = await axios.get(`${URL}/users`, {
         headers: {
           access_token: localStorage.getItem("access_token"),
@@ -231,7 +231,7 @@ export function fetchUsers() {
     } catch (err) {
       console.log(err);
     } finally {
-      doneLoading();
+      dispatch(doneLoading());
     }
   };
 }
@@ -255,6 +255,7 @@ export function fetchUserById(id) {
 
 export function addPost(payload) {
   return (dispatch) => {
+    dispatch(isLoading());
     return axios({
       method: "POST",
       url: `${URL}/users/post`,
@@ -269,13 +270,17 @@ export function addPost(payload) {
       .then(() => {
         dispatch(fetchPosts());
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => {
+        dispatch(doneLoading());
+      });
   };
 }
 
 export function addUserGame(payload, id) {
   return async (dispatch) => {
     try {
+      dispatch(isLoading());
       await axios({
         method: "post",
         url: `${URL}/usergames/${id}`,
@@ -293,6 +298,8 @@ export function addUserGame(payload, id) {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(doneLoading());
     }
   };
 }
@@ -324,6 +331,7 @@ export function editUserGame(payload, id) {
 export function payment() {
   return async (dispatch) => {
     try {
+      dispatch(isLoading());
       let { data } = await axios.post(
         `${URL}/users/payment`,
         {},
@@ -374,6 +382,8 @@ export function payment() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(doneLoading());
     }
   };
 }
@@ -406,6 +416,7 @@ export function followFriend(id) {
 export function editUser(payload, id) {
   return async (dispatch) => {
     try {
+      dispatch(isLoading());
       await axios({
         method: "PUT",
         url: `${URL}/users/edit/${id}`,
@@ -429,6 +440,8 @@ export function editUser(payload, id) {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      doneLoading();
     }
   };
 }
@@ -436,6 +449,7 @@ export function editUser(payload, id) {
 export function findMatch(id) {
   return async (dispatch) => {
     try {
+      dispatch(isMatching());
       const { data } = await axios({
         method: "get",
         url: `${URL}/usergames/match/${id}`,
@@ -445,6 +459,8 @@ export function findMatch(id) {
       dispatch(setMatch(data.match));
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch(doneMatching());
     }
   };
 }
@@ -453,6 +469,7 @@ export function findMatch(id) {
 
 export function deletePost(id) {
   return (dispatch) => {
+    dispatch(isLoading());
     return axios({
       method: "DELETE",
       url: `${URL}/users/post/${id}`,
@@ -463,6 +480,9 @@ export function deletePost(id) {
       .then(() => {
         dispatch(fetchPosts());
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => {
+        dispatch(doneLoading());
+      });
   };
 }
