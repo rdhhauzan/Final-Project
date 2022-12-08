@@ -4,10 +4,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchGames } from "../store/actions/action";
 import { useEffect } from "react";
 import Features from "../components/Features";
+import mlbb from "../assets/gameGifs/mlbb.gif";
+import lol from "../assets/gameGifs/lol.gif";
+import valo from "../assets/gameGifs/valo.gif";
+import apex from "../assets/gameGifs/apex.gif";
 
 const LandingPage = () => {
   const { games } = useSelector((state) => state);
   const dispatch = useDispatch();
+  const gif = [mlbb, apex, valo, lol];
 
   useEffect(() => {
     dispatch(fetchGames());
@@ -30,13 +35,20 @@ const LandingPage = () => {
           <Features />
         </div>
       </div>
-      <div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>
+      <div className={`bg-primary ${styles.paddingX} ${styles.flexStart} h-52`}>
         <h2 className={`${styles.heading2}`}>GAMES</h2>
         <div className={`${styles.boxWidth}`}>
           {/* games card */}
 
           {games.map((game, index) => {
-            return <GamesCard game={game} index={index} key={game.id} />;
+            return (
+              <GamesCard
+                game={game}
+                index={index}
+                key={game.id}
+                gif={gif[index]}
+              />
+            );
           })}
         </div>
       </div>

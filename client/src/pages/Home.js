@@ -2,29 +2,40 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-	fetchPosts,
-	fetchUserById,
-	fetchOnlineUsers,
-	deletePost,
-	followFriend,
-	findMatch,
-	fetchGames,
+
+  fetchPosts,
+  fetchUserById,
+  fetchOnlineUsers,
+  deletePost,
+  followFriend,
+  findMatch,
+  fetchGames,
+  setMatch,
 } from "../store/actions/action";
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
 import PremiumCard from "../components/PremiumCard";
+import ripple from "../assets/ripple.svg";
+import radio from "../assets/radio.svg";
 
 export default function Home() {
-	const dispatch = useDispatch();
-	const navigation = useNavigate();
-	const id = localStorage.getItem("id");
-	const { userDetail, posts, onlineUsers, match, games } = useSelector(
-		(state) => state
-	);
-	const [show, setShow] = useState(false);
-	const [filter, setFilter] = useState("All");
-	const [filtered, setFiltered] = useState([]);
-	const [selected, setSelected] = useState({ name: "", id: "" });
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
+  const id = localStorage.getItem("id");
+  const {
+    userDetail,
+    posts,
+    onlineUsers,
+    match,
+    games,
+    matching,
+    loading,
+    errorFind,
+  } = useSelector((state) => state);
+  const [show, setShow] = useState(false);
+  const [filter, setFilter] = useState("All");
+  const [filtered, setFiltered] = useState([]);
+  const [selected, setSelected] = useState({ name: "", id: "" });
 
 	const handleShow = () => setShow(true);
 	const logout = (e) => {
@@ -72,6 +83,14 @@ export default function Home() {
 		dispatch(fetchPosts());
 	}, []);
 
+  if (loading) {
+    return (
+      <div className="bg-black w-screen h-screen absolute opacity-50 flex justify-center items-center">
+        <img src={ripple} />
+      </div>
+    );
+  }
+
 	return (
 		<div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse font-poppins text-[#FFFFFF] w-full min-h-screen">
 			<div className="flex xl:flex-row 2xs:flex-col-reverse 3xs:flex-col-reverse xl:gap-10 2xs:gap-5 w-screen h-content 2xs:py-5 xl:py-10 xl:px-12 2xs:px-8">
@@ -100,7 +119,6 @@ export default function Home() {
 								className="btn bg-[#D7385E] text-slate-200">
 								Make a Post
 							</label>
-
 							<ModalPost key={userDetail.id} />
 						</div>
 					) : null}
@@ -230,7 +248,7 @@ export default function Home() {
 							<div>
 								<figure className="flex">
 									<img
-										src="https://i.imgur.com/qAFLT3Z.jpeg"
+										src={userDetail?.user?.profPict}
 										alt="Shoes"
 										className="mx-5 my-3 w-20 h-20 rounded-full"
 									/>
@@ -402,60 +420,74 @@ export default function Home() {
 													})}
 												</div>
 
-												<label
-													className="btn bg-[#D7385E] text-slate-200"
-													htmlFor="modal-matchmaking"
-													onClick={(e) => {
-														e.preventDefault();
-														startMatchmaking();
-													}}>
-													START MATCHMAKING
-												</label>
-												{match.length > 0 ? (
-													<div>
-														<p>Your Team</p>
-														<div className="flex flex-row gap-3 justify-around">
-															{match?.map((player, index) => {
-																return (
-																	<button
-																		className="flex flex-col items-center bg-gradient-to-b from-primary via-[#201010] to-[#7f2036] rounded-lg p-2 hover:scale-110 transition-all"
-																		onClick={() => {
-																			navigation(`/profile/${player.User.id}`);
-																		}}>
-																		<p className="text-center font-semibold">
-																			{
-																				games[player.GameId].rankList[
-																					+player.rank
-																				]
-																			}
-																		</p>
-																		<img
-																			src={player.User.profPict}
-																			className="w-14 h-14 rounded-full"
-																		/>
-																		{player.User.username ===
-																		userDetail.user.username ? (
-																			<p className="text-center text-sm">You</p>
-																		) : (
-																			<p className="text-center text-sm">
-																				{player.User.username}
-																			</p>
-																		)}
-																	</button>
-																);
-															})}
-														</div>
-													</div>
-												) : null}
-											</label>
-										</label>
-									</div>
-								</div>
-							</div>
-						</div>{" "}
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+                                                <label
+                          className="btn bg-[#D7385E] text-slate-200"
+                          htmlFor="modal-matchmaking"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            startMatchmaking();
+                          }}
+                        >
+                          START MATCHMAKING
+                        </label>
+                        {match.length > 0 && !matching && !errorFind ? (
+                          <div>
+                            <p>Your Team</p>
+                            <div className="flex flex-row gap-3 justify-around">
+                              {match?.map((player, index) => {
+                                return (
+                                  <button
+                                    className="flex flex-col items-center bg-gradient-to-b from-primary via-[#201010] to-[#7f2036] rounded-lg p-2 hover:scale-110 transition-all"
+                                    onClick={() => {
+                                      navigation(`/profile/${player.User.id}`);
+                                    }}
+                                  >
+                                    <p className="text-center font-semibold">
+                                      {
+                                        games[player?.GameId]?.rankList[
+                                          +player?.rank
+                                        ]
+                                      }
+                                    </p>
+                                    <img
+                                      src={player?.User?.profPict}
+                                      className="w-14 h-14 rounded-full"
+                                    />
+                                    {player.User.username ===
+                                    userDetail?.user?.username ? (
+                                      <p className="text-center text-sm">You</p>
+                                    ) : (
+                                      <p className="text-center text-sm">
+                                        {player?.User?.username}
+                                      </p>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ) : matching && !errorFind ? (
+                          <div className="flex flex-col gap-2">
+                            <img
+                              src={radio}
+                              className="w-32 h-32 self-center"
+                            />
+                            <p className="semibold text-xl text-white">
+                              Finding...
+                            </p>
+                          </div>
+                        ) : errorFind ? (
+                          <p>Seems there are no players...</p>
+                        ) : null}
+                      </label>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>{" "}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import ripple from "../assets/ripple.svg";
+
 import {
 	editUser,
 	editUserGame,
@@ -9,17 +11,17 @@ import {
 	followFriend,
 } from "../store/actions/action";
 export default function Profile() {
-	const dispatch = useDispatch();
-	const { id } = useParams();
-	const [clicked, setClicked] = useState(false);
-	const [modalClick, setModalClick] = useState(false);
-	const { userDetail, games } = useSelector((state) => state);
-	const [form, setForm] = useState({
-		username: userDetail?.user?.username,
-		password: "",
-		domisili: userDetail?.user?.domisili,
-		image: "",
-	});
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const [clicked, setClicked] = useState(false);
+  const [modalClick, setModalClick] = useState(false);
+  const { userDetail, games, loading } = useSelector((state) => state);
+  const [form, setForm] = useState({
+    username: userDetail?.user?.username,
+    password: "",
+    domisili: userDetail?.user?.domisili,
+    image: "",
+  });
 
 	const [editGame, setEditGame] = useState({
 		rank: "",
@@ -59,143 +61,178 @@ export default function Profile() {
 		setEditGame({ ...editGame, [name]: value });
 	};
 
-	const onSubmitModal = (gameId) => {
-		dispatch(editUserGame(editGame, gameId));
-		dispatch(fetchUserById(id));
-		setModalClick(false);
-	};
+  const onSubmitModal = (gameId) => {
+    dispatch(editUserGame(editGame, gameId));
+    dispatch(fetchUserById(id));
+    setModalClick(false);
+  };
+  if (loading) {
+    return (
+      <div className="bg-black w-screen h-screen absolute opacity-50 flex justify-center items-center">
+        <img src={ripple} />
+      </div>
+    );
+  }
 
-	return (
-		<div className="flex xl:flex-row 2xs:flex-col text-slate-200 xl:w-full xl:min-h-screen font-poppins">
-			<Link
-				to="/home"
-				className="flex flex-row gap-2 fixed p-5 text-xl hover:underline">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					strokeWidth="1.5"
-					stroke="currentColor"
-					className="flex justify-center self-center w-7 h-7">
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-					/>
-				</svg>
-				<p className="mb-1">Home</p>
-			</Link>
-			<div className="flex xl:flex-row 2xs:flex-col xl:gap-10 w-screen h-content 2xs:py-5 xl:px-5 2xs:px-2">
-				{clicked ? (
-					<form
-						className="flex flex-col w-full basis-1/4 transition-all"
-						enctype="multipart/form-data"
-						onSubmit={onSubmitHandler}>
-						<div className="flex mt-10 justify-center">
-							<label
-								className="w-40 h-40 rounded-full absolute hover:bg-black hover:bg-opacity-75 opacity-0 hover:opacity-100 flex justify-center items-center hover:border-white btn"
-								htmlFor="upload">
-								<div className="flex flex-col">Icon</div>
-							</label>
-							<input
-								id="upload"
-								type="file"
-								className="hidden"
-								name="image"
-								onChange={onChangeHandler}
-							/>
-							<img
-								src={userDetail?.user?.profPict}
-								className="w-40 h-40 rounded-full"
-								alt="placeholder profile"></img>
-						</div>
-						<div className="flex mt-5 justify-center">
-							<div className="flex flex-col gap-2">
-								<div className="flex flex-col text-center">
-									<label htmlFor="username">Username</label>
-									<input
-										type="username"
-										className="rounded-md"
-										name="username"
-										value={form.username}
-										onChange={onChangeHandler}
-									/>
-								</div>
-								<div className="flex flex-col text-center">
-									<label htmlFor="password">Password</label>
-									<input
-										type="password"
-										className="rounded-md"
-										name="password"
-										value={form.password}
-										onChange={onChangeHandler}
-									/>
-								</div>
-								<div className="flex flex-col text-center">
-									<label htmlFor="domisili">Domicile</label>
-									<input
-										type="text"
-										className="rounded-md"
-										name="domisili"
-										value={form.domisili}
-										onChange={onChangeHandler}
-									/>
-								</div>
-								<div className="flex flex-row justify-between">
-									<div className="h-full">
-										<button
-											className="btn-sm btn-outline border border-red-500  rounded-lg text-red-500 hover:text-white hover:border-red-500 hover:bg-red-500 transition-all m-2"
-											onClick={() => {
-												setClicked(false);
-											}}>
-											cancel
-										</button>
-									</div>
-									<div className="h-full">
-										<button
-											className="btn-sm btn-outline border border-sky-400 rounded-lg text-sky-400 hover:text-white hover:border-sky-400 hover:bg-sky-400 transition-all m-2"
-											type="submit">
-											done
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</form>
-				) : (
-					<div className="flex flex-col w-full basis-1/4 transition-all">
-						<div className="flex mt-10 justify-center">
-							<img
-								src={userDetail?.user?.profPict}
-								className="w-40 h-40 rounded-full"
-								alt="placeholder profile"></img>
-						</div>
-						<div className="flex mt-5 justify-center">
-							<p>
-								<strong>@{userDetail?.user?.username}</strong>
-							</p>
-						</div>
-						<div className="flex mt-3 justify-center">
-							{+localStorage.getItem("id") === userDetail?.user?.id ? (
-								<button
-									className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
-									onClick={() => setClicked(true)}>
-									Edit Profile
-								</button>
-							) : userDetail?.follower?.filter(
-									(e) => e.FollowerId === +localStorage.getItem("id")
-							  ).length > 0 ? (
-								<p className="flex self-center text-slate-200"> FOLLOWED </p>
-							) : (
-								<button
-									className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
-									onClick={() => dispatch(followFriend(userDetail.user.id))}>
-									Follow
-								</button>
-							)}
-						</div>
-					</div>
-				)}
+  return (
+    <div className="flex xl:flex-row 2xs:flex-col text-slate-200 xl:w-full xl:min-h-screen font-poppins">
+      <Link
+        to="/home"
+        className="flex flex-row gap-2 fixed p-5 text-xl hover:underline"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="flex justify-center self-center w-7 h-7"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+          />
+        </svg>
+        <p className="mb-1">Home</p>
+      </Link>
+      <div className="flex xl:flex-row 2xs:flex-col xl:gap-10 w-screen h-content 2xs:py-5 xl:px-5 2xs:px-2">
+        {clicked ? (
+          <form
+            className="flex flex-col w-full basis-1/4 transition-all"
+            enctype="multipart/form-data"
+            onSubmit={onSubmitHandler}
+          >
+            <div className="flex mt-10 justify-center">
+              <label
+                className="w-40 h-40 rounded-full absolute hover:bg-black hover:bg-opacity-75 opacity-0 hover:opacity-100 flex justify-center items-center hover:border-white btn"
+                htmlFor="upload"
+              >
+                <div className="flex flex-col">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                    />
+                  </svg>
+                </div>
+              </label>
+              <input
+                id="upload"
+                type="file"
+                className="hidden"
+                name="image"
+                onChange={onChangeHandler}
+              />
+              <img
+                src={userDetail?.user?.profPict}
+                className="w-40 h-40 rounded-full"
+                alt="placeholder profile"
+              ></img>
+            </div>
+            <div className="flex mt-5 justify-center">
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-col text-center">
+                  <label htmlFor="username">Username</label>
+                  <input
+                    type="username"
+                    className="rounded-md"
+                    name="username"
+                    value={form.username}
+                    onChange={onChangeHandler}
+                  />
+                </div>
+                <div className="flex flex-col text-center">
+                  <label htmlFor="domisili">Domicile</label>
+                  <input
+                    type="text"
+                    className="rounded-md"
+                    name="domisili"
+                    value={form.domisili}
+                    onChange={onChangeHandler}
+                  />
+                </div>
+                <div className="flex flex-col text-center">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    type="password"
+                    className="rounded-md"
+                    name="password"
+                    value={form.password}
+                    onChange={onChangeHandler}
+                  />
+                  <p className="text-sm text-start text-[#979797]">
+                    Confirm changes with password
+                  </p>
+                </div>
+                <div className="flex flex-row justify-between">
+                  <div className="h-full">
+                    <button
+                      className="btn-sm btn-outline border border-red-500  rounded-lg text-red-500 hover:text-white hover:border-red-500 hover:bg-red-500 transition-all m-2"
+                      onClick={() => {
+                        setClicked(false);
+                      }}
+                    >
+                      cancel
+                    </button>
+                  </div>
+                  <div className="h-full">
+                    <button
+                      className="btn-sm btn-outline border border-sky-400 rounded-lg text-sky-400 hover:text-white hover:border-sky-400 hover:bg-sky-400 transition-all m-2"
+                      type="submit"
+                    >
+                      done
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        ) : (
+          <div className="flex flex-col w-full basis-1/4 transition-all">
+            <div className="flex mt-10 justify-center">
+              <img
+                src={userDetail?.user?.profPict}
+                className="w-40 h-40 rounded-full"
+                alt="placeholder profile"
+              ></img>
+            </div>
+            <div className="flex mt-5 justify-center">
+              <p>
+                <strong>@{userDetail?.user?.username}</strong>
+              </p>
+            </div>
+            <div className="flex mt-3 justify-center">
+              {+localStorage.getItem("id") === userDetail?.user?.id ? (
+                <button
+                  className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+                  onClick={() => setClicked(true)}
+                >
+                  Edit Profile
+                </button>
+              ) : userDetail?.follower?.filter(
+                  (e) => e.FollowerId === +localStorage.getItem("id")
+                ).length > 0 ? (
+                <p className="flex self-center text-slate-200"> FOLLOWED </p>
+              ) : (
+                <button
+                  className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+                  onClick={() => dispatch(followFriend(userDetail.user.id))}
+                >
+                  Follow
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
 				<div className="flex flex-col w-full basis-1/2 gap-3 xl:mt-0 md:mt-4">
 					{userDetail?.user?.Posts.map((post) => {

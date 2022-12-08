@@ -7,6 +7,7 @@ const initialState = {
   loading: false,
   match: [],
   matching: false,
+  findError: false,
 };
 
 export function rootReducer(state = initialState, action) {
@@ -60,6 +61,16 @@ export function rootReducer(state = initialState, action) {
       return {
         ...state,
         matching: false,
+      };
+    case "errorFind":
+      return {
+        ...state,
+        findError: true,
+      };
+    case "notErrorFind":
+      return {
+        ...state,
+        findError: false,
       };
     default:
       return state;
