@@ -397,6 +397,7 @@ export function followFriend(id) {
           confirmButtonText: "OK",
         });
         dispatch(fetchOnlineUsers());
+        dispatch(fetchUserById(id));
       })
       .catch((err) => console.log(err));
   };
