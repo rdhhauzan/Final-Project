@@ -567,7 +567,11 @@ class UserController {
         where: { FollowerId: id },
         include: { model: User, include: UserGame, required: false },
       });
-      res.status(200).json({ user, followed });
+      let follower = await Follow.findAll({
+        where: { FollowedId: id },
+        include: { model: User, include: UserGame, required: false },
+      });
+      res.status(200).json({ user, followed, follower });
     } catch (error) {
       next(error);
     }
