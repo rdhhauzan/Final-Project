@@ -71,6 +71,17 @@ export function doneMatching() {
   };
 }
 
+export function errorFind() {
+  return {
+    type: "errorFind",
+  };
+}
+export function notErrorFind() {
+  return {
+    type: "notErrorFind",
+  };
+}
+
 export function register(payload) {
   return async (dispatch) => {
     try {
@@ -136,17 +147,19 @@ export function login(payload) {
           //Check the reason for error and take appropriate action.
         }
       );
-      Swal.fire({
-        title: `Welcome, @${data.username}!`,
-        text: "Add a game to your profile to start using TeamUP!",
-        background: "#303030",
-        color: "#FFFFFF",
-        showCancelButton: true,
-        cancelButtonColor: "#D7385E",
-        cancelButtonText: '<a href="/home">Go to home</a>',
-        confirmButtonColor: "#D7385E",
-        confirmButtonText: '<a href="/addgame"> Add a game </a>',
-      });
+      setTimeout(() => {
+        Swal.fire({
+          title: `Welcome, @${data.username}!`,
+          text: "Add a game to your profile to start using TeamUP!",
+          background: "#303030",
+          color: "#FFFFFF",
+          showCancelButton: true,
+          cancelButtonColor: "#D7385E",
+          cancelButtonText: '<a href="/home">Go to home</a>',
+          confirmButtonColor: "#D7385E",
+          confirmButtonText: '<a href="/addgame"> Add a game </a>',
+        });
+      }, 1000);
     } catch (err) {
       Swal.fire({
         title: "Error!",
@@ -179,6 +192,7 @@ export function fetchGames() {
 export function fetchPosts() {
   return async (dispatch) => {
     try {
+      dispatch(isLoading());
       let { data } = await axios.get(`${URL}/users/posts`, {
         headers: {
           access_token: localStorage.getItem("access_token"),
@@ -187,6 +201,8 @@ export function fetchPosts() {
       dispatch(setPosts(data));
     } catch (err) {
       console.log(err);
+    } finally {
+      dispatch(doneLoading());
     }
   };
 }
@@ -439,6 +455,7 @@ export function editUser(payload, id) {
 export function findMatch(id) {
   return async (dispatch) => {
     try {
+      dispatch(notErrorFind());
       dispatch(isMatching());
       const { data } = await axios({
         method: "get",
@@ -447,8 +464,18 @@ export function findMatch(id) {
       });
 
       dispatch(setMatch(data.match));
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      dispatch(errorFind());
+      dispatch(setMatch([]));
+      Swal.fire({
+        title: "Error!",
+        icon: "error",
+        text: err.response.data.msg,
+        background: "#303030",
+        color: "#FFFFFF",
+        confirmButtonColor: "#D7385E",
+        confirmButtonText: "OK",
+      });
     } finally {
       setTimeout(() => {
         dispatch(doneMatching());

@@ -9,6 +9,7 @@ import {
   followFriend,
   findMatch,
   fetchGames,
+  setMatch,
 } from "../store/actions/action";
 import ModalPost from "./ModalPost";
 import Swal from "sweetalert2";
@@ -20,8 +21,16 @@ export default function Home() {
   const dispatch = useDispatch();
   const navigation = useNavigate();
   const id = localStorage.getItem("id");
-  const { userDetail, posts, onlineUsers, match, games, matching, loading } =
-    useSelector((state) => state);
+  const {
+    userDetail,
+    posts,
+    onlineUsers,
+    match,
+    games,
+    matching,
+    loading,
+    errorFind,
+  } = useSelector((state) => state);
   const [show, setShow] = useState(false);
   const [filter, setFilter] = useState("All");
   const [filtered, setFiltered] = useState([]);
@@ -351,6 +360,7 @@ export default function Home() {
                     className="btn bg-[#D7385E] text-slate-200"
                     onClick={() => {
                       setSelected({ id: "", name: "" });
+                      dispatch(setMatch([]));
                     }}
                   >
                     Enter matchmaking lobby
@@ -369,7 +379,7 @@ export default function Home() {
                         className="modal-box relative flex flex-col gap-3"
                         htmlFor=""
                       >
-                        {match.length > 0 ? (
+                        {match.length > 0 && !matching ? (
                           <div>
                             <h1 className="text-2xl">MATCH FOUND!</h1>
                             <h1 className="text-lg">
@@ -417,7 +427,7 @@ export default function Home() {
                         >
                           START MATCHMAKING
                         </label>
-                        {match.length > 0 && !matching ? (
+                        {match.length > 0 && !matching && !errorFind ? (
                           <div>
                             <p>Your Team</p>
                             <div className="flex flex-row gap-3 justify-around">
@@ -431,21 +441,21 @@ export default function Home() {
                                   >
                                     <p className="text-center font-semibold">
                                       {
-                                        games[player.GameId].rankList[
-                                          +player.rank
+                                        games[player?.GameId]?.rankList[
+                                          +player?.rank
                                         ]
                                       }
                                     </p>
                                     <img
-                                      src={player.User.profPict}
+                                      src={player?.User?.profPict}
                                       className="w-14 h-14 rounded-full"
                                     />
                                     {player.User.username ===
-                                    userDetail.user.username ? (
+                                    userDetail?.user?.username ? (
                                       <p className="text-center text-sm">You</p>
                                     ) : (
                                       <p className="text-center text-sm">
-                                        {player.User.username}
+                                        {player?.User?.username}
                                       </p>
                                     )}
                                   </button>
@@ -453,7 +463,7 @@ export default function Home() {
                               })}
                             </div>
                           </div>
-                        ) : matching ? (
+                        ) : matching && !errorFind ? (
                           <div className="flex flex-col gap-2">
                             <img
                               src={radio}
@@ -463,6 +473,8 @@ export default function Home() {
                               Finding...
                             </p>
                           </div>
+                        ) : errorFind ? (
+                          <p>Seems there are no players...</p>
                         ) : null}
                       </label>
                     </label>
