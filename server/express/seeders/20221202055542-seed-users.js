@@ -17,7 +17,7 @@ module.exports = {
      * }], {});
      */
     let users = await Promise.all(
-      data.map((e) => {
+      data.map(async(e) => {
         let uuid = uuidv4();
         const options = {
           method: "POST",
@@ -40,10 +40,7 @@ module.exports = {
           },
         };
 
-        // await axios.request(options);
-        axios.request(options).then(function (response) {
-          console.log(response);
-        });
+        await axios.request(options);
         e.uuid = uuid;
         e.createdAt = e.updatedAt = new Date();
         e.dob = new Date(e.dob);
