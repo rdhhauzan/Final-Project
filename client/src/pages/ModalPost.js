@@ -29,7 +29,6 @@ export default function ModalPost() {
 			value = image;
 		}
 
-		console.log(postInput);
 		setPostInput({
 			...postInput,
 			[name]: value,
@@ -79,21 +78,26 @@ export default function ModalPost() {
 			<label htmlFor="modal-post" className="modal cursor-pointer">
 				<label className="modal-box relative">
 					<div>
-						<h1 className="mb-2 text-2xl"> Share your game result! </h1>
+						<h1 className="mb-4 text-2xl"> Share your game result! </h1>
 					</div>
+
 					<div>
-						<div className="flex">
-							<p className="flex mr-5 items-center"> Title</p>
+						<div className="relative">
+							<label className="absolute left-3 -top-3 mr-5 px-2 rounded-sm bg-[#D7385E] text-white items-center">
+								{" "}
+								Title
+							</label>
 							<input
 								name="title"
+								value={postInput.title}
 								onChange={handleChange}
-								className="flex text-start my-3 w-full outline outline-1 rounded-sm"
+								className="flex text-start px-3 py-3 w-full outline outline-1 rounded-sm"
 							/>
 						</div>
-						<div className="flex justify-between my-3">
-							<p className="my-1"> Content</p>
+						<div className="flex justify-end my-3">
 							<select
 								name="GameId"
+								value={postInput.GameId}
 								onChange={handleChange}
 								className="select select-bordered select-sm max-w-xs">
 								{games.map((game) => {
@@ -105,11 +109,18 @@ export default function ModalPost() {
 								})}
 							</select>
 						</div>
-						<textarea
-							name="content"
-							onChange={handleChange}
-							className="w-full outline outline-1 rounded-sm"
-						/>
+						<div className="relative">
+							<label className="absolute left-3 -top-3 mr-5 px-2 rounded-sm bg-[#D7385E] text-white items-center">
+								{" "}
+								Content
+							</label>
+							<textarea
+								name="content"
+								value={postInput.content}
+								onChange={handleChange}
+								className="w-full outline outline-1 rounded-sm"
+							/>
+						</div>
 						<div className="flex justify-end gap-3 mt-2">
 							<input
 								className="hidden"
@@ -120,7 +131,7 @@ export default function ModalPost() {
 							/>
 							<label
 								htmlFor="upload-image"
-								className="btn bg-[#D7385E] text-slate-200">
+								className="btn bg-transparent border-0 hover:scale-105 hover:bg-transparent text-slate-200">
 								{" "}
 								<svg
 									xmlns="http://www.w3.org/2000/svg"

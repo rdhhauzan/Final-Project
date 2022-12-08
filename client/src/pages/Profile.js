@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import {
@@ -6,10 +6,11 @@ import {
   editUserGame,
   fetchGames,
   fetchUserById,
+  followFriend,
 } from "../store/actions/action";
 export default function Profile() {
   const dispatch = useDispatch();
-  const id = localStorage.getItem("id");
+  const { id } = useParams();
   const [clicked, setClicked] = useState(false);
   const [modalClick, setModalClick] = useState(false);
   const { userDetail, games } = useSelector((state) => state);
@@ -183,12 +184,25 @@ export default function Profile() {
               </p>
             </div>
             <div className="flex mt-3 justify-center">
-              <button
-                className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
-                onClick={() => setClicked(true)}
-              >
-                Edit Profile
-              </button>
+              {+localStorage.getItem("id") === userDetail?.user?.id ? (
+                <button
+                  className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+                  onClick={() => setClicked(true)}
+                >
+                  Edit Profile
+                </button>
+              ) : userDetail?.follower?.filter(
+                  (e) => e.FollowerId === +localStorage.getItem("id")
+                ).length > 0 ? (
+                <p className="flex self-center text-slate-200"> FOLLOWED </p>
+              ) : (
+                <button
+                  className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+                  onClick={() => dispatch(followFriend(userDetail.user.id))}
+                >
+                  Follow
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -200,13 +214,15 @@ export default function Profile() {
                 <div className="card-body text-start">
                   <h2 className="card-title">@{userDetail?.user?.username}</h2>
                   <p>{post.content}</p>
-                  <figure className="pt-5">
-                    <img
-                      src={post.imgUrl}
-                      alt="Shoes"
-                      className="rounded-xl w-full"
-                    />
-                  </figure>
+                  {post.imgUrl ? (
+                    <figure className="pt-5 w-64 h-auto">
+                      <img
+                        src={post.imgUrl}
+                        alt="Shoes"
+                        className="rounded-xl w-full"
+                      />
+                    </figure>
+                  ) : null}
                 </div>
               </div>
             );
@@ -364,21 +380,24 @@ export default function Profile() {
                             {game.aboutMe}
                           </p>
                         </div>
-                        <button
-                          className="btn w-fit self-end btn-sm hover:bg-tertiary hover:text-white border-none"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setModalClick(true);
-                            setEditGame({
-                              rank: game.rank,
-                              role: game.role,
-                              matchType: game.matchType,
-                              aboutMe: game.aboutMe,
-                            });
-                          }}
-                        >
-                          Edit
-                        </button>
+                        {+localStorage.getItem("id") !==
+                        userDetail?.user?.id ? null : (
+                          <button
+                            className="btn w-fit self-end btn-sm hover:bg-tertiary hover:text-white border-none"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setModalClick(true);
+                              setEditGame({
+                                rank: game.rank,
+                                role: game.role,
+                                matchType: game.matchType,
+                                aboutMe: game.aboutMe,
+                              });
+                            }}
+                          >
+                            Edit
+                          </button>
+                        )}
                       </div>
                     )}
                   </label>

@@ -5,6 +5,8 @@ const initialState = {
   onlineUsers: [],
   userDetail: {},
   loading: false,
+  match: [],
+  matching: false,
 };
 
 export function rootReducer(state = initialState, action) {
@@ -34,7 +36,11 @@ export function rootReducer(state = initialState, action) {
         ...state,
         userDetail: action.payload,
       };
-
+    case "match/setMatch":
+      return {
+        ...state,
+        match: action.payload,
+      };
     case "isLoading":
       return {
         ...state,
@@ -44,6 +50,16 @@ export function rootReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
+      };
+    case "isMatching":
+      return {
+        ...state,
+        matching: true,
+      };
+    case "doneMatching":
+      return {
+        ...state,
+        matching: false,
       };
     default:
       return state;

@@ -8,6 +8,7 @@ class UserGameController {
       const userGames = await UserGame.findAll({
         where: { UserId: id },
         include: { model: Game, require: false },
+        order: [["id", "ASC"]],
       });
       res.status(200).json(userGames);
     } catch (error) {

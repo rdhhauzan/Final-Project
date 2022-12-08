@@ -65,9 +65,9 @@ export default function Register() {
 							onClick={() => navigation("/")}
 						/>
 					</div>
-					<div className="form-group mb-6">
+					<div className="relative form-group mb-6">
 						<label
-							className="absolute px-2 form-label inline-block text-xs mb-2 uppercase text-slate-900"
+							className="absolute left-3 -top-2 px-2 rounded-sm bg-[#D7385E] form-label inline-block text-xs mb-2 uppercase text-white"
 							htmlFor="username">
 							USERNAME
 						</label>
@@ -79,8 +79,8 @@ export default function Register() {
 							className="form-control block w-full px-3 py-2.5 text-gray-700 text-ellipsis bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm"
 						/>
 					</div>
-					<div className="form-group mb-6">
-						<label className="absolute px-2 form-label inline-block text-xs mb-2 text-slate-900">
+					<div className="relative form-group mb-6">
+						<label className="absolute left-3 -top-2 px-2 rounded-sm bg-[#D7385E] form-label inline-block text-xs mb-2 uppercase text-white">
 							EMAIL ADDRESS
 						</label>
 						<input
@@ -91,8 +91,8 @@ export default function Register() {
 							className="form-control block w-full px-3 py-2.5 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-xs"
 						/>
 					</div>
-					<div className="form-group mb-6">
-						<label className="absolute px-2 form-label inline-block text-xs mb-2 text-slate-900">
+					<div className="relative form-group mb-6">
+						<label className="absolute left-3 -top-2 px-2 rounded-sm bg-[#D7385E] form-label inline-block text-xs mb-2 uppercase text-white">
 							PASSWORD
 						</label>
 						<input
@@ -100,13 +100,13 @@ export default function Register() {
 							name="password"
 							value={registerForm.password}
 							onChange={handleChange}
-							className="form-control block w-full px-3 py-2.5 bg-white bg-clip-padding text-slate-900 border border-solid border-gray-300 rounded-sm"
+							className="form-control block w-full px-3 pt-3.5 py-2.5 bg-white bg-clip-padding text-slate-900 border border-solid border-gray-300 rounded-sm"
 						/>
 					</div>
 					<div className="form-group flex flex-col mb-6 gap-2">
-						<div className="flex flex-">
+						<div className="flex">
 							<label className="form-label inline-block text-xs mb-2 text-slate-100">
-								GENDER
+								<strong>GENDER</strong>
 							</label>
 						</div>
 						<div className="flex flex-row gap-5">
