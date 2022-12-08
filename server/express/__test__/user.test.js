@@ -271,12 +271,12 @@ test("Bad Request Password Empty, 400", async () => {
 
 //verify
 describe("Test verify users", () => {
-  test("200 - Successfully Verify users", async () => {
+  test("302 - Successfully Verify users", async () => {
     let response = await request(app)
       .get(`/users/verify/${user2.uniqueStr}`)
       .send(user2);
-    expect(response.statusCode).toBe(200);
-    // expect(response.body).toBeInstanceOf(Object);
+    expect(response.statusCode).toBe(302);
+    expect(response.body).toBeInstanceOf(Object);
     // expect(response.body).toHaveProperty(
     //   "msg",
     //   "Your email has been verified!"
