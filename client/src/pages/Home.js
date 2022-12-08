@@ -96,7 +96,8 @@ export default function Home() {
         <div className="flex flex-col w-full mt-0 basis-8/12 gap-3">
           {posts.length > 0 ? (
             <div className="flex justify-end">
-              <div className="flex items-center mx-3">
+              <div className="flex items-center mx-3 gap-2">
+                Filter Posts by Game
                 <select
                   value={filter}
                   onChange={handleChange}
@@ -130,9 +131,14 @@ export default function Home() {
                 <div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
                   <div className="card-body text-start" key={post.id}>
                     <div className="flex flex-row justify-between">
-                      <h2 className="card-title text-2xl">
-                        @{post?.User?.username}
-                      </h2>
+                      <div className="flex flex-row gap-2">
+                        <h2 className="card-title text-2xl">
+                          @{post?.User?.username}
+                        </h2>
+                        <p className="text-sm text-gray-400">
+                          | {post?.Game?.name}
+                        </p>
+                      </div>
                       <p className="text-end text-slate-300 text-sm">
                         {" "}
                         {new Date(post.createdAt)
@@ -324,7 +330,7 @@ export default function Home() {
                   >
                     <img
                       src={onlineUser.userData.profPict}
-                      className="self-center h-10 w-10"
+                      className="self-center h-10 w-10 rounded-full"
                       alt="profile pict"
                     />
                     <a

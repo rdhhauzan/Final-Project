@@ -242,9 +242,22 @@ export default function Profile() {
               return (
                 <div className="card w-full bg-primary rounded shadow-xl shadow-black flex justify-center">
                   <div className="card-body text-start">
-                    <h2 className="card-title">
-                      @{userDetail?.user?.username}
-                    </h2>
+                    <div className="flex flex-row justify-between">
+                      <div className="flex flex-row gap-2">
+                        <h2 className="card-title text-2xl">
+                          @{userDetail?.user?.username}
+                        </h2>
+                        <p className="text-sm text-gray-400">
+                          | {post?.Game?.name}
+                        </p>
+                      </div>
+                      <p className="text-end text-slate-300 text-sm">
+                        {" "}
+                        {new Date(post.createdAt)
+                          .toDateString()
+                          .slice(4, 15)}{" "}
+                      </p>
+                    </div>
                     <p>{post.content}</p>
                     {post.imgUrl ? (
                       <figure className="pt-5 w-64 h-auto">
