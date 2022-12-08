@@ -106,8 +106,8 @@ export function register(payload) {
 
 export function login(payload) {
   return async (dispatch) => {
-    dispatch(isLoading());
     try {
+      dispatch(isLoading());
       const authKey = "a0b27f305eaed800bd7330c21a90db380a970e4e";
       let { data } = await axios.post(`${URL}/users/login`, payload);
       localStorage.setItem("access_token", data.access_token);
@@ -170,8 +170,6 @@ export function login(payload) {
         confirmButtonColor: "#D7385E",
         confirmButtonText: "OK",
       });
-    } finally {
-      dispatch(doneLoading());
     }
   };
 }
@@ -413,6 +411,30 @@ export function followFriend(id) {
           confirmButtonText: "OK",
         });
         dispatch(fetchOnlineUsers());
+      })
+      .catch((err) => console.log(err));
+  };
+}
+
+export function followFriendInProfile(id) {
+  return (dispatch) => {
+    return axios({
+      method: "POST",
+      url: `${URL}/users/follow/${id}`,
+      headers: {
+        access_token: localStorage.getItem("access_token"),
+      },
+    })
+      .then(() => {
+        Swal.fire({
+          title: "Followed!",
+          icon: "success",
+          background: "#303030",
+          color: "#FFFFFF",
+          confirmButtonColor: "#D7385E",
+          confirmButtonText: "OK",
+        });
+        dispatch(fetchOnlineUsers());
         dispatch(fetchUserById(id));
       })
       .catch((err) => console.log(err));
@@ -479,7 +501,7 @@ export function findMatch(id) {
     } finally {
       setTimeout(() => {
         dispatch(doneMatching());
-      }, 2500);
+      }, 1500);
     }
   };
 }

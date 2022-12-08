@@ -327,9 +327,16 @@ export default function Home() {
                       className="self-center h-10 w-10"
                       alt="profile pict"
                     />
-                    <p className="self-center">
+                    <a
+                      href="#"
+                      className="self-center hover:font-semibold"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigation(`/profile/${onlineUser.userData.id}`);
+                      }}
+                    >
                       {onlineUser.userData.username}
-                    </p>
+                    </a>
 
                     {userDetail.followed.filter(
                       (e) => e.FollowedId == onlineUser.userData.id
@@ -368,7 +375,7 @@ export default function Home() {
                 <h2 className="card-title ">Go matchmaking!</h2>
                 <figure className="pt-5 text-center">
                   <img
-                    src="https://cdni.iconscout.com/illustration/premium/thumb/gamers-play-online-video-game-5071155-4231654.png"
+                    src="https://cdni.iconscout.com/illustration/premium/thumb/gaming-team-practicing-5004698-4206791.png"
                     alt="Shoes"
                     className="rounded-xl w-full"
                   />
@@ -395,7 +402,7 @@ export default function Home() {
                       className="bg-black flex flex-col items-center bg-opacity-90 h-auto modal"
                     >
                       <label
-                        className="modal-box relative flex flex-col gap-3"
+                        className="modal-box relative flex flex-col gap-3 w-128 h-fit"
                         htmlFor=""
                       >
                         {match.length > 0 && !matching ? (
@@ -435,17 +442,31 @@ export default function Home() {
                             );
                           })}
                         </div>
-
-                        <label
-                          className="btn bg-[#D7385E] text-slate-200"
-                          htmlFor="modal-matchmaking"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            startMatchmaking();
-                          }}
-                        >
-                          START MATCHMAKING
-                        </label>
+                        {userDetail?.user?.UserGames.length > 0 ? (
+                          <label
+                            className="btn bg-[#D7385E] text-slate-200"
+                            htmlFor="modal-matchmaking"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              startMatchmaking();
+                            }}
+                          >
+                            START MATCHMAKING
+                          </label>
+                        ) : (
+                          <div className="flex flex-col gap-4">
+                            <p>You do not have any games yet...</p>
+                            <label
+                              className="btn bg-[#D7385E] text-slate-200"
+                              htmlFor="modal-matchmaking"
+                              onClick={(e) => {
+                                navigation("/addgame");
+                              }}
+                            >
+                              Add some game!
+                            </label>
+                          </div>
+                        )}
                         {match.length > 0 && !matching && !errorFind ? (
                           <div>
                             <p>Your Team</p>

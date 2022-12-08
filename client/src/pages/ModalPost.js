@@ -5,168 +5,172 @@ import { addPost, fetchGames } from "../store/actions/action";
 import Swal from "sweetalert2";
 
 export default function ModalPost() {
-	const navigation = useNavigate();
-	const dispatch = useDispatch();
-	const { games } = useSelector((state) => state);
-	const [postInput, setPostInput] = useState({
-		title: "",
-		content: "",
-		GameId: "1",
-		image: "",
-	});
+  const navigation = useNavigate();
+  const dispatch = useDispatch();
+  const { games } = useSelector((state) => state);
+  const [postInput, setPostInput] = useState({
+    title: "",
+    content: "",
+    GameId: "1",
+    image: "",
+  });
 
-	const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
 
-	useEffect(() => {
-		dispatch(fetchGames());
-	}, []);
+  useEffect(() => {
+    dispatch(fetchGames());
+  }, []);
 
-	const handleChange = (e) => {
-		let { name, value } = e.target;
+  const handleChange = (e) => {
+    let { name, value } = e.target;
 
-		if (name === "image") {
-			let image = e.target.files[0];
-			value = image;
-		}
+    if (name === "image") {
+      let image = e.target.files[0];
+      value = image;
+    }
 
-		setPostInput({
-			...postInput,
-			[name]: value,
-		});
-	};
+    setPostInput({
+      ...postInput,
+      [name]: value,
+    });
+  };
 
-	const handleSubmit = (e) => {
-		if (
-			postInput.title === "" ||
-			postInput.content === "" ||
-			postInput.GameId === ""
-		) {
-			Swal.fire({
-				title: "Fields cannot be empty!",
-				icon: "warning",
-				text: "Please fill in all the fields to post!",
-				background: "#303030",
-				color: "#FFFFFF",
-				confirmButtonColor: "#D7385E",
-				confirmButtonText: "OK",
-			});
-		} else {
-			let formData = new FormData();
-			formData.append("title", postInput.title);
-			formData.append("content", postInput.content);
-			formData.append("GameId", postInput.GameId);
-			if (postInput.image) formData.append("image", postInput.image);
+  const handleSubmit = (e) => {
+    if (
+      postInput.title === "" ||
+      postInput.content === "" ||
+      postInput.GameId === ""
+    ) {
+      Swal.fire({
+        title: "Fields cannot be empty!",
+        icon: "warning",
+        text: "Please fill in all the fields to post!",
+        background: "#303030",
+        color: "#FFFFFF",
+        confirmButtonColor: "#D7385E",
+        confirmButtonText: "OK",
+      });
+    } else {
+      let formData = new FormData();
+      formData.append("title", postInput.title);
+      formData.append("content", postInput.content);
+      formData.append("GameId", postInput.GameId);
+      if (postInput.image) formData.append("image", postInput.image);
 
-			dispatch(addPost(formData))
-				.then(() => {
-					setShow(false);
-					navigation("/home");
-					setPostInput({
-						title: "",
-						content: "",
-						GameId: "1",
-						image: "",
-					});
-				})
-				.catch((err) => console.log(err));
-		}
-	};
+      dispatch(addPost(formData))
+        .then(() => {
+          setShow(false);
+          navigation("/home");
+          setPostInput({
+            title: "",
+            content: "",
+            GameId: "1",
+            image: "",
+          });
+        })
+        .catch((err) => console.log(err));
+    }
+  };
 
-	return (
-		<form>
-			<input type="checkbox" id="modal-post" className="modal-toggle" />
-			<label htmlFor="modal-post" className="modal cursor-pointer">
-				<label className="modal-box relative">
-					<div>
-						<h1 className="mb-4 text-2xl"> Share your game result! </h1>
-					</div>
+  return (
+    <form>
+      <input type="checkbox" id="modal-post" className="modal-toggle" />
+      <label htmlFor="modal-post" className="modal cursor-pointer">
+        <label className="modal-box relative">
+          <div>
+            <h1 className="mb-4 text-2xl"> Share your game result! </h1>
+          </div>
 
-					<div>
-						<div className="relative">
-							<label className="absolute left-3 -top-3 mr-5 px-2 rounded-sm bg-[#D7385E] text-white items-center">
-								{" "}
-								Title
-							</label>
-							<input
-								name="title"
-								value={postInput.title}
-								onChange={handleChange}
-								className="flex text-start px-3 py-3 w-full outline outline-1 rounded-sm"
-							/>
-						</div>
-						<div className="flex justify-end my-3">
-							<select
-								name="GameId"
-								value={postInput.GameId}
-								onChange={handleChange}
-								className="select select-bordered select-sm max-w-xs">
-								{games.map((game) => {
-									return (
-										<option value={game.id} key={game.id}>
-											{game.name}
-										</option>
-									);
-								})}
-							</select>
-						</div>
-						<div className="relative">
-							<label className="absolute left-3 -top-3 mr-5 px-2 rounded-sm bg-[#D7385E] text-white items-center">
-								{" "}
-								Content
-							</label>
-							<textarea
-								name="content"
-								value={postInput.content}
-								onChange={handleChange}
-								className="w-full outline outline-1 rounded-sm"
-							/>
-						</div>
-						<div className="flex justify-end gap-3 mt-2">
-							<input
-								className="hidden"
-								type="file"
-								name="image"
-								onChange={handleChange}
-								id="upload-image"
-							/>
-							<label
-								htmlFor="upload-image"
-								className="btn bg-transparent border-0 hover:scale-105 hover:bg-transparent text-slate-200">
-								{" "}
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth={1.5}
-									stroke="currentColor"
-									className="w-6 h-6">
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
-									/>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
-									/>
-								</svg>
-							</label>
-							<label
-								className="btn bg-[#D7385E] text-slate-200"
-								onClick={handleSubmit}
-								htmlFor="modal-post">
-								{" "}
-								post{" "}
-							</label>
-							{/* <button type="submit" className="btn bg-[#D7385E] text-slate-200">
+          <div>
+            <div className="relative">
+              <label className="absolute left-3 -top-3 mr-5 px-2 rounded-sm bg-[#D7385E] text-white items-center">
+                {" "}
+                Title
+              </label>
+              <input
+                name="title"
+                value={postInput.title}
+                onChange={handleChange}
+                className="flex text-start px-3 py-3 w-full outline outline-1 rounded-sm"
+              />
+            </div>
+            <div className="flex justify-end my-3">
+              <select
+                name="GameId"
+                value={postInput.GameId}
+                onChange={handleChange}
+                className="select select-bordered select-sm max-w-xs"
+              >
+                {games.map((game) => {
+                  return (
+                    <option value={game.id} key={game.id}>
+                      {game.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="relative">
+              <label className="absolute left-3 -top-3 mr-5 px-2 rounded-sm bg-[#D7385E] text-white items-center">
+                {" "}
+                Content
+              </label>
+              <textarea
+                name="content"
+                value={postInput.content}
+                onChange={handleChange}
+                className="flex text-start px-3 py-3 w-full  rounded-sm"
+              />
+            </div>
+            <div className="flex justify-end gap-3 mt-2">
+              <input
+                className="hidden"
+                type="file"
+                name="image"
+                onChange={handleChange}
+                id="upload-image"
+              />
+              <label
+                htmlFor="upload-image"
+                className="btn bg-transparent border-0 hover:scale-105 hover:bg-transparent text-slate-200"
+              >
+                {" "}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"
+                  />
+                </svg>
+              </label>
+              <label
+                className="btn bg-[#D7385E] text-slate-200"
+                onClick={handleSubmit}
+                htmlFor="modal-post"
+              >
+                {" "}
+                post{" "}
+              </label>
+              {/* <button type="submit" className="btn bg-[#D7385E] text-slate-200">
                 {" "}
                 Post{" "}
               </button> */}
-						</div>
-					</div>
-				</label>
-			</label>
-		</form>
-	);
+            </div>
+          </div>
+        </label>
+      </label>
+    </form>
+  );
 }

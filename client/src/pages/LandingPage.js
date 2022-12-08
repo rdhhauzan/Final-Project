@@ -35,7 +35,9 @@ const LandingPage = () => {
           <Features />
         </div>
       </div>
-      <div className={`bg-primary ${styles.paddingX} ${styles.flexStart} h-52`}>
+      <div
+        className={`bg-primary ${styles.paddingX} ${styles.flexStart} h-52 xl:mb-2 md:mb-2 sm:mb-96 xs:mb-96`}
+      >
         <h2 className={`${styles.heading2}`}>GAMES</h2>
         <div className={`${styles.boxWidth}`}>
           {/* games card */}
