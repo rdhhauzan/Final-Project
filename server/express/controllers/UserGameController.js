@@ -90,6 +90,7 @@ class UserGameController {
         where: { UserId, GameId },
         include: User,
       });
+      const game = await Game.findByPk(GameId);
       if (!userGame) {
         throw { name: "MATCHMAKING ERROR" };
       }
@@ -107,7 +108,7 @@ class UserGameController {
         where: whereInput,
         include: { model: User, where: { isLogin: true } },
         order: sequelize.random(),
-        limit: 4,
+        limit: +game.maxPlayers - 1,
       });
       if (similarUsers.length < 1) throw { name: "MATCHMAKING ERROR" };
       res
