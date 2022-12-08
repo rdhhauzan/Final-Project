@@ -71,6 +71,18 @@ export function doneMatching() {
   };
 }
 
+export function isMatching() {
+  return {
+    type: "isMatching",
+  };
+}
+
+export function doneMatching() {
+  return {
+    type: "doneMatching",
+  };
+}
+
 export function register(payload) {
   return async () => {
     try {

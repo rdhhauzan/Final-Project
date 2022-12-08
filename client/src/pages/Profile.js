@@ -6,6 +6,7 @@ import {
   editUserGame,
   fetchGames,
   fetchUserById,
+  followFriend,
 } from "../store/actions/action";
 export default function Profile() {
   const dispatch = useDispatch();
@@ -183,12 +184,21 @@ export default function Profile() {
               </p>
             </div>
             <div className="flex mt-3 justify-center">
-              <button
-                className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
-                onClick={() => setClicked(true)}
-              >
-                Edit Profile
-              </button>
+              {+localStorage.getItem("id") === userDetail?.user?.id ? (
+                <button
+                  className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+                  onClick={() => setClicked(true)}
+                >
+                  Edit Profile
+                </button>
+              ) : (
+                <button
+                  className="btn rounded-full bg-[#D7385E] text-[#F8EFD4]"
+                  onClick={() => dispatch(followFriend(userDetail.user.id))}
+                >
+                  Follow
+                </button>
+              )}
             </div>
           </div>
         )}

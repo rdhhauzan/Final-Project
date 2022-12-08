@@ -36,13 +36,11 @@ export function rootReducer(state = initialState, action) {
         ...state,
         userDetail: action.payload,
       };
-
     case "match/setMatch":
       return {
         ...state,
         match: action.payload,
       };
-
     case "isLoading":
       return {
         ...state,
