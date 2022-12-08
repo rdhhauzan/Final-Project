@@ -312,7 +312,7 @@ export default function Home() {
                         onClick={() => {
                           dispatch(followFriend(onlineUser.userData.id))
                             .then(() => {
-                              dispatch(fetchUserById(userDetail.user.id));
+                              dispatch(fetchUserById(id));
                             })
                             .catch((err) => console.log(err));
                         }}
